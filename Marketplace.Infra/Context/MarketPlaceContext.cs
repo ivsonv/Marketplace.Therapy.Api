@@ -18,9 +18,6 @@ namespace Marketplace.Infra.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
-            modelBuilder.Entity<User>(new UserMap().Configure);
-            modelBuilder.Entity<UserRoles>(new UserRolesMap().Configure);
             modelBuilder.Entity<Category>(new CategoryMap().Configure);
             modelBuilder.Entity<Customer>(new CustomerMap().Configure);
             modelBuilder.Entity<CustomerAddress>(new CustomerAddressMap().Configure);

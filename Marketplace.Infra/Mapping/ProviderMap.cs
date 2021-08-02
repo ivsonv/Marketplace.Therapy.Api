@@ -29,4 +29,32 @@ namespace Marketplace.Infra.Mapping
                    .OnDelete(DeleteBehavior.Cascade);
         }
     }
+
+    public class ProviderAddressMap
+    {
+        public void Configure(EntityTypeBuilder<Domain.Entities.ProviderAddress> builder)
+        {
+            builder.ToTable("providers_address");
+
+            builder.HasKey(prop => prop.id);
+            builder.Property(prop => prop.country).HasColumnType("varchar(2)");
+            builder.Property(prop => prop.number).HasColumnType("varchar(10)");
+            builder.Property(prop => prop.uf).HasColumnType("varchar(2)");
+            builder.Property(prop => prop.zipcode).HasColumnType("varchar(12)");
+        }
+    }
+
+    public class ProviderBankAccountMap
+    {
+        public void Configure(EntityTypeBuilder<Domain.Entities.ProviderBankAccount> builder)
+        {
+            builder.ToTable("providers_bank_account");
+            builder.Property(prop => prop.agency_number).HasColumnType("varchar(20)");
+            builder.Property(prop => prop.agency_digit).HasColumnType("varchar(3)");
+            builder.Property(prop => prop.account_number).HasColumnType("varchar(20)");
+            builder.Property(prop => prop.account_digit).HasColumnType("varchar(3)");
+            builder.Property(prop => prop.bank_code).HasColumnType("varchar(10)");
+            builder.HasKey(prop => prop.id);
+        }
+    }
 }

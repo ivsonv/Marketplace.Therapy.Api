@@ -22,4 +22,18 @@ namespace Marketplace.Infra.Mapping
                    .OnDelete(DeleteBehavior.Cascade);
         }
     }
+
+    public class CustomerAddressMap
+    {
+        public void Configure(EntityTypeBuilder<Domain.Entities.CustomerAddress> builder)
+        {
+            builder.ToTable("customers_address");
+
+            builder.HasKey(prop => prop.id);
+            builder.Property(prop => prop.country).HasColumnType("varchar(2)");
+            builder.Property(prop => prop.number).HasColumnType("varchar(10)");
+            builder.Property(prop => prop.uf).HasColumnType("varchar(2)");
+            builder.Property(prop => prop.zipcode).HasColumnType("varchar(12)");
+        }
+    }
 }

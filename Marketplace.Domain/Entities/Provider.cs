@@ -20,4 +20,22 @@ namespace Marketplace.Domain.Entities
         public List<ProviderAddress> Address { get; set; }
         public List<ProviderBankAccount> BankDatas { get; set; }
     }
+
+    public class ProviderAddress : shared.BaseAddress
+    {
+        public int provider_id { get; set; }
+        public Provider Provider { get; set; }
+    }
+
+    public class ProviderBankAccount : BaseEntity
+    {
+        public string agency_number { get; set; }
+        public string agency_digit { get; set; }
+        public string account_digit { get; set; }
+        public string account_number { get; set; }
+        public string bank_code { get; set; }
+
+        public int company_id { get; set; }
+        public Provider Company { get; set; }
+    }
 }

@@ -10,6 +10,22 @@
             customer = 4
         }
 
+        public enum PaymentStatus
+        {
+            pending = 0,
+            confirmed = 1,
+            canceled = 2,
+            approved = 3,
+            refunded = 4
+        }
+
+        public enum SalesStatus
+        {
+            pending = 0,
+            confirmed = 1,
+            canceled = 2
+        }
+
         public enum ProviderStatus
         {
             pending = 0,

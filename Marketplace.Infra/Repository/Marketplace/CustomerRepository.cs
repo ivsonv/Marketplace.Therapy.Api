@@ -1,5 +1,4 @@
 ﻿using Marketplace.Domain.Entities;
-using Marketplace.Domain.Interface;
 using Marketplace.Domain.Interface.Marketplace;
 using Marketplace.Domain.Models;
 using Microsoft.EntityFrameworkCore;
