@@ -12,6 +12,11 @@ namespace Marketplace.Infra.Mapping
             builder.HasKey(prop => prop.id);
             builder.Property(prop => prop.name).HasColumnType("varchar(120)");
             builder.Property(prop => prop.image).HasColumnType("varchar(50)");
+
+            builder.HasMany(h => h.ProviderCategories)
+                   .WithOne(w => w.Category)
+                   .HasForeignKey(f => f.category_id)
+                   .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

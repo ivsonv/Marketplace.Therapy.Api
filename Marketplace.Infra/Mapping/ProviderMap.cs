@@ -23,10 +23,40 @@ namespace Marketplace.Infra.Mapping
                    .HasForeignKey(f => f.provider_id)
                    .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasMany(h => h.BankDatas)
-                   .WithOne(w => w.Company)
-                   .HasForeignKey(f => f.company_id)
+            builder.HasMany(h => h.BankAccounts)
+                   .WithOne(w => w.Provider)
+                   .HasForeignKey(f => f.provider_id)
                    .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(h => h.SplitAccounts)
+                   .WithOne(w => w.Provider)
+                   .HasForeignKey(f => f.provider_id)
+                   .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(h => h.Topics)
+                   .WithOne(w => w.Provider)
+                   .HasForeignKey(f => f.provider_id)
+                   .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(h => h.Categories)
+                   .WithOne(w => w.Provider)
+                   .HasForeignKey(f => f.provider_id)
+                   .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(h => h.Languages)
+                   .WithOne(w => w.Provider)
+                   .HasForeignKey(f => f.provider_id)
+                   .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(h => h.Schedules)
+                   .WithOne(w => w.Provider)
+                   .HasForeignKey(f => f.provider_id)
+                   .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(h => h.Appointments)
+                   .WithOne(w => w.Provider)
+                   .HasForeignKey(f => f.provider_id)
+                   .OnDelete(DeleteBehavior.Restrict);
         }
     }
 
@@ -54,6 +84,51 @@ namespace Marketplace.Infra.Mapping
             builder.Property(prop => prop.account_number).HasColumnType("varchar(20)");
             builder.Property(prop => prop.account_digit).HasColumnType("varchar(3)");
             builder.Property(prop => prop.bank_code).HasColumnType("varchar(10)");
+            builder.HasKey(prop => prop.id);
+        }
+    }
+
+    public class ProviderCategoriesMap
+    {
+        public void Configure(EntityTypeBuilder<Domain.Entities.ProviderCategories> builder)
+        {
+            builder.ToTable("provider_categories");
+            builder.HasKey(prop => prop.id);
+        }
+    }
+
+    public class ProviderLanguagesMap
+    {
+        public void Configure(EntityTypeBuilder<Domain.Entities.ProviderLanguages> builder)
+        {
+            builder.ToTable("provider_languages");
+            builder.HasKey(prop => prop.id);
+        }
+    }
+
+    public class ProviderScheduleMap
+    {
+        public void Configure(EntityTypeBuilder<Domain.Entities.ProviderSchedule> builder)
+        {
+            builder.ToTable("provider_schedules");
+            builder.HasKey(prop => prop.id);
+        }
+    }
+
+    public class ProviderSplitAccountMap
+    {
+        public void Configure(EntityTypeBuilder<Domain.Entities.ProviderSplitAccount> builder)
+        {
+            builder.ToTable("provider_split_account");
+            builder.HasKey(prop => prop.id);
+        }
+    }
+
+    public class ProviderTopicsMap
+    {
+        public void Configure(EntityTypeBuilder<Domain.Entities.ProviderTopics> builder)
+        {
+            builder.ToTable("provider_topics");
             builder.HasKey(prop => prop.id);
         }
     }

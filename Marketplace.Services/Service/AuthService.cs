@@ -52,7 +52,7 @@ namespace Marketplace.Services.Service
                     {
                         id = _customer.id,
                         name = _customer.name,
-                        rules = new List<string>() { Enumerados.UserRule.customer.ToString() }
+                        //rules = new List<string>() { Enumerados.UserRule.customer.ToString() }
                     };
 
                     _res.content = new customerAuthRs()

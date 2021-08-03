@@ -33,6 +33,7 @@ namespace Marketplace.Domain.Entities
         public List<ProviderCategories> Categories { get; set; }
         public List<ProviderTopics> Topics { get; set; }
         public List<ProviderLanguages> Languages { get; set; }
+        public List<Appointment> Appointments { get; set; }
     }
 
     public class ProviderAddress : shared.BaseAddress

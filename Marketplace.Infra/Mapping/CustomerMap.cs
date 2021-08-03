@@ -20,6 +20,16 @@ namespace Marketplace.Infra.Mapping
                    .WithOne(w => w.Customer)
                    .HasForeignKey(f => f.customer_id)
                    .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(h => h.Assessment)
+                   .WithOne(w => w.Customer)
+                   .HasForeignKey(f => f.customer_id)
+                   .OnDelete(DeleteBehavior.ClientSetNull);
+
+            builder.HasMany(h => h.Appointments)
+                  .WithOne(w => w.Customer)
+                  .HasForeignKey(f => f.provider_id)
+                  .OnDelete(DeleteBehavior.Restrict);
         }
     }
 
@@ -27,13 +37,22 @@ namespace Marketplace.Infra.Mapping
     {
         public void Configure(EntityTypeBuilder<Domain.Entities.CustomerAddress> builder)
         {
-            builder.ToTable("customers_address");
+            builder.ToTable("customer_address");
 
             builder.HasKey(prop => prop.id);
             builder.Property(prop => prop.country).HasColumnType("varchar(2)");
             builder.Property(prop => prop.number).HasColumnType("varchar(10)");
             builder.Property(prop => prop.uf).HasColumnType("varchar(2)");
             builder.Property(prop => prop.zipcode).HasColumnType("varchar(12)");
+        }
+    }
+
+    public class CustomerAssessmentMap
+    {
+        public void Configure(EntityTypeBuilder<Domain.Entities.CustomerAssessment> builder)
+        {
+            builder.ToTable("customer_assessments");
+            builder.HasKey(prop => prop.id);
         }
     }
 }

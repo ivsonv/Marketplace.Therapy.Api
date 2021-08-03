@@ -16,6 +16,8 @@ namespace Marketplace.Domain.Entities
         public int recoverqtd { get; set; }
 
         public List<CustomerAddress> Address { get; set; }
+        public List<CustomerAssessment> Assessment { get; set; }
+        public List<Appointment> Appointments { get; set; }
     }
 
     public class CustomerAddress : shared.BaseAddress
@@ -26,10 +28,11 @@ namespace Marketplace.Domain.Entities
 
     public class CustomerAssessment : BaseEntity
     {
-        public int sale_id { get; set; }
-        public int customer_id { get; set; }
         public double stars { get; set; }
         public string description { get; set; }
         public bool active { get; set; }
+
+        public int customer_id { get; set; }
+        public Customer Customer { get; set; }
     }
 }

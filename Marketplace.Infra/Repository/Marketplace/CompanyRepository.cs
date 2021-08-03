@@ -35,7 +35,7 @@ namespace Marketplace.Infra.Repository.Marketplace
         {
             return await _repository.Query
                                     .Include(i => i.Address)
-                                    .Include(i => i.BankDatas)
+                                    .Include(i => i.BankAccounts)
                                     .FirstOrDefaultAsync(f => f.id == id);
         }
 
