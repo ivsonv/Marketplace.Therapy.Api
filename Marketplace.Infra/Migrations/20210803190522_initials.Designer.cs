@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Marketplace.Infra.Migrations
 {
     [DbContext(typeof(MarketPlaceContext))]
-    [Migration("20210803185756_initials")]
+    [Migration("20210803190522_initials")]
     partial class initials
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -146,7 +146,7 @@ namespace Marketplace.Infra.Migrations
 
                     b.HasKey("id");
 
-                    b.ToTable("customers");
+                    b.ToTable("customer");
                 });
 
             modelBuilder.Entity("Marketplace.Domain.Entities.CustomerAddress", b =>
@@ -321,7 +321,7 @@ namespace Marketplace.Infra.Migrations
 
                     b.HasKey("id");
 
-                    b.ToTable("providers");
+                    b.ToTable("provider");
                 });
 
             modelBuilder.Entity("Marketplace.Domain.Entities.ProviderAddress", b =>
@@ -368,7 +368,7 @@ namespace Marketplace.Infra.Migrations
 
                     b.HasIndex("provider_id");
 
-                    b.ToTable("providers_address");
+                    b.ToTable("provider_address");
                 });
 
             modelBuilder.Entity("Marketplace.Domain.Entities.ProviderBankAccount", b =>
@@ -406,7 +406,7 @@ namespace Marketplace.Infra.Migrations
 
                     b.HasIndex("provider_id");
 
-                    b.ToTable("providers_bank_account");
+                    b.ToTable("provider_bank_account");
                 });
 
             modelBuilder.Entity("Marketplace.Domain.Entities.ProviderCategories", b =>
@@ -523,7 +523,7 @@ namespace Marketplace.Infra.Migrations
 
                     b.HasIndex("provider_id");
 
-                    b.ToTable("provider_split_account");
+                    b.ToTable("provider_split_accounts");
                 });
 
             modelBuilder.Entity("Marketplace.Domain.Entities.ProviderTopics", b =>

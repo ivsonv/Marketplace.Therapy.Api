@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace Marketplace.Infra.Repository.Marketplace
 {
-    public class CompanyRepository : IProviderRepository
+    public class ProviderRepository : IProviderRepository
     {
         private readonly BaseRepository<Provider> _repository;
 
-        public CompanyRepository(BaseRepository<Provider> repository)
+        public ProviderRepository(BaseRepository<Provider> repository)
         {
             _repository = repository;
         }

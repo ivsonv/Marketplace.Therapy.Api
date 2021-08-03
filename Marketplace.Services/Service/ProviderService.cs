@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
 using Marketplace.Domain.Helpers;
 using Marketplace.Domain.Interface.Marketplace;
-using Marketplace.Domain.Models.dto.company;
+using Marketplace.Domain.Models.dto.provider;
 using Marketplace.Domain.Models.Request;
-using Marketplace.Domain.Models.Request.company;
+using Marketplace.Domain.Models.Request.provider;
 using Marketplace.Domain.Models.Response;
-using Marketplace.Domain.Models.Response.company;
+using Marketplace.Domain.Models.Response.provider;
 using System.Threading.Tasks;
 
 namespace Marketplace.Services.Service
@@ -13,11 +13,11 @@ namespace Marketplace.Services.Service
     public class ProviderService
     {
         private readonly IProviderRepository _providerRepository;
-        private readonly Validators.CompanyValidator _validator;
+        private readonly Validators.ProviderValidator _validator;
         private readonly EmailService _emailService;
         private readonly IMapper _mapper;
 
-        public ProviderService(Validators.CompanyValidator validator,
+        public ProviderService(Validators.ProviderValidator validator,
                               IProviderRepository companyRepository,
                               EmailService emailService,
                               IMapper mapper)
@@ -33,7 +33,7 @@ namespace Marketplace.Services.Service
             var _res = new BaseRs<providerRs>() { content = new providerRs() };
             try
             {
-                _res.content.company = (await _providerRepository.Show(_request.pagination))
+                _res.content.provider = (await _providerRepository.Show(_request.pagination))
                     .ConvertAll(s => new providerDto()
                     {
                         fantasy_name = s.fantasy_name,
@@ -82,7 +82,7 @@ namespace Marketplace.Services.Service
 
                     // retorno
                     _res = await this.FindById(entity.id);
-                    _res.content.company[0].password = null;
+                    _res.content.provider[0].password = null;
                 }
             }
             catch (System.Exception ex) { _res.setError(ex); }
@@ -95,80 +95,11 @@ namespace Marketplace.Services.Service
             try
             {
                 var entity = await _providerRepository.FindById(id);
-                _res.content.company.Add(_mapper.Map<providerDto>(entity));
+                _res.content.provider.Add(_mapper.Map<providerDto>(entity));
             }
             catch (System.Exception ex) { _res.setError(ex); }
             return _res;
         }
 
-        //public async Task<BaseRs<customerRs>> Update(BaseRq<customerRq> _request)
-        //{
-        //    var _res = new BaseRs<customerRs>();
-        //    try
-        //    {
-        //        _res.error = _validator.Check(_request);
-        //        if (_res.error == null)
-        //        {
-        //            if (!_request.data.id.HasValue)
-        //            {
-        //                _res.setError("Id e obrigatório");
-        //                return _res;
-        //            }
-        //            _request.data.email = _request.data.email.IsCompare(); // padronizar email
-
-        //            // Ler Registro
-        //            var entity = await _customerRepository.FindById(_request.data.id.Value);
-        //            _request.data.password = entity.password; // manter password, existe outra função para mudar e-mail
-
-        //            if (entity.email != _request.data.email)
-        //            {
-        //                // email diferente do atual, validar se já existe
-        //                #region ..: check email already exists :..
-
-        //                _request.data.email = _request.data.email.IsCompare();
-        //                var user = _customerRepository.FindByEmail(_request.data.email);
-        //                if (user != null)
-        //                {
-        //                    _res.setError("Não e possível atualizar cliente, e-mail já cadastrado.");
-        //                    return _res;
-        //                }
-        //                #endregion
-        //            }
-
-        //            // mapear request para entidade
-        //            entity = _mapper.Map<Domain.Entities.Customer>(_request.data);
-
-        //            // atualizar
-        //            await _customerRepository.Update(entity);
-        //            _res = await this.FindById(entity.id);
-        //        }
-        //    }
-        //    catch (System.Exception ex) { _res.setError(ex); }
-        //    return _res;
-        //}
-
-        //public async Task<BaseRs<customerRs>> FindById(int id)
-        //{
-        //    var _res = new BaseRs<customerRs>() { content = new customerRs() };
-        //    try
-        //    {
-        //        var entity = await _customerRepository.FindById(id);
-        //        _res.content.customer.Add(_mapper.Map<customerDto>(entity));
-        //    }
-        //    catch (System.Exception ex) { _res.setError(ex); }
-        //    return _res;
-        //}
-
-        //public async Task<BaseRs<bool>> Delete(int id)
-        //{
-        //    var _res = new BaseRs<bool>();
-        //    try
-        //    {
-        //        await _customerRepository.Delete(await _customerRepository.FindById(id));
-        //        _res.content = true;
-        //    }
-        //    catch (System.Exception ex) { _res.setError(ex); }
-        //    return _res;
-        //}
     }
 }

@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace Marketplace.Services.Service
 {
     public class CustomerService
-    {   
+    {
         private readonly Validators.CustomerValidator _validator;
         private readonly EmailService _emailService;
         private readonly ICustomerRepository _customerRepository;
@@ -69,6 +69,10 @@ namespace Marketplace.Services.Service
 
                     _emailService.sendWelcome(_request.data);
                     _res = await this.FindById(entity.id);
+
+                    // clear password
+                    if (_res.content != null && !_res.content.customer.IsEmpty())
+                        _res.content.customer[0].password = null;
                 }
             }
             catch (System.Exception ex) { _res.setError(ex); }
@@ -83,7 +87,7 @@ namespace Marketplace.Services.Service
                 _res.error = _validator.Check(_request);
                 if (_res.error == null)
                 {
-                    if (!_request.data.id.HasValue)
+                    if (!_request.data.id.HasValue || _request.data.id.Value > 0)
                     {
                         _res.setError("Id e obrigatório");
                         return _res;
@@ -115,6 +119,10 @@ namespace Marketplace.Services.Service
                     // atualizar
                     await _customerRepository.Update(entity);
                     _res = await this.FindById(entity.id);
+
+                    // clear password
+                    if (_res.content != null && !_res.content.customer.IsEmpty())
+                        _res.content.customer[0].password = null;
                 }
             }
             catch (System.Exception ex) { _res.setError(ex); }

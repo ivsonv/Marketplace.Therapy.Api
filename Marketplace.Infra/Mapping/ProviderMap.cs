@@ -7,7 +7,7 @@ namespace Marketplace.Infra.Mapping
     {
         public void Configure(EntityTypeBuilder<Domain.Entities.Provider> builder)
         {
-            builder.ToTable("providers");
+            builder.ToTable("provider");
 
             builder.HasKey(prop => prop.id);
             builder.Property(prop => prop.company_name).HasColumnType("varchar(255)");
@@ -64,7 +64,7 @@ namespace Marketplace.Infra.Mapping
     {
         public void Configure(EntityTypeBuilder<Domain.Entities.ProviderAddress> builder)
         {
-            builder.ToTable("providers_address");
+            builder.ToTable("provider_address");
 
             builder.HasKey(prop => prop.id);
             builder.Property(prop => prop.country).HasColumnType("varchar(2)");
@@ -78,7 +78,7 @@ namespace Marketplace.Infra.Mapping
     {
         public void Configure(EntityTypeBuilder<Domain.Entities.ProviderBankAccount> builder)
         {
-            builder.ToTable("providers_bank_account");
+            builder.ToTable("provider_bank_account");
             builder.Property(prop => prop.agency_number).HasColumnType("varchar(20)");
             builder.Property(prop => prop.agency_digit).HasColumnType("varchar(3)");
             builder.Property(prop => prop.account_number).HasColumnType("varchar(20)");
@@ -119,7 +119,7 @@ namespace Marketplace.Infra.Mapping
     {
         public void Configure(EntityTypeBuilder<Domain.Entities.ProviderSplitAccount> builder)
         {
-            builder.ToTable("provider_split_account");
+            builder.ToTable("provider_split_accounts");
             builder.HasKey(prop => prop.id);
         }
     }

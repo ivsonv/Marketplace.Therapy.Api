@@ -33,7 +33,7 @@ namespace Marketplace.Services.Service
             }
         }
 
-        public void sendWelcome(Domain.Models.dto.company.providerDto _company)
+        public void sendWelcome(Domain.Models.dto.provider.providerDto _company)
         {
             var dto = new Domain.Models.dto.email.emailDto()
             {

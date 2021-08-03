@@ -7,7 +7,7 @@ namespace Marketplace.Infra.Mapping
     {
         public void Configure(EntityTypeBuilder<Domain.Entities.Customer> builder)
         {
-            builder.ToTable("customers");
+            builder.ToTable("customer");
 
             builder.HasKey(prop => prop.id);
             builder.Property(prop => prop.name).HasColumnType("varchar(120)");

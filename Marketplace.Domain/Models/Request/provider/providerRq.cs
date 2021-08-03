@@ -1,5 +1,5 @@
-﻿namespace Marketplace.Domain.Models.Request.company
+﻿namespace Marketplace.Domain.Models.Request.provider
 {
-    public class providerRq : dto.company.providerDto
+    public class providerRq : dto.provider.providerDto
     { }
 }

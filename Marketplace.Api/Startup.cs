@@ -84,7 +84,7 @@ namespace Marketplace.Api
             // repositorio individual
             services.AddTransient<ICategoryRepository, CategoryRepository>();
             services.AddTransient<ICustomerRepository, CustomerRepository>();
-            services.AddTransient<IProviderRepository, CompanyRepository>();
+            services.AddTransient<IProviderRepository, ProviderRepository>();
 
             // services
             services.AddScoped<CategoryService>();
@@ -97,7 +97,7 @@ namespace Marketplace.Api
             // validator
             services.AddSingleton<Services.Validators.CustomerValidator>();
             services.AddSingleton<Services.Validators.CustomerAuthValidator>();
-            services.AddSingleton<Services.Validators.CompanyValidator>();
+            services.AddSingleton<Services.Validators.ProviderValidator>();
 
             #region ..: AUTO MAPPER :..
 

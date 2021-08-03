@@ -9,7 +9,7 @@ namespace Marketplace.Domain.Profiles.Markplace
             AllowNullDestinationValues = false;
             AllowNullCollections = false;
 
-            CreateMap<Entities.Provider, Models.dto.company.providerDto>()
+            CreateMap<Entities.Provider, Models.dto.provider.providerDto>()
                 .ForMember(d => d.address,
                                 o => o.MapFrom(s => s.Address.ConvertAll(cc =>
                                                     new Models.dto.location.Address
@@ -28,7 +28,7 @@ namespace Marketplace.Domain.Profiles.Markplace
             CreateMap<List<Entities.ProviderAddress>, List<Models.dto.location.Address>>();
             CreateMap<Entities.ProviderAddress, Entities.shared.BaseAddress>();
 
-            CreateMap<Models.dto.company.providerDto, Entities.Provider>()
+            CreateMap<Models.dto.provider.providerDto, Entities.Provider>()
                      .ForMember(d => d.Address,
                                 o => o.MapFrom(s => s.address.ConvertAll(cc =>
                                                     new Entities.ProviderAddress()

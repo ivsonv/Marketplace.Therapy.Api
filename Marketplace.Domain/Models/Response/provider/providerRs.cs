@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
 
-namespace Marketplace.Domain.Models.Response.company
+namespace Marketplace.Domain.Models.Response.provider
 {
     public class providerRs
     {
         public providerRs()
         {
-            this.company = new List<dto.company.providerDto>();
+            this.provider = new List<dto.provider.providerDto>();
         }
 
-        public List<dto.company.providerDto> company { get; set; }
+        public List<dto.provider.providerDto> provider { get; set; }
     }
 }

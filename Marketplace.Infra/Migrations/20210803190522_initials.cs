@@ -28,7 +28,7 @@ namespace Marketplace.Infra.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "customers",
+                name: "customer",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
@@ -48,7 +48,7 @@ namespace Marketplace.Infra.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_customers", x => x.id);
+                    table.PrimaryKey("PK_customer", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -68,7 +68,7 @@ namespace Marketplace.Infra.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "providers",
+                name: "provider",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
@@ -96,7 +96,7 @@ namespace Marketplace.Infra.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_providers", x => x.id);
+                    table.PrimaryKey("PK_provider", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -137,9 +137,9 @@ namespace Marketplace.Infra.Migrations
                 {
                     table.PrimaryKey("PK_customer_address", x => x.id);
                     table.ForeignKey(
-                        name: "FK_customer_address_customers_customer_id",
+                        name: "FK_customer_address_customer_customer_id",
                         column: x => x.customer_id,
-                        principalTable: "customers",
+                        principalTable: "customer",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -161,9 +161,9 @@ namespace Marketplace.Infra.Migrations
                 {
                     table.PrimaryKey("PK_customer_assessments", x => x.id);
                     table.ForeignKey(
-                        name: "FK_customer_assessments_customers_customer_id",
+                        name: "FK_customer_assessments_customer_customer_id",
                         column: x => x.customer_id,
-                        principalTable: "customers",
+                        principalTable: "customer",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -190,17 +190,72 @@ namespace Marketplace.Infra.Migrations
                 {
                     table.PrimaryKey("PK_appointments", x => x.id);
                     table.ForeignKey(
-                        name: "FK_appointments_customers_provider_id",
+                        name: "FK_appointments_customer_provider_id",
                         column: x => x.provider_id,
-                        principalTable: "customers",
+                        principalTable: "customer",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_appointments_providers_provider_id",
+                        name: "FK_appointments_provider_provider_id",
                         column: x => x.provider_id,
-                        principalTable: "providers",
+                        principalTable: "provider",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "provider_address",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    provider_id = table.Column<int>(type: "integer", nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    city = table.Column<string>(type: "text", nullable: true),
+                    address = table.Column<string>(type: "text", nullable: true),
+                    neighborhood = table.Column<string>(type: "text", nullable: true),
+                    complement = table.Column<string>(type: "text", nullable: true),
+                    number = table.Column<string>(type: "varchar(10)", nullable: true),
+                    zipcode = table.Column<string>(type: "varchar(12)", nullable: true),
+                    uf = table.Column<string>(type: "varchar(2)", nullable: true),
+                    country = table.Column<string>(type: "varchar(2)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_provider_address", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_provider_address_provider_provider_id",
+                        column: x => x.provider_id,
+                        principalTable: "provider",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "provider_bank_account",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    agency_number = table.Column<string>(type: "varchar(20)", nullable: true),
+                    agency_digit = table.Column<string>(type: "varchar(3)", nullable: true),
+                    account_digit = table.Column<string>(type: "varchar(3)", nullable: true),
+                    account_number = table.Column<string>(type: "varchar(20)", nullable: true),
+                    bank_code = table.Column<string>(type: "varchar(10)", nullable: true),
+                    provider_id = table.Column<int>(type: "integer", nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_provider_bank_account", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_provider_bank_account_provider_provider_id",
+                        column: x => x.provider_id,
+                        principalTable: "provider",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -224,9 +279,9 @@ namespace Marketplace.Infra.Migrations
                         principalColumn: "id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_provider_categories_providers_provider_id",
+                        name: "FK_provider_categories_provider_provider_id",
                         column: x => x.provider_id,
-                        principalTable: "providers",
+                        principalTable: "provider",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -252,9 +307,9 @@ namespace Marketplace.Infra.Migrations
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_provider_languages_providers_provider_id",
+                        name: "FK_provider_languages_provider_provider_id",
                         column: x => x.provider_id,
-                        principalTable: "providers",
+                        principalTable: "provider",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -276,15 +331,15 @@ namespace Marketplace.Infra.Migrations
                 {
                     table.PrimaryKey("PK_provider_schedules", x => x.id);
                     table.ForeignKey(
-                        name: "FK_provider_schedules_providers_provider_id",
+                        name: "FK_provider_schedules_provider_provider_id",
                         column: x => x.provider_id,
-                        principalTable: "providers",
+                        principalTable: "provider",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "provider_split_account",
+                name: "provider_split_accounts",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
@@ -297,66 +352,11 @@ namespace Marketplace.Infra.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_provider_split_account", x => x.id);
+                    table.PrimaryKey("PK_provider_split_accounts", x => x.id);
                     table.ForeignKey(
-                        name: "FK_provider_split_account_providers_provider_id",
+                        name: "FK_provider_split_accounts_provider_provider_id",
                         column: x => x.provider_id,
-                        principalTable: "providers",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "providers_address",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    provider_id = table.Column<int>(type: "integer", nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
-                    updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
-                    city = table.Column<string>(type: "text", nullable: true),
-                    address = table.Column<string>(type: "text", nullable: true),
-                    neighborhood = table.Column<string>(type: "text", nullable: true),
-                    complement = table.Column<string>(type: "text", nullable: true),
-                    number = table.Column<string>(type: "varchar(10)", nullable: true),
-                    zipcode = table.Column<string>(type: "varchar(12)", nullable: true),
-                    uf = table.Column<string>(type: "varchar(2)", nullable: true),
-                    country = table.Column<string>(type: "varchar(2)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_providers_address", x => x.id);
-                    table.ForeignKey(
-                        name: "FK_providers_address_providers_provider_id",
-                        column: x => x.provider_id,
-                        principalTable: "providers",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "providers_bank_account",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    agency_number = table.Column<string>(type: "varchar(20)", nullable: true),
-                    agency_digit = table.Column<string>(type: "varchar(3)", nullable: true),
-                    account_digit = table.Column<string>(type: "varchar(3)", nullable: true),
-                    account_number = table.Column<string>(type: "varchar(20)", nullable: true),
-                    bank_code = table.Column<string>(type: "varchar(10)", nullable: true),
-                    provider_id = table.Column<int>(type: "integer", nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
-                    updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_providers_bank_account", x => x.id);
-                    table.ForeignKey(
-                        name: "FK_providers_bank_account_providers_provider_id",
-                        column: x => x.provider_id,
-                        principalTable: "providers",
+                        principalTable: "provider",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -376,9 +376,9 @@ namespace Marketplace.Infra.Migrations
                 {
                     table.PrimaryKey("PK_provider_topics", x => x.id);
                     table.ForeignKey(
-                        name: "FK_provider_topics_providers_provider_id",
+                        name: "FK_provider_topics_provider_provider_id",
                         column: x => x.provider_id,
-                        principalTable: "providers",
+                        principalTable: "provider",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -403,6 +403,16 @@ namespace Marketplace.Infra.Migrations
                 name: "IX_customer_assessments_customer_id",
                 table: "customer_assessments",
                 column: "customer_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_provider_address_provider_id",
+                table: "provider_address",
+                column: "provider_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_provider_bank_account_provider_id",
+                table: "provider_bank_account",
+                column: "provider_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_provider_categories_category_id",
@@ -430,8 +440,8 @@ namespace Marketplace.Infra.Migrations
                 column: "provider_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_provider_split_account_provider_id",
-                table: "provider_split_account",
+                name: "IX_provider_split_accounts_provider_id",
+                table: "provider_split_accounts",
                 column: "provider_id");
 
             migrationBuilder.CreateIndex(
@@ -443,16 +453,6 @@ namespace Marketplace.Infra.Migrations
                 name: "IX_provider_topics_topic_id",
                 table: "provider_topics",
                 column: "topic_id");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_providers_address_provider_id",
-                table: "providers_address",
-                column: "provider_id");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_providers_bank_account_provider_id",
-                table: "providers_bank_account",
-                column: "provider_id");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -467,6 +467,12 @@ namespace Marketplace.Infra.Migrations
                 name: "customer_assessments");
 
             migrationBuilder.DropTable(
+                name: "provider_address");
+
+            migrationBuilder.DropTable(
+                name: "provider_bank_account");
+
+            migrationBuilder.DropTable(
                 name: "provider_categories");
 
             migrationBuilder.DropTable(
@@ -476,19 +482,13 @@ namespace Marketplace.Infra.Migrations
                 name: "provider_schedules");
 
             migrationBuilder.DropTable(
-                name: "provider_split_account");
+                name: "provider_split_accounts");
 
             migrationBuilder.DropTable(
                 name: "provider_topics");
 
             migrationBuilder.DropTable(
-                name: "providers_address");
-
-            migrationBuilder.DropTable(
-                name: "providers_bank_account");
-
-            migrationBuilder.DropTable(
-                name: "customers");
+                name: "customer");
 
             migrationBuilder.DropTable(
                 name: "categories");
@@ -497,10 +497,10 @@ namespace Marketplace.Infra.Migrations
                 name: "languages");
 
             migrationBuilder.DropTable(
-                name: "topics");
+                name: "provider");
 
             migrationBuilder.DropTable(
-                name: "providers");
+                name: "topics");
         }
     }
 }
