@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Marketplace.Domain.Entities
 {
@@ -13,12 +15,24 @@ namespace Marketplace.Domain.Entities
         public string cnpj { get; set; }
         public string cpf { get; set; }
         public string image { get; set; }
+        public string description { get; set; }
+        public string curriculum { get; set; }
+        public string biography { get; set; }
+        public string academic_training { get; set; }
+        public int interval_between_appointment { get; set; }
+        public Helpers.Enumerados.AppointmentOrigin origin { get; set; }
         public Helpers.Enumerados.ProviderStatus situation { get; set; }
 
+        public bool active { get; set; }
         public bool remove { get; set; }
 
         public List<ProviderAddress> Address { get; set; }
-        public List<ProviderBankAccount> BankDatas { get; set; }
+        public List<ProviderBankAccount> BankAccounts { get; set; }
+        public List<ProviderSplitAccount> SplitAccounts { get; set; }
+        public List<ProviderSchedule> Schedules { get; set; }
+        public List<ProviderCategories> Categories { get; set; }
+        public List<ProviderTopics> Topics { get; set; }
+        public List<ProviderLanguages> Languages { get; set; }
     }
 
     public class ProviderAddress : shared.BaseAddress
@@ -35,7 +49,53 @@ namespace Marketplace.Domain.Entities
         public string account_number { get; set; }
         public string bank_code { get; set; }
 
-        public int company_id { get; set; }
-        public Provider Company { get; set; }
+        public int provider_id { get; set; }
+        public Provider Provider { get; set; }
+    }
+
+    public class ProviderSplitAccount : BaseEntity
+    {
+        [Column(TypeName = "jsonb")]
+        public string json { get; set; }
+        public Helpers.Enumerados.PaymentProvider payment_provider { get; set; }
+
+        public int provider_id { get; set; }
+        public Provider Provider { get; set; }
+    }
+
+    public class ProviderSchedule : BaseEntity
+    {
+        public TimeSpan start { get; set; }
+        public TimeSpan end { get; set; }
+        public int day_week { get; set; }
+        public int provider_id { get; set; }
+        public Provider Provider { get; set; }
+    }
+
+    public class ProviderCategories : BaseEntity
+    {
+        public int category_id { get; set; }
+        public int provider_id { get; set; }
+
+        public Provider Provider { get; set; }
+        public Category Category { get; set; }
+    }
+
+    public class ProviderTopics : BaseEntity
+    {
+        public int topic_id { get; set; }
+        public int provider_id { get; set; }
+
+        public Provider Provider { get; set; }
+        public Topic Topic { get; set; }
+    }
+
+    public class ProviderLanguages : BaseEntity
+    {
+        public int language_id { get; set; }
+        public int provider_id { get; set; }
+
+        public Provider Provider { get; set; }
+        public Language Language { get; set; }
     }
 }

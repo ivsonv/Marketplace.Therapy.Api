@@ -2,14 +2,6 @@
 {
     public static class Enumerados
     {
-        public enum UserRule
-        {
-            admin = 0,
-            coordenador = 2,
-            employee = 3,
-            customer = 4
-        }
-
         public enum PaymentStatus
         {
             pending = 0,
@@ -19,11 +11,18 @@
             refunded = 4
         }
 
-        public enum SalesStatus
+        public enum AppointmentStatus
         {
             pending = 0,
             confirmed = 1,
             canceled = 2
+        }
+
+        public enum AppointmentOrigin
+        {
+            offline = 0,
+            ecommerce = 1,
+            mobile = 2
         }
 
         public enum ProviderStatus
@@ -34,11 +33,11 @@
             disabled = 4
         }
 
-        public enum CompanyFilialStatus
+        public enum PaymentProvider
         {
-            pending = 0,
-            approved = 2,
-            blocked = 3
+            nexxera = 0,
+            iugu = 1,
+            pagseguro = 2
         }
 
         public enum LocalityProvider
