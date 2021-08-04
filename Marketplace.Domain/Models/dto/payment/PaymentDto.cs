@@ -5,6 +5,7 @@ namespace Marketplace.Domain.Models.dto.payment
     public class PaymentDto
     {
         public List<PaymentList> payments { get; set; }
+        public Helpers.Enumerados.PaymentProvider PaymentProvider { get; set; }
     }
 
     public class PaymentList

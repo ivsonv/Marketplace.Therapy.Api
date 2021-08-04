@@ -7,7 +7,15 @@ namespace Marketplace.Integrations.Payment
     {
         public Task Buy(PaymentDto _payment)
         {
-            throw new System.NotImplementedException();
+            switch (_payment.PaymentProvider)
+            {
+                case Domain.Helpers.Enumerados.PaymentProvider.nexxera:
+                    Nexxera.NexxeraClient.Buy(_payment); break;
+
+                default:
+                    throw new System.NotImplementedException();
+            }
+            return Task.FromResult(_payment);
         }
 
         public Task Cancel()
