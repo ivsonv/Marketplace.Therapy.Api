@@ -9,6 +9,7 @@ namespace Marketplace.Domain.Entities
         public decimal price_full { get; set; }
         public decimal price { get; set; }
         public DateTime booking_date { get; set; }
+        public Helpers.Enumerados.AppointmentOrigin origin { get; set; }
         public Helpers.Enumerados.PaymentStatus payment_status { get; set; }
         public Helpers.Enumerados.AppointmentStatus status { get; set; }
 

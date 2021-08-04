@@ -35,6 +35,9 @@ namespace Marketplace.Infra.Migrations
                     b.Property<int>("customer_id")
                         .HasColumnType("integer");
 
+                    b.Property<int>("origin")
+                        .HasColumnType("integer");
+
                     b.Property<int>("payment_status")
                         .HasColumnType("integer");
 
@@ -299,8 +302,8 @@ namespace Marketplace.Infra.Migrations
                     b.Property<int>("interval_between_appointment")
                         .HasColumnType("integer");
 
-                    b.Property<int>("origin")
-                        .HasColumnType("integer");
+                    b.Property<string>("nickname")
+                        .HasColumnType("text");
 
                     b.Property<string>("password")
                         .HasColumnType("text");

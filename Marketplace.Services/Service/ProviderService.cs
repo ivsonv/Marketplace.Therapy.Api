@@ -6,6 +6,7 @@ using Marketplace.Domain.Models.Request;
 using Marketplace.Domain.Models.Request.provider;
 using Marketplace.Domain.Models.Response;
 using Marketplace.Domain.Models.Response.provider;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Marketplace.Services.Service
@@ -52,7 +53,21 @@ namespace Marketplace.Services.Service
             var _res = new BaseRs<providerRs>();
             try
             {
-                _res.error = _validator.Check(_request);
+                #region ..: pré validations :..
+
+                if (!_request.data.cpf.IsEmpty())
+                    if (!_request.data.cpf.IsCpf())
+                        _res.error = new BaseError(new List<string> { "CPF informado não e válido." });
+
+                if (!_request.data.cnpj.IsEmpty())
+                    if (!_request.data.cnpj.IsCnpj())
+                        _res.error = new BaseError(new List<string> { "CNPJ informado não e válido." });
+
+                if (_res.error == null)
+                    _res.error = _validator.Check(_request);
+
+                #endregion
+
                 if (_res.error == null)
                 {
                     #region ..: check already exists :..
@@ -76,8 +91,8 @@ namespace Marketplace.Services.Service
                     var entity = _mapper.Map<Domain.Entities.Provider>(_request.data);
                     entity.situation = Enumerados.ProviderStatus.pending;
                     entity.password = entity.password.createHash();
-                    await _providerRepository.Create(entity);
 
+                    await _providerRepository.Create(entity);
                     _emailService.sendWelcome(_request.data);
 
                     // retorno

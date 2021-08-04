@@ -33,19 +33,19 @@ namespace Marketplace.Services.Service
             }
         }
 
-        public void sendWelcome(Domain.Models.dto.provider.providerDto _company)
+        public void sendWelcome(Domain.Models.dto.provider.providerDto _provider)
         {
             var dto = new Domain.Models.dto.email.emailDto()
             {
-                title = "Bem-vindo ao 99Motos",
+                title = "Bem-vindo ao Clique Terapia",
                 body = this.GetTemplate(Enumerados.EmailType.welcome),
-                email = _company.email
+                email = _provider.email
             };
 
             if (!dto.body.IsEmpty())
             {
                 dto.body = dto.body.Replace("%TITLE%", ":: Bem Vindo ::");
-                dto.body = dto.body.Replace("%NAME%", _company.fantasy_name);
+                dto.body = dto.body.Replace("%NAME%", _provider.fantasy_name);
                 Task.Run(() => _IEmail.send(dto));
             }
         }

@@ -45,7 +45,7 @@ namespace Marketplace.Api
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Marketplace Api", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Marketplace Clique Terapia", Version = "v1" });
             });
 
             // remover do retorno null e variaveis vazias
@@ -85,13 +85,17 @@ namespace Marketplace.Api
             services.AddTransient<ICategoryRepository, CategoryRepository>();
             services.AddTransient<ICustomerRepository, CustomerRepository>();
             services.AddTransient<IProviderRepository, ProviderRepository>();
+            services.AddTransient<ILanguageRepository, LanguageRepository>();
+            services.AddTransient<ITopicRepository, TopicRepository>();
 
             // services
             services.AddScoped<CategoryService>();
             services.AddScoped<LocationService>();
             services.AddScoped<CustomerService>();
             services.AddScoped<ProviderService>();
+            services.AddScoped<LanguageService>();
             services.AddScoped<EmailService>();
+            services.AddScoped<TopicService>();
             services.AddScoped<AuthService>();
 
             // validator

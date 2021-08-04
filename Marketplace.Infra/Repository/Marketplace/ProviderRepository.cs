@@ -1,4 +1,5 @@
 ﻿using Marketplace.Domain.Entities;
+using Marketplace.Domain.Helpers;
 using Marketplace.Domain.Interface;
 using Marketplace.Domain.Interface.Marketplace;
 using Marketplace.Domain.Models;
@@ -41,12 +42,22 @@ namespace Marketplace.Infra.Repository.Marketplace
 
         public async Task Create(Provider entity)
         {
+            this.formatData(entity);
+
             _repository.Add(entity);
             await _repository.SaveChanges();
+        }
+        private void formatData(Provider entity)
+        {
+            if (!entity.fantasy_name.IsEmpty()) entity.fantasy_name = entity.fantasy_name.Clear().ToUpper();
+            if (!entity.company_name.IsEmpty()) entity.company_name = entity.company_name.Clear().ToUpper();
+            if (!entity.nickname.IsEmpty()) entity.nickname = entity.nickname.Clear().ToUpper();
         }
 
         public async Task Update(Provider entity)
         {
+            this.formatData(entity);
+
             _repository.Update(entity);
             await _repository.SaveChanges();
         }
@@ -67,7 +78,7 @@ namespace Marketplace.Infra.Repository.Marketplace
                   }).FirstOrDefaultAsync();
         }
 
-        public async Task<Provider> FindByEmail(string email) 
+        public async Task<Provider> FindByEmail(string email)
             => await _repository.Query.FirstOrDefaultAsync(f => f.email == email);
 
         public async Task<Provider> FindByCnpj(string cnpj)

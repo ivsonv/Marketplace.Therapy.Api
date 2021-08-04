@@ -28,16 +28,14 @@
         public enum ProviderStatus
         {
             pending = 0,
-            approved = 2,
-            blocked = 3,
-            disabled = 4
+            approved = 1,
+            blocked = 2,
+            others = 3
         }
 
         public enum PaymentProvider
         {
-            nexxera = 0,
-            iugu = 1,
-            pagseguro = 2
+            nexxera = 0
         }
 
         public enum LocalityProvider

@@ -20,7 +20,7 @@ namespace Marketplace.Domain.Entities
         public string biography { get; set; }
         public string academic_training { get; set; }
         public int interval_between_appointment { get; set; }
-        public Helpers.Enumerados.AppointmentOrigin origin { get; set; }
+        public string nickname { get; set; }
         public Helpers.Enumerados.ProviderStatus situation { get; set; }
 
         public bool active { get; set; }

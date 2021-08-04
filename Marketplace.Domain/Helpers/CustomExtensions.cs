@@ -19,7 +19,7 @@ namespace Marketplace.Domain.Helpers
         public static bool IsEmpty(this string vl) => string.IsNullOrWhiteSpace(vl);
         public static bool IsNotEmpty(this string vl) => !string.IsNullOrWhiteSpace(vl);
         public static bool IsEmpty(this IFormFile vl) => vl == null || vl.Length <= 0;
-        public static bool IsOnlyNumbers(this string vl) => int.TryParse(vl, out int ss);
+        public static bool IsNumber(this string vl) => int.TryParse(vl, out int ss);
         public static int ToInt(this string vl) => int.Parse(vl);
         public static DateTime toDate(this string vl) => DateTime.Parse(vl);
 
@@ -35,11 +35,15 @@ namespace Marketplace.Domain.Helpers
                     return TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, zone);
                 }
             }
-        }        
+        }
         public static string IsCompare(this string vl) => RemoveAccents(vl).ToLower().Trim();
+        public static string Clear(this string vl) => RemoveAccents(vl).Trim();
 
         public static string createHash(this string str)
         {
+            if (str.IsEmpty())
+                return null;
+
             byte[] hash = (new SHA256Managed()).ComputeHash(Encoding.UTF8.GetBytes(str));
             StringBuilder hashString = new StringBuilder();
             foreach (byte x in hash)
@@ -69,6 +73,75 @@ namespace Marketplace.Domain.Helpers
 
         public static string getExtension(this string vl) => vl.Split(".")[vl.Split(".").Length - 1];
         public static bool IsEmail(this string vl) => (new EmailAddressAttribute()).IsValid(vl);
+        public static bool IsCnpj(this string cnpj)
+        {
+            int[] multiplicador1 = new int[12] { 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2 };
+            int[] multiplicador2 = new int[13] { 6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2 };
+            int soma;
+            int resto;
+            string digito;
+            string tempCnpj;
+            cnpj = cnpj.Trim();
+            cnpj = cnpj.Replace(".", "").Replace("-", "").Replace("/", "");
+            if (cnpj.Length != 14)
+                return false;
+            tempCnpj = cnpj.Substring(0, 12);
+            soma = 0;
+            for (int i = 0; i < 12; i++)
+                soma += int.Parse(tempCnpj[i].ToString()) * multiplicador1[i];
+            resto = (soma % 11);
+            if (resto < 2)
+                resto = 0;
+            else
+                resto = 11 - resto;
+            digito = resto.ToString();
+            tempCnpj = tempCnpj + digito;
+            soma = 0;
+            for (int i = 0; i < 13; i++)
+                soma += int.Parse(tempCnpj[i].ToString()) * multiplicador2[i];
+            resto = (soma % 11);
+            if (resto < 2)
+                resto = 0;
+            else
+                resto = 11 - resto;
+            digito = digito + resto.ToString();
+            return cnpj.EndsWith(digito);
+        }
+        public static bool IsCpf(this string cpf)
+        {
+            int[] multiplicador1 = new int[9] { 10, 9, 8, 7, 6, 5, 4, 3, 2 };
+            int[] multiplicador2 = new int[10] { 11, 10, 9, 8, 7, 6, 5, 4, 3, 2 };
+            string tempCpf;
+            string digito;
+            int soma;
+            int resto;
+            cpf = cpf.Trim();
+            cpf = cpf.Replace(".", "").Replace("-", "");
+            if (cpf.Length != 11)
+                return false;
+            tempCpf = cpf.Substring(0, 9);
+            soma = 0;
+
+            for (int i = 0; i < 9; i++)
+                soma += int.Parse(tempCpf[i].ToString()) * multiplicador1[i];
+            resto = soma % 11;
+            if (resto < 2)
+                resto = 0;
+            else
+                resto = 11 - resto;
+            digito = resto.ToString();
+            tempCpf = tempCpf + digito;
+            soma = 0;
+            for (int i = 0; i < 10; i++)
+                soma += int.Parse(tempCpf[i].ToString()) * multiplicador2[i];
+            resto = soma % 11;
+            if (resto < 2)
+                resto = 0;
+            else
+                resto = 11 - resto;
+            digito = digito + resto.ToString();
+            return cpf.EndsWith(digito);
+        }
 
         public static string GenerateToken(Models.dto.auth.AuthDto auth, string _secret)
         {

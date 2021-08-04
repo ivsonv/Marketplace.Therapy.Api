@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Marketplace.Infra.Migrations
 {
     [DbContext(typeof(MarketPlaceContext))]
-    [Migration("20210803190522_initials")]
+    [Migration("20210804161041_initials")]
     partial class initials
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -35,6 +35,9 @@ namespace Marketplace.Infra.Migrations
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<int>("customer_id")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("origin")
                         .HasColumnType("integer");
 
                     b.Property<int>("payment_status")
@@ -301,8 +304,8 @@ namespace Marketplace.Infra.Migrations
                     b.Property<int>("interval_between_appointment")
                         .HasColumnType("integer");
 
-                    b.Property<int>("origin")
-                        .HasColumnType("integer");
+                    b.Property<string>("nickname")
+                        .HasColumnType("text");
 
                     b.Property<string>("password")
                         .HasColumnType("text");

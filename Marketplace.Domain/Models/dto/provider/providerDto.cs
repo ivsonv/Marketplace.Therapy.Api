@@ -5,6 +5,7 @@ namespace Marketplace.Domain.Models.dto.provider
     {
         public int? id { get; set; }
 
+        public string nickname { get; set; } = null;
         public string fantasy_name { get; set; } = null;
         public string company_name { get; set; } = null;
         public string email { get; set; } = null;
