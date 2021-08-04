@@ -45,7 +45,7 @@ namespace Marketplace.Api
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Marketplace Clique Terapia", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Clique Terapia API", Version = "v1" });
             });
 
             // remover do retorno null e variaveis vazias
@@ -162,7 +162,7 @@ namespace Marketplace.Api
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Marketplace Api v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Services API v1"));
             }
 
             app.UseHttpsRedirection();
