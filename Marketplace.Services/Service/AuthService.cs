@@ -2,8 +2,10 @@
 using Marketplace.Domain.Interface.Marketplace;
 using Marketplace.Domain.Models.dto.customer;
 using Marketplace.Domain.Models.Request.auth.customer;
+using Marketplace.Domain.Models.Request.auth.provider;
 using Marketplace.Domain.Models.Response;
 using Marketplace.Domain.Models.Response.auth.customer;
+using Marketplace.Domain.Models.Response.auth.provider;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -14,14 +16,17 @@ namespace Marketplace.Services.Service
     {
         private readonly Validators.CustomerAuthValidator _validator;
         private readonly ICustomerRepository _customerRepository;
+        private readonly IProviderRepository _providerRepository;
         private readonly IConfiguration _configuration;
         private readonly EmailService _emailService;
 
         public AuthService(Validators.CustomerAuthValidator validator,
                            ICustomerRepository customerRepository,
+                           IProviderRepository providerRepository,
                            IConfiguration configuration,
                            EmailService emailService)
         {
+            _providerRepository = providerRepository;
             _customerRepository = customerRepository;
             _configuration = configuration;
             _emailService = emailService;
@@ -70,7 +75,6 @@ namespace Marketplace.Services.Service
             catch (System.Exception ex) { _res.setError(ex); }
             return _res;
         }
-
         public async Task<BaseRs<bool>> CustomerResetPassword(customerAuthRq auth)
         {
             var _res = new BaseRs<bool>();
@@ -113,7 +117,6 @@ namespace Marketplace.Services.Service
             catch (System.Exception ex) { _res.setError(ex); }
             return _res;
         }
-
         public async Task<BaseRs<bool>> CustomerUpdatePassword(customerAuthRq auth)
         {
             var _res = new BaseRs<bool>();
@@ -162,5 +165,140 @@ namespace Marketplace.Services.Service
             catch (System.Exception ex) { _res.setError(ex); }
             return _res;
         }
+
+        public async Task<BaseRs<providerAuthRs>> Provider(providerAuthRq auth)
+        {
+            var _res = new BaseRs<providerAuthRs>();
+            try
+            {
+                //_res.error = _validator.Check(auth);
+                //if (_res.error == null)
+                //{
+                //    var _customer = await _customerRepository.FindAuthByEmail(auth.login.IsCompare());
+                //    if (_customer == null)
+                //    {
+                //        _res.setError("Usuário/senha informado não existe.");
+                //        return _res;
+                //    }
+
+                //    if (_customer.password != auth.password.createHash())
+                //    {
+                //        _res.setError("Usuário/Senha informado não existe.");
+                //        return _res;
+                //    }
+
+                //    var dto = new Domain.Models.dto.auth.AuthDto()
+                //    {
+                //        id = _customer.id,
+                //        name = _customer.name,
+                //        //rules = new List<string>() { Enumerados.UserRule.customer.ToString() }
+                //    };
+
+                //    _res.content = new customerAuthRs()
+                //    {
+                //        accessToken = CustomExtensions.GenerateToken(dto, _configuration["secrets:signingkey"]),
+                //        data = new Domain.Models.Response.auth.AuthData()
+                //        {
+                //            fullName = dto.name,
+                //            rules = dto.rules,
+                //            id = dto.id
+                //        }
+                //    };
+                //}
+            }
+            catch (System.Exception ex) { _res.setError(ex); }
+            return _res;
+        }
+        public async Task<BaseRs<bool>> ProviderResetPassword(providerAuthRq auth)
+        {
+            var _res = new BaseRs<bool>();
+            try
+            {
+                if (auth.login.IsEmail())
+                {
+                    var _provider = await _providerRepository.FindByEmail(auth.login);
+                    if (_provider != null)
+                    {
+                        // tem solicitação anterior
+                        //if (!_provider.recoverpassword.IsEmpty())
+                        //{
+                        //    // solicitação ainda e valid ?
+                        //    if (_provider.recoverpassword.Split('_')[1].toDate() < CustomExtensions.DateNow)
+                        //    {
+                        //        //token invalido, gerar novo
+                        //        _provider.recoverpassword = $"{CustomExtensions.getGuid}_{CustomExtensions.DateNow.AddHours(1)}";
+                        //        await _customerRepository.Update(_provider);
+                        //    }
+                        //}
+                        //else
+                        //{
+                        //    //Gerar novo
+                        //    _provider.recoverpassword = $"{CustomExtensions.getGuid}_{CustomExtensions.DateNow.AddHours(1)}";
+                        //    await _customerRepository.Update(_provider);
+                        //}
+
+                        //_emailService.sendResetPassword(new customerDto()
+                        //{
+                        //    name = _provider.fantasy_name,
+                        //    email = _provider.email,
+                        //}, _provider.recoverpassword.Split('_')[0]);
+
+                        //
+                        _res.content = true;
+                    }
+                }
+            }
+            catch (System.Exception ex) { _res.setError(ex); }
+            return _res;
+        }
+        public async Task<BaseRs<bool>> ProviderUpdatePassword(providerAuthRq auth)
+        {
+            var _res = new BaseRs<bool>();
+            try
+            {
+                //_res.error = _validator.Check(auth);
+                if (_res.error == null)
+                {
+                    if (auth.token.IsEmpty())
+                    {
+                        _res.setError("Token do usuário e obrigatorio");
+                        return _res;
+                    }
+
+                    //var _provider = await _providerRepository.FindByEmail(auth.login);
+                    //if (_provider != null && !_provider.recoverpassword.IsEmpty())
+                    //{
+                    //    string tokenUser = _provider.recoverpassword.Split('_')[0];
+                    //    string valid_at = _provider.recoverpassword.Split('_')[1];
+
+                    //    if (tokenUser != auth.token)
+                    //    {
+                    //        _res.setError("Token do usuário não pode ser usado.");
+                    //        return _res;
+                    //    }
+
+                    //    if (valid_at.toDate() < CustomExtensions.DateNow)
+                    //    {
+                    //        _res.setError("Token fornecido não tem mais validade.");
+                    //        return _res;
+                    //    }
+
+                    //    _provider.password = auth.password.createHash();
+                    //    _provider.recoverpassword = null;
+                    //    await _providerRepository.Update(_provider);
+
+                    //    //
+                    //    _res.content = true;
+                    //}
+                    //else
+                    //{
+                    //    _res.setError("Solicitação não pode ser processada.");
+                    //}
+                }
+            }
+            catch (System.Exception ex) { _res.setError(ex); }
+            return _res;
+        }
+
     }
 }
