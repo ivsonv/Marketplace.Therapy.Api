@@ -6,8 +6,13 @@ namespace Marketplace.Infra.Context
 {
     public class MarketPlaceContext : DbContext
     {
-        public MarketPlaceContext(DbContextOptions<MarketPlaceContext> options) : base(options) { }
-        
+        public MarketPlaceContext(DbContextOptions<MarketPlaceContext> options) : base(options)
+        {
+            base.ChangeTracker.LazyLoadingEnabled = false;
+        }
+
+        public DbSet<User> Users { get; set; }
+        public DbSet<GroupPermission> GroupPermissions { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<CustomerAddress> CustomerAddress { get; set; }
@@ -18,6 +23,11 @@ namespace Marketplace.Infra.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<GroupPermission>(new GroupPermissionMap().Configure);
+            modelBuilder.Entity<GroupPermissionAttached>(new GroupPermissionAttachedMap().Configure);
+            modelBuilder.Entity<User>(new UserMap().Configure);
+            modelBuilder.Entity<UserGroupPermission>(new UserGroupPermissionMap().Configure);
+
             modelBuilder.Entity<Category>(new CategoryMap().Configure);
             modelBuilder.Entity<Customer>(new CustomerMap().Configure);
             modelBuilder.Entity<Language>(new LanguageMap().Configure);

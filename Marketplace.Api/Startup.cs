@@ -87,6 +87,8 @@ namespace Marketplace.Api
             services.AddTransient<IProviderRepository, ProviderRepository>();
             services.AddTransient<ILanguageRepository, LanguageRepository>();
             services.AddTransient<ITopicRepository, TopicRepository>();
+            services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IGroupPermissionRepository, GroupPermissionRepository>();
 
             // services
             services.AddScoped<CategoryService>();
@@ -97,6 +99,8 @@ namespace Marketplace.Api
             services.AddScoped<EmailService>();
             services.AddScoped<TopicService>();
             services.AddScoped<AuthService>();
+            services.AddScoped<GroupPermissionService>();
+            services.AddScoped<UserService>();
 
             // validator
             services.AddSingleton<Services.Validators.CustomerValidator>();
@@ -110,6 +114,8 @@ namespace Marketplace.Api
                 mc.AddProfile(new MappingBase());
                 mc.AddProfile(new MappingCustomers());
                 mc.AddProfile(new MappingProvider());
+                mc.AddProfile(new MappingGroupPermission());
+                mc.AddProfile(new MappingUsers());
             });
             services.AddSingleton(mappingConfig.CreateMapper());
             #endregion

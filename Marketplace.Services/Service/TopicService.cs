@@ -23,8 +23,8 @@ namespace Marketplace.Services.Service
             var _res = new BaseRs<List<topicRs>>();
             try
             {
-                var categories = await _topicRepository.Show(_request.pagination);
-                _res.content = categories.ConvertAll(cc => new topicRs() { id = cc.id, name = cc.name, active = cc.active });
+                var lst = await _topicRepository.Show(_request.pagination);
+                _res.content = lst.ConvertAll(cc => new topicRs() { id = cc.id, name = cc.name, active = cc.active });
             }
             catch (System.Exception ex) { _res.setError(ex); }
             return _res;
