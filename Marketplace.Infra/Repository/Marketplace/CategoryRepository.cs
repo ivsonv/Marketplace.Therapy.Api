@@ -51,5 +51,10 @@ namespace Marketplace.Infra.Repository.Marketplace
         {
             return await _repository.Find(id);
         }
+
+        public Task<List<Category>> Show(Pagination pagination, string seach = "")
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

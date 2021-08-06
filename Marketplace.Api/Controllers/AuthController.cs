@@ -42,5 +42,17 @@ namespace Marketplace.Api.Controllers
         [HttpPut("provider/update-password")]
         public async Task<BaseRs<bool>> ProviderUpdatePassword([FromBody] providerAuthRq _request)
             => await _authService.ProviderUpdatePassword(_request);
+
+        [HttpPost("admin")]
+        public async Task<BaseRs<providerAuthRs>> AdminAuth([FromBody] providerAuthRq login)
+            => await _authService.Admin(login);
+
+        //[HttpPost("provider/reset")]
+        //public async Task<BaseRs<bool>> ProviderResetPassword([FromBody] providerAuthRq login)
+        //    => await _authService.ProviderResetPassword(login);
+
+        //[HttpPut("provider/update-password")]
+        //public async Task<BaseRs<bool>> ProviderUpdatePassword([FromBody] providerAuthRq _request)
+        //    => await _authService.ProviderUpdatePassword(_request);
     }
 }

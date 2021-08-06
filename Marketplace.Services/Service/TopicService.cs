@@ -1,6 +1,7 @@
 ﻿using Marketplace.Domain.Interface.Marketplace;
 using Marketplace.Domain.Models.Request;
 using Marketplace.Domain.Models.Request.languages;
+using Marketplace.Domain.Models.Request.topics;
 using Marketplace.Domain.Models.Response;
 using Marketplace.Domain.Models.Response.languages;
 using Marketplace.Domain.Models.Response.topics;
@@ -23,7 +24,7 @@ namespace Marketplace.Services.Service
             var _res = new BaseRs<List<topicRs>>();
             try
             {
-                var lst = await _topicRepository.Show(_request.pagination);
+                var lst = await _topicRepository.Show(_request.pagination, _request.search);
                 _res.content = lst.ConvertAll(cc => new topicRs() { id = cc.id, name = cc.name, active = cc.active });
             }
             catch (System.Exception ex) { _res.setError(ex); }

@@ -16,6 +16,7 @@ namespace Marketplace.Domain.Helpers
     public static class CustomExtensions
     {
         public static bool IsEmpty<T>(this List<T> lst) => (lst == null || !lst.Any());
+        public static bool IsEmpty<T>(this  IEnumerable<T> lst) => (lst == null || !lst.Any());
         public static bool IsEmpty(this string vl) => string.IsNullOrWhiteSpace(vl);
         public static bool IsNotEmpty(this string vl) => !string.IsNullOrWhiteSpace(vl);
         public static bool IsEmpty(this IFormFile vl) => vl == null || vl.Length <= 0;
@@ -151,16 +152,14 @@ namespace Marketplace.Domain.Helpers
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
-                Expires = CustomExtensions.DateNow.AddDays(1),
+                Expires = CustomExtensions.DateNow.AddMonths(1),
                 Subject = new ClaimsIdentity()
             };
             tokenDescriptor.Subject.AddClaim(new Claim(ClaimTypes.UserData, auth.Serialize()));
 
             // perfis
-            auth.rules.ForEach(role =>
-            {
-                tokenDescriptor.Subject.AddClaim(new Claim(ClaimTypes.Role, role.ToString()));
-            });
+            //foreach (var item in auth.rules)
+            //    tokenDescriptor.Subject.AddClaim(new Claim(ClaimTypes.Role, item));
 
             return tokenHandler.WriteToken(tokenHandler.CreateToken(tokenDescriptor));
         }

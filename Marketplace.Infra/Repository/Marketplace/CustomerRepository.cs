@@ -67,5 +67,10 @@ namespace Marketplace.Infra.Repository.Marketplace
                     id = s.id
                 }).FirstOrDefaultAsync();
         }
+
+        public Task<List<Customer>> Show(Pagination pagination, string seach = "")
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

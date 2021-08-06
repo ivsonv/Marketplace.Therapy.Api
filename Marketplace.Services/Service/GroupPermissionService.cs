@@ -6,6 +6,7 @@ using Marketplace.Domain.Models.Response;
 using Marketplace.Domain.Models.Response.groupPermissions;
 using Marketplace.Domain.Models.Response.topics;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Marketplace.Services.Service

@@ -1,7 +1,6 @@
 using Marketplace.Domain.Models.Request;
-using Marketplace.Domain.Models.Request.languages;
+using Marketplace.Domain.Models.Request.topics;
 using Marketplace.Domain.Models.Response;
-using Marketplace.Domain.Models.Response.languages;
 using Marketplace.Domain.Models.Response.topics;
 using Marketplace.Services.Service;
 using Microsoft.AspNetCore.Mvc;

@@ -6,7 +6,7 @@ namespace Marketplace.Domain.Models.dto.auth
     {
         public int id { get; set; }
         public string name { get; set; }
-        public List<string> rules { get; set; }
-
+        public IEnumerable<string> roles { get; set; }
+        public IEnumerable<int> permissions { get; set; }
     }
 }

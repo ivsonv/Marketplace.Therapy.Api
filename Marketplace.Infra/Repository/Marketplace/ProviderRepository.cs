@@ -83,5 +83,10 @@ namespace Marketplace.Infra.Repository.Marketplace
 
         public async Task<Provider> FindByCnpj(string cnpj)
             => await _repository.Query.FirstOrDefaultAsync(f => f.cnpj == cnpj);
+
+        public Task<List<Provider>> Show(Pagination pagination, string seach = "")
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

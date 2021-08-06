@@ -37,5 +37,8 @@ namespace Marketplace.Api.Controllers
         [HttpDelete("{id:int}")]
         public async Task<BaseRs<bool>> Delete([FromRoute] int id)
             => await _groupPermissionService.Delete(id);
+
+        [HttpGet("permissions")]
+        public dynamic ShowRoles() => Domain.Models.permissions.permission.GetPermissions();
     }
 }

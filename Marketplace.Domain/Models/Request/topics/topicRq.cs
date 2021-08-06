@@ -1,4 +1,4 @@
-﻿namespace Marketplace.Domain.Models.Request.languages
+﻿namespace Marketplace.Domain.Models.Request.topics
 {
     public class topicRq
     {

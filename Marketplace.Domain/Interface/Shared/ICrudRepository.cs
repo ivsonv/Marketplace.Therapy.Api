@@ -10,6 +10,7 @@ namespace Marketplace.Domain.Interface.Shared
         Task Update(T entity);
         Task Delete(T entity);
         Task<T> FindById(int id);
+        Task<List<T>> Show(Pagination pagination, string seach = "");
         Task<List<T>> Show(Pagination pagination);
     }
 }

@@ -82,13 +82,13 @@ namespace Marketplace.Api
             services.AddScoped<AmazonStorageClient>();
 
             // repositorio individual
-            services.AddTransient<ICategoryRepository, CategoryRepository>();
-            services.AddTransient<ICustomerRepository, CustomerRepository>();
-            services.AddTransient<IProviderRepository, ProviderRepository>();
-            services.AddTransient<ILanguageRepository, LanguageRepository>();
-            services.AddTransient<ITopicRepository, TopicRepository>();
-            services.AddTransient<IUserRepository, UserRepository>();
-            services.AddTransient<IGroupPermissionRepository, GroupPermissionRepository>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<ICustomerRepository, CustomerRepository>();
+            services.AddScoped<IProviderRepository, ProviderRepository>();
+            services.AddScoped<ILanguageRepository, LanguageRepository>();
+            services.AddScoped<ITopicRepository, TopicRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IGroupPermissionRepository, GroupPermissionRepository>();
 
             // services
             services.AddScoped<CategoryService>();
@@ -175,19 +175,15 @@ namespace Marketplace.Api
 
             app.UseRouting();
 
-            //app.UseCors(x => x
-            //    .AllowAnyOrigin()
-            //    .AllowAnyMethod()
-            //    .AllowAnyHeader());
+            app.UseCors(x => x
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader());
 
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
-
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
             app.UseResponseCompression();
         }
     }

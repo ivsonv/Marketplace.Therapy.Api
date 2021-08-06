@@ -8,6 +8,7 @@ using Marketplace.Domain.Models.Response.auth.customer;
 using Marketplace.Domain.Models.Response.auth.provider;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Marketplace.Services.Service
@@ -17,17 +18,20 @@ namespace Marketplace.Services.Service
         private readonly Validators.CustomerAuthValidator _validator;
         private readonly ICustomerRepository _customerRepository;
         private readonly IProviderRepository _providerRepository;
+        private readonly IUserRepository _userRepository;
         private readonly IConfiguration _configuration;
         private readonly EmailService _emailService;
 
         public AuthService(Validators.CustomerAuthValidator validator,
                            ICustomerRepository customerRepository,
                            IProviderRepository providerRepository,
+                           IUserRepository userRepository,
                            IConfiguration configuration,
                            EmailService emailService)
         {
             _providerRepository = providerRepository;
             _customerRepository = customerRepository;
+            _userRepository = userRepository;
             _configuration = configuration;
             _emailService = emailService;
             _validator = validator;
@@ -66,7 +70,7 @@ namespace Marketplace.Services.Service
                         data = new Domain.Models.Response.auth.AuthData()
                         {
                             fullName = dto.name,
-                            rules = dto.rules,
+                            roles = dto.roles,
                             id = dto.id
                         }
                     };
@@ -295,6 +299,66 @@ namespace Marketplace.Services.Service
                     //    _res.setError("Solicitação não pode ser processada.");
                     //}
                 }
+            }
+            catch (System.Exception ex) { _res.setError(ex); }
+            return _res;
+        }
+
+        //ADMIN
+        public async Task<BaseRs<providerAuthRs>> Admin(providerAuthRq auth)
+        {
+            var _res = new BaseRs<providerAuthRs>();
+            try
+            {
+                var _user = await _userRepository.FindAuthByEmail(auth.login.IsCompare());
+                if (_user == null)
+                {
+                    _res.setError("Usuário/senha informado não existe.");
+                    return _res;
+                }
+
+                if (!_user.active)
+                {
+                    _res.setError("Usuário inativo.");
+                    return _res;
+                }
+
+                if (_user.password != auth.password.createHash())
+                {
+                    _res.setError("Usuário/Senha informado não existe.");
+                    return _res;
+                }
+
+                if (_user.GroupPermissions.IsEmpty())
+                {
+                    _res.setError("Usuário/senha sem grupo de permissão.");
+                    return _res;
+                }
+
+                // permissões
+                var _permissions = _user.GroupPermissions.SelectMany(ss => ss.GroupPermission.PermissionsAttached)
+                                                         .Select(s => s.name).Distinct().ToList();
+
+                // dto token
+                var dto = new Domain.Models.dto.auth.AuthDto()
+                {
+                    permissions = _user.GroupPermissions.Select(s => s.group_permission_id),
+                    name = _user.name,
+                    id = _user.id,
+                    roles = null
+                };
+
+                // retorno
+                _res.content = new providerAuthRs()
+                {
+                    accessToken = CustomExtensions.GenerateToken(dto, _configuration["secrets:signingkey"]),
+                    data = new Domain.Models.Response.auth.AuthData()
+                    {
+                        roles = _permissions,
+                        fullName = dto.name,
+                        id = dto.id
+                    }
+                };
             }
             catch (System.Exception ex) { _res.setError(ex); }
             return _res;
