@@ -25,6 +25,10 @@ namespace Marketplace.Api.Controllers
         public async Task<BaseRs<providerRs>> Store([FromBody] BaseRq<providerRq> _request)
             => await _providerService.Store(_request);
 
+        [HttpGet("situations")]
+        public dynamic ShowSituations()
+            => _providerService.getSituations();
+
         //[HttpGet("{id:int}")]
         //public async Task<BaseRs<customerRs>> FindById([FromRoute] int id)
         //    => await _customerService.FindById(id);

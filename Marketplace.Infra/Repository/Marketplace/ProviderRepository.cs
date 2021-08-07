@@ -18,18 +18,31 @@ namespace Marketplace.Infra.Repository.Marketplace
         {
             _repository = repository;
         }
-
-        public async Task<List<Provider>> Show(Pagination pagination)
+        public async Task<List<Provider>> Show(Pagination pagination, string search = "")
         {
+            if (search != null)
+                search = search.ToLower().Clear();
             return await _repository.Get(order: o => o.id, pagination)
+                                    .Where(w => search.IsEmpty() ||
+                                           (w.fantasy_name != null && w.fantasy_name.ToLower().Contains(search) ||
+                                            w.email != null && w.email.ToLower().Contains(search) ||
+                                            w.cnpj != null && w.cnpj.ToLower().Contains(search) ||
+                                            w.cpf != null && w.cpf.ToLower().Contains(search)))
                                     .Select(s => new Provider()
                                     {
                                         fantasy_name = s.fantasy_name,
                                         company_name = s.company_name,
+                                        situation = s.situation,
                                         email = s.email,
                                         cnpj = s.cnpj,
+                                        cpf = s.cpf,
                                         id = s.id
                                     }).ToListAsync();
+        }
+
+        public async Task<List<Provider>> Show(Pagination pagination)
+        {
+            return await this.Show(pagination);
         }
 
         public async Task<Provider> FindById(int id)
@@ -83,10 +96,5 @@ namespace Marketplace.Infra.Repository.Marketplace
 
         public async Task<Provider> FindByCnpj(string cnpj)
             => await _repository.Query.FirstOrDefaultAsync(f => f.cnpj == cnpj);
-
-        public Task<List<Provider>> Show(Pagination pagination, string seach = "")
-        {
-            throw new System.NotImplementedException();
-        }
     }
 }

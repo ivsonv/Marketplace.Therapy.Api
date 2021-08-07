@@ -7,6 +7,7 @@ using Marketplace.Domain.Models.Request.provider;
 using Marketplace.Domain.Models.Response;
 using Marketplace.Domain.Models.Response.provider;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Marketplace.Services.Service
@@ -34,13 +35,16 @@ namespace Marketplace.Services.Service
             var _res = new BaseRs<providerRs>() { content = new providerRs() };
             try
             {
-                _res.content.provider = (await _providerRepository.Show(_request.pagination))
+                _res.content.provider = (await _providerRepository.Show(_request.pagination, _request.search))
                     .ConvertAll(s => new providerDto()
                     {
+                        ds_situation =  this.getSituations().First(f => f.value == ((int)s.situation).ToString()).label,
                         fantasy_name = s.fantasy_name,
                         company_name = s.company_name,
+                        situation = s.situation,
                         email = s.email,
                         cnpj = s.cnpj,
+                        cpf = s.cpf,
                         id = s.id
                     });
             }
@@ -114,6 +118,17 @@ namespace Marketplace.Services.Service
             }
             catch (System.Exception ex) { _res.setError(ex); }
             return _res;
+        }
+
+        public List<Domain.Models.dto.Item> getSituations()
+        {
+            return new List<Domain.Models.dto.Item>()
+            {
+                new Domain.Models.dto.Item() { label = "Aprovado", value = ((int)Enumerados.ProviderStatus.approved).ToString() },
+                new Domain.Models.dto.Item() { label = "Bloqueado", value = ((int)Enumerados.ProviderStatus.blocked).ToString() },
+                new Domain.Models.dto.Item() { label = "Pendente", value = ((int)Enumerados.ProviderStatus.pending).ToString() },
+                //new Domain.Models.dto.Item() { label = "Outros", value = ((int)Enumerados.ProviderStatus.others).ToString() },
+            };
         }
 
     }
