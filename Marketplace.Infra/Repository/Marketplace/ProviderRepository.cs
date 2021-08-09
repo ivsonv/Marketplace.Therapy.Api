@@ -12,32 +12,44 @@ namespace Marketplace.Infra.Repository.Marketplace
 {
     public class ProviderRepository : IProviderRepository
     {
+        private readonly BaseRepository<ProviderAddress> _repositoryProviderAddress;
         private readonly BaseRepository<Provider> _repository;
 
-        public ProviderRepository(BaseRepository<Provider> repository)
+        public ProviderRepository(BaseRepository<ProviderAddress> repositoryProviderAddress,
+                                  BaseRepository<Provider> repository)
         {
+            _repositoryProviderAddress = repositoryProviderAddress;
             _repository = repository;
         }
         public async Task<List<Provider>> Show(Pagination pagination, string search = "")
         {
-            if (search != null)
-                search = search.ToLower().Clear();
-            return await _repository.Get(order: o => o.id, pagination)
-                                    .Where(w => search.IsEmpty() ||
-                                           (w.fantasy_name != null && w.fantasy_name.ToLower().Contains(search) ||
-                                            w.email != null && w.email.ToLower().Contains(search) ||
-                                            w.cnpj != null && w.cnpj.ToLower().Contains(search) ||
-                                            w.cpf != null && w.cpf.ToLower().Contains(search)))
-                                    .Select(s => new Provider()
-                                    {
-                                        fantasy_name = s.fantasy_name,
-                                        company_name = s.company_name,
-                                        situation = s.situation,
-                                        email = s.email,
-                                        cnpj = s.cnpj,
-                                        cpf = s.cpf,
-                                        id = s.id
-                                    }).ToListAsync();
+            string name = search.Split('|')[0].Replace("null", "").ToLower().Clear();
+            int? situation = (search.Split('|')[1] != "-1") ? int.Parse(search.Split('|')[1]) : null;
+
+            var query = _repository.Get(order: o => o.id, pagination);
+
+            // filter name
+            if (name.IsNotEmpty())
+                query = query.Where(w => w.fantasy_name != null && w.fantasy_name.ToLower().Contains(name) ||
+                                         w.company_name != null && w.company_name.ToLower().Contains(name) ||
+                                         w.nickname != null && w.nickname.ToLower().Contains(name) ||
+                                         w.email != null && w.email.ToLower().Contains(name) ||
+                                         w.cnpj != null && w.cnpj.ToLower().Contains(name) ||
+                                         w.cpf != null && w.cpf.ToLower().Contains(name));
+            // filter situation
+            if (situation != null)
+                query = query.Where(w => (int)w.situation == situation);
+
+            return await query.Select(s => new Provider()
+            {
+                fantasy_name = s.fantasy_name,
+                company_name = s.company_name,
+                situation = s.situation,
+                email = s.email,
+                cnpj = s.cnpj,
+                cpf = s.cpf,
+                id = s.id
+            }).ToListAsync();
         }
 
         public async Task<List<Provider>> Show(Pagination pagination)
@@ -70,6 +82,50 @@ namespace Marketplace.Infra.Repository.Marketplace
         public async Task Update(Provider entity)
         {
             this.formatData(entity);
+
+            var _current = await this.FindById(entity.id);
+            if (_current != null)
+            {
+                _current.academic_training = entity.academic_training;
+                _current.company_name = entity.company_name;
+                _current.fantasy_name = entity.fantasy_name;
+                _current.biography = entity.biography;
+                _current.situation = entity.situation;
+                _current.nickname = entity.nickname;
+                _current.active = entity.active;
+                _current.phone = entity.phone;
+                _current.cnpj = entity.cnpj;
+                _current.cpf = entity.cpf;
+                _current.crp = entity.crp;
+                _current.email = entity.email;
+                _current.image = entity.image;
+                _current.curriculum = entity.curriculum;
+
+                //endereço
+                if (entity.Address != null)
+                    _current.Address = entity.Address;
+
+                #region ..: Idiomas :..
+
+                //var usersReceives = _current.Address.Select(s => s.group_permission_id).ToList();
+                //var usersCurrents = _current.GroupPermissions.Select(s => s.group_permission_id).ToList();
+                //var usersRemoves = usersCurrents.Where(w => !usersReceives.Contains(w)).ToList();
+                //if (usersRemoves.Any())
+                //{
+                //    var lst = _current.GroupPermissions.Where(w => usersRemoves.Contains(w.group_permission_id)).ToList();
+                //    _repositoryUserGroupPermission.RemoveRange(lst);
+                //    await _repositoryUserGroupPermission.SaveChanges();
+                //}
+
+                //usersReceives = usersReceives.Where(w => !usersCurrents.Contains(w)).ToList();
+                //if (usersReceives.Any())
+                //    _current.GroupPermissions = usersReceives.ConvertAll(c
+                //        => new UserGroupPermission()
+                //        {
+                //            group_permission_id = c
+                //        });
+                #endregion
+            }
 
             _repository.Update(entity);
             await _repository.SaveChanges();

@@ -38,7 +38,7 @@ namespace Marketplace.Services.Service
                 _res.content.provider = (await _providerRepository.Show(_request.pagination, _request.search))
                     .ConvertAll(s => new providerDto()
                     {
-                        ds_situation =  this.getSituations().First(f => f.value == ((int)s.situation).ToString()).label,
+                        ds_situation = this.getSituations().First(f => f.value == ((int)s.situation).ToString()).label,
                         fantasy_name = s.fantasy_name,
                         company_name = s.company_name,
                         situation = s.situation,
@@ -95,6 +95,7 @@ namespace Marketplace.Services.Service
                     var entity = _mapper.Map<Domain.Entities.Provider>(_request.data);
                     entity.situation = Enumerados.ProviderStatus.pending;
                     entity.password = entity.password.createHash();
+                    entity.remove = false;
 
                     await _providerRepository.Create(entity);
                     _emailService.sendWelcome(_request.data);
@@ -108,13 +109,64 @@ namespace Marketplace.Services.Service
             return _res;
         }
 
+        public async Task<BaseRs<providerRs>> Update(BaseRq<providerRq> _request)
+        {
+            var _res = new BaseRs<providerRs>();
+            try
+            {
+                #region ..: pré validations :..
+
+                _request.data.phone = _request.data.phone.clearMask().Replace(" ", "");
+                _request.data.email = _request.data.email.IsCompare();
+                _request.data.cnpj = _request.data.cnpj.clearMask();
+                _request.data.cpf = _request.data.cpf.clearMask();
+
+                if (!_request.data.cpf.IsEmpty())
+                    if (!_request.data.cpf.IsCpf())
+                        _res.error = new BaseError(new List<string> { "CPF informado não e válido." });
+
+                if (!_request.data.cnpj.IsEmpty())
+                    if (!_request.data.cnpj.IsCnpj())
+                        _res.error = new BaseError(new List<string> { "CNPJ informado não e válido." });
+
+                if (_res.error == null)
+                    _res.error = _validator.Check(_request);
+                #endregion
+
+                if (_res.error == null)
+                {
+                    if (!_request.data.address.IsEmpty())
+                    {
+                        // address
+                        _request.data.address.ForEach(fe => { fe.zipcode = fe.zipcode.clearMask(); });
+
+                        // não enviar para repositorio endereços incompletos
+                        if(_request.data.address.Any(a => a.zipcode.IsEmpty()))
+                        {
+                            _request.data.address = _request.data.address.Where(w => !w.zipcode.IsEmpty()).ToList();
+                            if (!_request.data.address.Any())
+                                _request.data.address = null;
+                        }
+                    }
+
+                    // dados
+                    var entity = _mapper.Map<Domain.Entities.Provider>(_request.data);
+                    await _providerRepository.Update(entity);
+                }
+            }
+            catch (System.Exception ex) { _res.setError(ex); }
+            return _res;
+        }
+
         public async Task<BaseRs<providerRs>> FindById(int id)
         {
             var _res = new BaseRs<providerRs>() { content = new providerRs() };
             try
             {
-                var entity = await _providerRepository.FindById(id);
-                _res.content.provider.Add(_mapper.Map<providerDto>(entity));
+                var dto = _mapper.Map<providerDto>(await _providerRepository.FindById(id));
+                dto.ds_situation = this.getSituations().First(f => f.value == ((int)dto.situation).ToString()).label;
+
+                _res.content.provider.Add(dto);
             }
             catch (System.Exception ex) { _res.setError(ex); }
             return _res;

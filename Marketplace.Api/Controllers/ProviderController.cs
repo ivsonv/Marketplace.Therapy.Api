@@ -29,13 +29,13 @@ namespace Marketplace.Api.Controllers
         public dynamic ShowSituations()
             => _providerService.getSituations();
 
-        //[HttpGet("{id:int}")]
-        //public async Task<BaseRs<customerRs>> FindById([FromRoute] int id)
-        //    => await _customerService.FindById(id);
+        [HttpGet("{id:int}")]
+        public async Task<BaseRs<providerRs>> FindById([FromRoute] int id)
+            => await _providerService.FindById(id);
 
-        //[HttpPut]
-        //public async Task<BaseRs<customerRs>> Update([FromBody] BaseRq<customerRq> _request)
-        //    => await _customerService.Update(_request);
+        [HttpPut]
+        public async Task<BaseRs<providerRs>> Update([FromBody] BaseRq<providerRq> _request)
+            => await _providerService.Update(_request);
 
         //[HttpDelete("{id:int}")]
         //public async Task<BaseRs<bool>> Delete([FromRoute] int id)

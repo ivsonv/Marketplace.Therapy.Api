@@ -16,7 +16,7 @@ namespace Marketplace.Domain.Helpers
     public static class CustomExtensions
     {
         public static bool IsEmpty<T>(this List<T> lst) => (lst == null || !lst.Any());
-        public static bool IsEmpty<T>(this  IEnumerable<T> lst) => (lst == null || !lst.Any());
+        public static bool IsEmpty<T>(this IEnumerable<T> lst) => (lst == null || !lst.Any());
         public static bool IsEmpty(this string vl) => string.IsNullOrWhiteSpace(vl);
         public static bool IsNotEmpty(this string vl) => !string.IsNullOrWhiteSpace(vl);
         public static bool IsEmpty(this IFormFile vl) => vl == null || vl.Length <= 0;
@@ -38,6 +38,8 @@ namespace Marketplace.Domain.Helpers
             }
         }
         public static string IsCompare(this string vl) => RemoveAccents(vl).ToLower().Trim();
+        public static string clearMask(this string vl) => vl.IsNotEmpty() ? vl.Replace(".", "").Replace(",", "").Replace("-", "").Replace("/", "").Replace("(", "").Replace(")", "").Trim() : null;
+
         public static string Clear(this string vl) => RemoveAccents(vl).Trim();
 
         public static string createHash(this string str)
