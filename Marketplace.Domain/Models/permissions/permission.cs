@@ -14,7 +14,30 @@ namespace Marketplace.Domain.Models.permissions
             _retorno.AddRange(Provider.permissions);
             _retorno.AddRange(Customer.permissions);
             _retorno.AddRange(Reports.permissions);
+            _retorno.AddRange(Bank.permissions);
             return _retorno;
+        }
+
+        public static class Bank
+        {
+            public const string View = "bank.view";
+            public const string Create = "bank.create";
+            public const string Edit = "bank.edit";
+            public const string Delete = "bank.delete";
+
+            public static List<dto.Item> permissions
+            {
+                get
+                {
+                    return new List<dto.Item>()
+                    {
+                        new dto.Item() {label = "Visualizar Bancos", value = View },
+                        new dto.Item() {label = "Criar Bancos", value = Create },
+                        new dto.Item() {label = "Editar Bancos", value = Edit },
+                        new dto.Item() {label = "Excluir Bancos", value = Delete }
+                    };
+                }
+            }
         }
 
         public static class Reports

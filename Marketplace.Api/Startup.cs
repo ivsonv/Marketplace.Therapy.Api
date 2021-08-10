@@ -89,6 +89,7 @@ namespace Marketplace.Api
             services.AddScoped<ITopicRepository, TopicRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IGroupPermissionRepository, GroupPermissionRepository>();
+            services.AddScoped<IBankRepository, BankRepository>();
 
             // services
             services.AddScoped<CategoryService>();
@@ -101,6 +102,7 @@ namespace Marketplace.Api
             services.AddScoped<AuthService>();
             services.AddScoped<GroupPermissionService>();
             services.AddScoped<UserService>();
+            services.AddScoped<BankService>();
 
             // validator
             services.AddSingleton<Services.Validators.CustomerValidator>();

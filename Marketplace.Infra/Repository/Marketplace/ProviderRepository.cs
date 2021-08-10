@@ -130,7 +130,6 @@ namespace Marketplace.Infra.Repository.Marketplace
             _repository.Update(entity);
             await _repository.SaveChanges();
         }
-
         public async Task Delete(Provider entity)
         {
             _repository.Remove(entity);
@@ -146,10 +145,8 @@ namespace Marketplace.Infra.Repository.Marketplace
                       id = s.id
                   }).FirstOrDefaultAsync();
         }
-
         public async Task<Provider> FindByEmail(string email)
             => await _repository.Query.FirstOrDefaultAsync(f => f.email == email);
-
         public async Task<Provider> FindByCnpj(string cnpj)
             => await _repository.Query.FirstOrDefaultAsync(f => f.cnpj == cnpj);
     }
