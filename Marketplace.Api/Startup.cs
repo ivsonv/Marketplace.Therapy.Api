@@ -1,10 +1,12 @@
 using AutoMapper;
+using Marketplace.Domain.Interface.Integrations.caching;
 using Marketplace.Domain.Interface.Integrations.Email;
 using Marketplace.Domain.Interface.Integrations.Locality;
 using Marketplace.Domain.Interface.Integrations.Payment;
 using Marketplace.Domain.Interface.Integrations.Storage;
 using Marketplace.Domain.Interface.Marketplace;
 using Marketplace.Domain.Profiles.Markplace;
+using Marketplace.Infra.caching;
 using Marketplace.Infra.Context;
 using Marketplace.Infra.Repository;
 using Marketplace.Infra.Repository.Marketplace;
@@ -63,7 +65,6 @@ namespace Marketplace.Api
                 options.EnableForHttps = true;
             });
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
             services.AddDbContext<MarketPlaceContext>(opt =>
                      opt.UseNpgsql(
                          _configuration["connectionstrings:database"],
@@ -79,6 +80,7 @@ namespace Marketplace.Api
             services.AddTransient<IPayment, PaymentIntegrations>();
 
             // integrations individual Storage
+            services.AddScoped<ICustomCache, CacheApp>();
             services.AddScoped<AmazonStorageClient>();
 
             // repositorio individual

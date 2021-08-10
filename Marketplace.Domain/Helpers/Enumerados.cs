@@ -2,6 +2,12 @@
 {
     public static class Enumerados
     {
+        public enum AccountBankType
+        {
+            contaCorrente = 0,
+            contaPoupanca = 1,
+            contaPagamento = 2
+        }
         public enum PaymentStatus
         {
             pending = 0,

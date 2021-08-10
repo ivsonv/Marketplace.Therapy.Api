@@ -37,5 +37,8 @@ namespace Marketplace.Api.Controllers
         [HttpDelete("{id:int}")]
         public async Task<BaseRs<bool>> Delete([FromRoute] int id)
             => await _bankService.Delete(id);
+
+        [HttpGet("account-types")]
+        public dynamic ShowSituations() => _bankService.getAccountTypes();
     }
 }

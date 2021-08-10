@@ -26,5 +26,7 @@ namespace Marketplace.Domain.Models.dto.provider
         public bool remove { get; set; }
         public Helpers.Enumerados.ProviderStatus? situation { get; set; } = null;
         public List<location.Address> address { get; set; } = null;
+
+        public List<Entities.ProviderBankAccount> bankAccounts { get; set; } = null;
     }
 }

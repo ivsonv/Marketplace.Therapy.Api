@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Marketplace.Domain.Helpers;
+using Marketplace.Domain.Interface.Integrations.caching;
 using Marketplace.Domain.Interface.Marketplace;
 using Marketplace.Domain.Models.dto.provider;
 using Marketplace.Domain.Models.Request;
@@ -18,16 +19,19 @@ namespace Marketplace.Services.Service
         private readonly Validators.ProviderValidator _validator;
         private readonly EmailService _emailService;
         private readonly IMapper _mapper;
+        private readonly ICustomCache _cache;
 
         public ProviderService(Validators.ProviderValidator validator,
                               IProviderRepository companyRepository,
                               EmailService emailService,
+                              ICustomCache cache,
                               IMapper mapper)
         {
             _providerRepository = companyRepository;
             _emailService = emailService;
             _validator = validator;
             _mapper = mapper;
+            _cache = cache;
         }
 
         public async Task<BaseRs<providerRs>> Show(BaseRq<providerRq> _request)
@@ -135,19 +139,33 @@ namespace Marketplace.Services.Service
 
                 if (_res.error == null)
                 {
+                    #region ..: endereço :..
                     if (!_request.data.address.IsEmpty())
                     {
                         // address
                         _request.data.address.ForEach(fe => { fe.zipcode = fe.zipcode.clearMask(); });
 
                         // não enviar para repositorio endereços incompletos
-                        if(_request.data.address.Any(a => a.zipcode.IsEmpty()))
+                        if (_request.data.address.Any(a => a.zipcode.IsEmpty()))
                         {
                             _request.data.address = _request.data.address.Where(w => !w.zipcode.IsEmpty()).ToList();
                             if (!_request.data.address.Any())
                                 _request.data.address = null;
                         }
                     }
+                    #endregion
+
+                    #region ..: dados bancarios :..
+                    if (!_request.data.bankAccounts.IsEmpty())
+                    {
+                        if (_request.data.bankAccounts.Any(a => a.bank_code.IsEmpty()))
+                        {
+                            _request.data.bankAccounts = _request.data.bankAccounts.Where(w => !w.bank_code.IsEmpty()).ToList();
+                            if (!_request.data.bankAccounts.Any())
+                                _request.data.bankAccounts = null;
+                        }
+                    }
+                    #endregion
 
                     // dados
                     var entity = _mapper.Map<Domain.Entities.Provider>(_request.data);
@@ -166,6 +184,13 @@ namespace Marketplace.Services.Service
                 var dto = _mapper.Map<providerDto>(await _providerRepository.FindById(id));
                 dto.ds_situation = this.getSituations().First(f => f.value == ((int)dto.situation).ToString()).label;
 
+                //banks
+                var _banks = await _cache.GetBanks();
+                dto.bankAccounts.ForEach(fe =>
+                {
+                    if (_banks.Any(a => a.code == fe.bank_code))
+                        fe.ds_bank = _banks.First(f => f.code == fe.bank_code).name;
+                });
                 _res.content.provider.Add(dto);
             }
             catch (System.Exception ex) { _res.setError(ex); }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using static Marketplace.Domain.Helpers.Enumerados;
 
 namespace Marketplace.Domain.Entities
 {
@@ -49,6 +50,10 @@ namespace Marketplace.Domain.Entities
         public string account_digit { get; set; }
         public string account_number { get; set; }
         public string bank_code { get; set; }
+
+        [NotMapped]
+        public string ds_bank { get; set; }
+        public AccountBankType account_bank_type { get; set; }
 
         public int provider_id { get; set; }
         public Provider Provider { get; set; }

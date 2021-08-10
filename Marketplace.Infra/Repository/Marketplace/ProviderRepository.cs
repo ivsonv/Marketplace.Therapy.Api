@@ -105,6 +105,10 @@ namespace Marketplace.Infra.Repository.Marketplace
                 if (entity.Address != null)
                     _current.Address = entity.Address;
 
+                // dados bancarios
+                if (entity.BankAccounts != null)
+                    _current.BankAccounts = entity.BankAccounts;
+
                 #region ..: Idiomas :..
 
                 //var usersReceives = _current.Address.Select(s => s.group_permission_id).ToList();
