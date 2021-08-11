@@ -58,5 +58,10 @@ namespace Marketplace.Infra.Repository.Marketplace
         {
             return await _repository.Find(id);
         }
+
+        public Task Delete(List<Bank> entity)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

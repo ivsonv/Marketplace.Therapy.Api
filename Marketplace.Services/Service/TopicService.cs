@@ -1,9 +1,8 @@
-﻿using Marketplace.Domain.Interface.Marketplace;
+﻿using Marketplace.Domain.Interface.Integrations.caching;
+using Marketplace.Domain.Interface.Marketplace;
 using Marketplace.Domain.Models.Request;
-using Marketplace.Domain.Models.Request.languages;
 using Marketplace.Domain.Models.Request.topics;
 using Marketplace.Domain.Models.Response;
-using Marketplace.Domain.Models.Response.languages;
 using Marketplace.Domain.Models.Response.topics;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -13,10 +12,13 @@ namespace Marketplace.Services.Service
     public class TopicService
     {
         private readonly ITopicRepository _topicRepository;
+        private readonly ICustomCache _cache;
 
-        public TopicService(ITopicRepository topicRepository)
+        public TopicService(ITopicRepository topicRepository,
+                            ICustomCache cache)
         {
             _topicRepository = topicRepository;
+            _cache = cache;
         }
 
         public async Task<BaseRs<List<topicRs>>> show(BaseRq<topicRq> _request)
@@ -25,6 +27,17 @@ namespace Marketplace.Services.Service
             try
             {
                 var lst = await _topicRepository.Show(_request.pagination, _request.search);
+                _res.content = lst.ConvertAll(cc => new topicRs() { id = cc.id, name = cc.name, active = cc.active });
+            }
+            catch (System.Exception ex) { _res.setError(ex); }
+            return _res;
+        }
+        public async Task<BaseRs<List<topicRs>>> showCache(BaseRq<topicRq> _request)
+        {
+            var _res = new BaseRs<List<topicRs>>();
+            try
+            {
+                var lst = await _topicRepository.ShowCache(_request.pagination, _request.search);
                 _res.content = lst.ConvertAll(cc => new topicRs() { id = cc.id, name = cc.name, active = cc.active });
             }
             catch (System.Exception ex) { _res.setError(ex); }

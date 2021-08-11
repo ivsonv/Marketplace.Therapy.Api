@@ -5,6 +5,9 @@ namespace Marketplace.Domain.Interface.Integrations.caching
 {
     public interface ICustomCache
     {
+        void Clear();
         Task<List<Entities.Bank>> GetBanks();
+        Task<List<Entities.Topic>> GetTopics();
+        Task<List<Entities.Language>> GetLanguages();
     }
 }

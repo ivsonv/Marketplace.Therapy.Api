@@ -184,6 +184,9 @@ namespace Marketplace.Services.Service
                 var dto = _mapper.Map<providerDto>(await _providerRepository.FindById(id));
                 dto.ds_situation = this.getSituations().First(f => f.value == ((int)dto.situation).ToString()).label;
 
+                if (!dto.languages.IsEmpty()) dto.languages.ForEach(fe => { fe.Provider = null; });
+                if (!dto.topics.IsEmpty()) dto.topics.ForEach(fe => { fe.Provider = null; });
+
                 //banks
                 var _banks = await _cache.GetBanks();
                 dto.bankAccounts.ForEach(fe =>

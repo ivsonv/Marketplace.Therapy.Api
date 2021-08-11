@@ -12,13 +12,16 @@ namespace Marketplace.Infra.Repository.Marketplace
 {
     public class ProviderRepository : IProviderRepository
     {
-        private readonly BaseRepository<ProviderAddress> _repositoryProviderAddress;
+        private readonly BaseRepository<ProviderLanguages> _repositoryLanguages;
+        private readonly BaseRepository<ProviderTopics> _repositoryTopics;
         private readonly BaseRepository<Provider> _repository;
 
-        public ProviderRepository(BaseRepository<ProviderAddress> repositoryProviderAddress,
+        public ProviderRepository(BaseRepository<ProviderLanguages> repositoryLanguages,
+                                  BaseRepository<ProviderTopics> repositoryTopics,
                                   BaseRepository<Provider> repository)
         {
-            _repositoryProviderAddress = repositoryProviderAddress;
+            _repositoryLanguages = repositoryLanguages;
+            _repositoryTopics = repositoryTopics;
             _repository = repository;
         }
         public async Task<List<Provider>> Show(Pagination pagination, string search = "")
@@ -62,6 +65,8 @@ namespace Marketplace.Infra.Repository.Marketplace
             return await _repository.Query
                                     .Include(i => i.Address)
                                     .Include(i => i.BankAccounts)
+                                    .Include(i => i.Languages)
+                                    .Include(i => i.Topics)
                                     .FirstOrDefaultAsync(f => f.id == id);
         }
 
@@ -111,27 +116,50 @@ namespace Marketplace.Infra.Repository.Marketplace
 
                 #region ..: Idiomas :..
 
-                //var usersReceives = _current.Address.Select(s => s.group_permission_id).ToList();
-                //var usersCurrents = _current.GroupPermissions.Select(s => s.group_permission_id).ToList();
-                //var usersRemoves = usersCurrents.Where(w => !usersReceives.Contains(w)).ToList();
-                //if (usersRemoves.Any())
-                //{
-                //    var lst = _current.GroupPermissions.Where(w => usersRemoves.Contains(w.group_permission_id)).ToList();
-                //    _repositoryUserGroupPermission.RemoveRange(lst);
-                //    await _repositoryUserGroupPermission.SaveChanges();
-                //}
+                var receives = entity.Languages.Select(s => s.language_id).ToList();
+                var lanCurrents = _current.Languages.Select(s => s.language_id).ToList();
+                var lanRemoves = lanCurrents.Where(w => !receives.Contains(w)).ToList();
+                if (lanRemoves.Any())
+                {
+                    var lst = _current.Languages.Where(w => lanRemoves.Contains(w.language_id)).ToList();
+                    _repositoryLanguages.RemoveRange(lst);
 
-                //usersReceives = usersReceives.Where(w => !usersCurrents.Contains(w)).ToList();
-                //if (usersReceives.Any())
-                //    _current.GroupPermissions = usersReceives.ConvertAll(c
-                //        => new UserGroupPermission()
-                //        {
-                //            group_permission_id = c
-                //        });
+                    _current.Languages = null;
+                }
+
+                receives = receives.Where(w => !lanCurrents.Contains(w)).ToList();
+                if (receives.Any())
+                    _current.Languages = receives.ConvertAll(c
+                        => new ProviderLanguages()
+                        {
+                            language_id = c
+                        });
+                #endregion
+
+                #region ..: Temas / Topics :..
+
+                receives = entity.Topics.Select(s => s.topic_id).ToList();
+                var topicsCurrents = _current.Topics.Select(s => s.topic_id).ToList();
+                var topicsRemoves = topicsCurrents.Where(w => !receives.Contains(w)).ToList();
+                if (topicsRemoves.Any())
+                {
+                    var lst = _current.Topics.Where(w => topicsRemoves.Contains(w.topic_id)).ToList();
+                    _repositoryTopics.RemoveRange(lst);
+
+                    _current.Topics = null;
+                }
+
+                receives = receives.Where(w => !topicsCurrents.Contains(w)).ToList();
+                if (receives.Any())
+                    _current.Topics = receives.ConvertAll(c
+                        => new ProviderTopics()
+                        {
+                            topic_id = c
+                        });
                 #endregion
             }
 
-            _repository.Update(entity);
+            _repository.Update(_current);
             await _repository.SaveChanges();
         }
         public async Task Delete(Provider entity)
@@ -153,5 +181,10 @@ namespace Marketplace.Infra.Repository.Marketplace
             => await _repository.Query.FirstOrDefaultAsync(f => f.email == email);
         public async Task<Provider> FindByCnpj(string cnpj)
             => await _repository.Query.FirstOrDefaultAsync(f => f.cnpj == cnpj);
+
+        public Task Delete(List<Provider> entity)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

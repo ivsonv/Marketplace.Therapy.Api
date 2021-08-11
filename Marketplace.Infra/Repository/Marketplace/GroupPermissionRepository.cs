@@ -98,5 +98,10 @@ namespace Marketplace.Infra.Repository.Marketplace
         {
             throw new System.NotImplementedException();
         }
+
+        public Task Delete(List<GroupPermission> entity)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

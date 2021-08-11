@@ -20,7 +20,7 @@ namespace Marketplace.Api.Controllers
 
         [HttpGet]
         public async Task<BaseRs<List<topicRs>>> Show([FromQuery] BaseRq<topicRq> _request)
-            => await _topicService.show(_request);
+            => await _topicService.showCache(_request);
 
         [HttpGet("{id:int}")]
         public async Task<BaseRs<topicRs>> FindById([FromRoute] int id)

@@ -13,6 +13,8 @@ namespace Marketplace.Infra.Context
 
         public DbSet<User> Users { get; set; }
         public DbSet<Bank> Banks { get; set; }
+        public DbSet<Topic> Topics { get; set; }
+        public DbSet<Language> Languages { get; set; }
         public DbSet<GroupPermission> GroupPermissions { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Customer> Customers { get; set; }

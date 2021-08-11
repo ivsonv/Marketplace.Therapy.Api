@@ -22,7 +22,7 @@ namespace Marketplace.Api.Controllers
 
         [HttpGet]
         public async Task<BaseRs<List<languageRs>>> Show([FromQuery] BaseRq<languageRq> _request)
-            => await _languageService.show(_request);
+            => await _languageService.showCache(_request);
 
         [HttpGet("{id:int}")]
         public async Task<BaseRs<languageRs>> FindById([FromRoute] int id)

@@ -29,6 +29,19 @@ namespace Marketplace.Services.Service
             return _res;
         }
 
+        public async Task<BaseRs<List<languageRs>>> showCache(BaseRq<languageRq> _request)
+        {
+            var _res = new BaseRs<List<languageRs>>();
+            try
+            {
+                var categories = await _languageRepository.ShowCache(_request.pagination);
+                _res.content = categories.ConvertAll(cc => new languageRs() { id = cc.id, name = cc.name, active = cc.active });
+            }
+            catch (System.Exception ex) { _res.setError(ex); }
+            return _res;
+        }
+
+
         public async Task<BaseRs<languageRs>> Store(BaseRq<languageRq> _request)
         {
             var _res = new BaseRs<languageRs>();
