@@ -86,6 +86,7 @@ namespace Marketplace.Domain.Models.permissions
             public const string Create = "provider.create";
             public const string Edit = "provider.edit";
             public const string Delete = "provider.delete";
+            public const string CreateMerchant = "provider.merchant.create";
 
             public static List<dto.Item> permissions
             {
@@ -93,6 +94,7 @@ namespace Marketplace.Domain.Models.permissions
                 {
                     return new List<dto.Item>()
                     {
+                        new dto.Item() {label = "Criar Estabelecimento", value = CreateMerchant },
                         new dto.Item() {label = "Visualizar Psicólogas", value = View },
                         new dto.Item() {label = "Criar Psicólogas", value = Create },
                         new dto.Item() {label = "Editar Psicólogas", value = Edit },

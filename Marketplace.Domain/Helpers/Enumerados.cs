@@ -6,7 +6,7 @@
         {
             contaCorrente = 0,
             contaPoupanca = 1,
-            contaPagamento = 2
+            contaPrePaga = 2
         }
         public enum PaymentStatus
         {
