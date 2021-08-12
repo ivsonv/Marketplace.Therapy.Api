@@ -2,6 +2,7 @@ using AutoMapper;
 using Marketplace.Domain.Interface.Integrations.caching;
 using Marketplace.Domain.Interface.Integrations.Email;
 using Marketplace.Domain.Interface.Integrations.Locality;
+using Marketplace.Domain.Interface.Integrations.Merchant;
 using Marketplace.Domain.Interface.Integrations.Payment;
 using Marketplace.Domain.Interface.Integrations.Storage;
 using Marketplace.Domain.Interface.Marketplace;
@@ -78,6 +79,7 @@ namespace Marketplace.Api
             services.AddTransient<IEmail, EmailIntegrations>();
             services.AddTransient<IStorage, StorageIntegrations>();
             services.AddTransient<IPayment, PaymentIntegrations>();
+            services.AddTransient<IMerchant, MerchantIntegrations>();
 
             // integrations individual Storage
             services.AddScoped<ICustomCache, CacheApp>();
@@ -105,6 +107,7 @@ namespace Marketplace.Api
             services.AddScoped<GroupPermissionService>();
             services.AddScoped<UserService>();
             services.AddScoped<BankService>();
+            services.AddScoped<MerchantService>();
 
             // validator
             services.AddSingleton<Services.Validators.CustomerValidator>();

@@ -67,6 +67,7 @@ namespace Marketplace.Infra.Repository.Marketplace
                                     .Include(i => i.BankAccounts)
                                     .Include(i => i.Languages)
                                     .Include(i => i.Topics)
+                                    .Include(i => i.SplitAccounts)
                                     .FirstOrDefaultAsync(f => f.id == id);
         }
 

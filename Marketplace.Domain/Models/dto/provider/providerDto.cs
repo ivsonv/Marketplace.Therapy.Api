@@ -30,5 +30,6 @@ namespace Marketplace.Domain.Models.dto.provider
         public List<Entities.ProviderBankAccount> bankAccounts { get; set; } = null;
         public List<Entities.ProviderLanguages> languages { get; set; } = null;
         public List<Entities.ProviderTopics> topics { get; set; } = null;
+        public List<Entities.ProviderSplitAccount> splitAccounts { get; set; } = null;
     }
 }

@@ -45,6 +45,7 @@ namespace Marketplace.Domain.Profiles.Markplace
                                                     })));
             CreateMap<List<Models.dto.location.Address>, List<Entities.ProviderAddress>>();
             CreateMap<Entities.shared.BaseAddress, Entities.ProviderAddress>();
+            CreateMap<Models.dto.provider.providerDto, Models.Request.provider.providerRq>();
         }
     }
 }

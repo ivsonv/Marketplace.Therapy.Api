@@ -63,7 +63,7 @@ namespace Marketplace.Domain.Entities
     {
         [Column(TypeName = "jsonb")]
         public string json { get; set; }
-        public Helpers.Enumerados.PaymentProvider payment_provider { get; set; }
+        public PaymentProvider payment_provider { get; set; }
 
         public int provider_id { get; set; }
         public Provider Provider { get; set; }
