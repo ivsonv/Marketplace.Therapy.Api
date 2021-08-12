@@ -108,6 +108,7 @@ namespace Marketplace.Api
             services.AddScoped<UserService>();
             services.AddScoped<BankService>();
             services.AddScoped<MerchantService>();
+            services.AddScoped<MarketplaceService>();
 
             // validator
             services.AddSingleton<Services.Validators.CustomerValidator>();

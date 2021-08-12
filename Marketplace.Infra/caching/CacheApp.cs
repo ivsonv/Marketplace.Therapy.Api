@@ -70,5 +70,47 @@ namespace Marketplace.Infra.caching
                                }).AsNoTracking().ToListAsync();
             });
         }
+
+        public async Task<List<Appointment>> GetAppointments()
+        {
+            return await _cache.GetOrCreateAsync("appointments", async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(_minutes);
+                return await _context.Appointments
+                               .Select(s => new Appointment()
+                               {
+                                   payment_status = s.payment_status,
+                                   booking_date = s.booking_date,
+                                   provider_id = s.provider_id,
+                                   id = s.id
+                               })
+                               .Where(w => w.payment_status == Domain.Helpers.Enumerados.PaymentStatus.confirmed)
+                               .Where(w => w.booking_date.AddMinutes(10) >= DateTime.UtcNow)
+                               .AsNoTracking().ToListAsync();
+            });
+        }
+        public async Task<List<Provider>> GetProviders()
+        {
+            return await _cache.GetOrCreateAsync("providers", async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(_minutes);
+                return await _context.Providers
+                               .Select(s => new Provider()
+                               {
+                                   Address = s.Address.Any() ?
+                                   new List<ProviderAddress>() { new ProviderAddress() { uf = s.Address[0].uf } }
+                                   : null,
+                                   fantasy_name = s.fantasy_name,
+                                   company_name = s.company_name,
+                                   biography = s.biography,
+                                   nickname = s.nickname,
+                                   price = s.price,
+                                   image = s.image,
+                                   crp = s.crp,
+                                   id = s.id
+                               }).AsNoTracking().ToListAsync();
+            });
+        }
+
     }
 }

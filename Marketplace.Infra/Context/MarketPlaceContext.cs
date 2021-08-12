@@ -19,6 +19,7 @@ namespace Marketplace.Infra.Context
         public DbSet<Category> Categories { get; set; }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<CustomerAddress> CustomerAddress { get; set; }
+        public DbSet<Appointment> Appointments { get; set; }
         public DbSet<Provider> Providers { get; set; }
         public DbSet<ProviderAddress> ProviderAddress { get; set; }
         public DbSet<ProviderBankAccount> ProviderBankAccounts { get; set; }

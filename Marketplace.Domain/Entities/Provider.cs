@@ -22,6 +22,7 @@ namespace Marketplace.Domain.Entities
         public string academic_training { get; set; }
         public int interval_between_appointment { get; set; }
         public string nickname { get; set; }
+        public decimal price { get; set; }
         public Helpers.Enumerados.ProviderStatus situation { get; set; }
 
         public bool active { get; set; }
