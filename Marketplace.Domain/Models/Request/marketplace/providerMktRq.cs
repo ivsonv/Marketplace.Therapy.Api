@@ -1,6 +1,6 @@
 ﻿namespace Marketplace.Domain.Models.Request.marketplace
 {
-    public class providerRq
+    public class providerMktRq
     {
         public string name { get; set; }
     }

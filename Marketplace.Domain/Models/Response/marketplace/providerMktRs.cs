@@ -1,6 +1,6 @@
 ﻿namespace Marketplace.Domain.Models.Response.marketplace
 {
-    public class providerRs
+    public class providerMktRs
     {
         public string name { get; set; }
         public string image { get; set; }

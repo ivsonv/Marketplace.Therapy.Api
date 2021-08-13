@@ -19,7 +19,7 @@ namespace Marketplace.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<BaseRs<List<providerRs>>> Show([FromQuery] providerRq _request)
+        public async Task<BaseRs<List<providerMktRs>>> Show([FromQuery] providerMktRq _request)
             => await _marketplaceService.ShowProviders(_request);
 
         //[HttpGet("{id:int}")]

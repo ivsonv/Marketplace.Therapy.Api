@@ -21,9 +21,9 @@ namespace Marketplace.Services.Service
             _cache = cache;
         }
 
-        public async Task<BaseRs<List<providerRs>>> ShowProviders(providerRq _request)
+        public async Task<BaseRs<List<providerMktRs>>> ShowProviders(providerMktRq _request)
         {
-            var _res = new BaseRs<List<providerRs>>();
+            var _res = new BaseRs<List<providerMktRs>>();
             try
             {
                 var list = await _cache.GetProviders();
@@ -35,7 +35,7 @@ namespace Marketplace.Services.Service
                                            ).ToList();
 
                 // list
-                _res.content = list.ConvertAll(x => new providerRs()
+                _res.content = list.ConvertAll(x => new providerMktRs()
                 {
                     name = x.nickname.IsNotEmpty() ? x.nickname : $"{x.fantasy_name} {x.company_name}",
                     image = x.image.toImageUrl(_configuration["storage:image"]),
