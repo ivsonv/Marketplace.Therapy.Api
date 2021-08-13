@@ -13,12 +13,12 @@ namespace Marketplace.Integrations.Storage
 
         public async Task RemoveFile(FileDto fileDto)
         {
-            await _storageAmazon.Upload(fileDto);
+            await _storageAmazon.Remove(fileDto);
         }
 
         public async Task UploadFile(FileDto fileDto)
         {
-            await _storageAmazon.Remove(fileDto);
+            await _storageAmazon.Upload(fileDto);
         }
     }
 }

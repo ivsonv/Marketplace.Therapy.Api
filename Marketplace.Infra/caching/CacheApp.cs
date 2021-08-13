@@ -85,7 +85,7 @@ namespace Marketplace.Infra.caching
                                    id = s.id
                                })
                                .Where(w => w.payment_status == Domain.Helpers.Enumerados.PaymentStatus.confirmed)
-                               .Where(w => w.booking_date.AddMinutes(10) >= DateTime.UtcNow)
+                               .Where(w => w.booking_date >= DateTime.UtcNow)
                                .AsNoTracking().ToListAsync();
             });
         }
@@ -97,9 +97,9 @@ namespace Marketplace.Infra.caching
                 return await _context.Providers
                                .Select(s => new Provider()
                                {
-                                   Address = s.Address.Any() ?
-                                   new List<ProviderAddress>() { new ProviderAddress() { uf = s.Address[0].uf } }
-                                   : null,
+                                   Languages = s.Languages.Any() ? s.Languages.Select(tt => new ProviderLanguages() { id = tt.id }) : null,
+                                   Address = s.Address.Any() ? s.Address.Select(tt => new ProviderAddress() { uf = tt.uf }) : null,
+                                   Topics = s.Topics.Any() ? s.Topics.Select(tt => new ProviderTopics() { id = tt.id }) : null,
                                    fantasy_name = s.fantasy_name,
                                    company_name = s.company_name,
                                    biography = s.biography,
@@ -111,6 +111,5 @@ namespace Marketplace.Infra.caching
                                }).AsNoTracking().ToListAsync();
             });
         }
-
     }
 }

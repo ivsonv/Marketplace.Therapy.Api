@@ -1,5 +1,7 @@
 ﻿#### MIGRTIONS ####
-1 - Ferramentas > gerenciador de pacotes > configuração gerenciador de pacotes > Geral > Limpar Todos os Caches Nuget
-2 - Install-Package Microsoft.EntityFrameworkCore.Tools
-3 - Add-Migration initials -Project Marketplace.Infra
-4 - Update-Database
+1 - 
+2 - Ferramentas > gerenciador de pacotes > configuração gerenciador de pacotes > Geral > Limpar Todos os Caches Nuget
+3 - Install-Package Microsoft.EntityFrameworkCore.Tools
+    -- console do gerenciador de Pacotes
+4 - Add-Migration initials -Project Marketplace.Infra
+5 - Update-Database

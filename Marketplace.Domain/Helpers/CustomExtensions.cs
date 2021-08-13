@@ -23,6 +23,17 @@ namespace Marketplace.Domain.Helpers
         public static bool IsNumber(this string vl) => int.TryParse(vl, out int ss);
         public static int ToInt(this string vl) => int.Parse(vl);
         public static DateTime toDate(this string vl) => DateTime.Parse(vl);
+        public static string toImageUrl(this string str, string urlPrefix)
+        {
+            if (str != null)
+                str = str.Replace(urlPrefix, "");
+
+            if (!str.IsEmpty() && str.Contains("http"))
+                return string.Format("{0}", str);
+            else
+                return str.IsNotEmpty()
+                    ? string.Format("{0}{1}", urlPrefix, str) : null;
+        }
 
         public static DateTime DateNow
         {

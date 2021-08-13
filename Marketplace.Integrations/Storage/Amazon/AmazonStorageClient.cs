@@ -64,7 +64,5 @@ namespace Marketplace.Integrations.Storage.Amazon
                 default: return S3CannedACL.Private;
             }
         }
-
-
     }
 }

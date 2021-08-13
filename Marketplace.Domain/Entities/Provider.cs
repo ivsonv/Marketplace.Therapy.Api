@@ -28,14 +28,14 @@ namespace Marketplace.Domain.Entities
         public bool active { get; set; }
         public bool remove { get; set; }
 
-        public List<ProviderAddress> Address { get; set; }
-        public List<ProviderBankAccount> BankAccounts { get; set; }
-        public List<ProviderSplitAccount> SplitAccounts { get; set; }
+        public IEnumerable<ProviderAddress> Address { get; set; }
+        public IEnumerable<ProviderBankAccount> BankAccounts { get; set; }
+        public IEnumerable<ProviderSplitAccount> SplitAccounts { get; set; }
         public List<ProviderSchedule> Schedules { get; set; }
-        public List<ProviderCategories> Categories { get; set; }
-        public List<ProviderTopics> Topics { get; set; }
-        public List<ProviderLanguages> Languages { get; set; }
-        public List<Appointment> Appointments { get; set; }
+        public IEnumerable<ProviderCategories> Categories { get; set; }
+        public IEnumerable<ProviderTopics> Topics { get; set; }
+        public IEnumerable<ProviderLanguages> Languages { get; set; }
+        public IEnumerable<Appointment> Appointments { get; set; }
     }
 
     public class ProviderAddress : shared.BaseAddress
