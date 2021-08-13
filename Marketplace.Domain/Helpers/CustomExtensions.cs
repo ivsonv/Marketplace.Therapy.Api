@@ -25,14 +25,14 @@ namespace Marketplace.Domain.Helpers
         public static DateTime toDate(this string vl) => DateTime.Parse(vl);
         public static string toImageUrl(this string str, string urlPrefix)
         {
-            if (str != null)
+            if (str.IsNotEmpty())
                 str = str.Replace(urlPrefix, "");
 
-            if (!str.IsEmpty() && str.Contains("http"))
+            if (str.IsNotEmpty() && str.Contains("http"))
                 return string.Format("{0}", str);
             else
                 return str.IsNotEmpty()
-                    ? string.Format("{0}{1}", urlPrefix, str) : null;
+                    ? $"{urlPrefix}/{str}" : null;
         }
 
         public static DateTime DateNow
@@ -49,7 +49,7 @@ namespace Marketplace.Domain.Helpers
             }
         }
         public static string IsCompare(this string vl) => RemoveAccents(vl).ToLower().Trim();
-        public static string clearMask(this string vl) => vl.IsNotEmpty() ? vl.Replace(".", "").Replace(",", "").Replace("-", "").Replace("/", "").Replace("(", "").Replace(")", "").Trim() : null;
+        public static string clearMask(this string vl) => vl.IsNotEmpty() ? vl.Replace(" ", "").Replace(".", "").Replace(",", "").Replace("-", "").Replace("/", "").Replace("(", "").Replace(")", "").Trim() : null;
 
         public static string Clear(this string vl) => RemoveAccents(vl).Trim();
 

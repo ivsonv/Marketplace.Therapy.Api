@@ -18,8 +18,12 @@ namespace Marketplace.Api.Controllers
             _marketplaceService = marketplaceService;
         }
 
-        [HttpGet]
-        public async Task<BaseRs<List<providerMktRs>>> Show([FromQuery] providerMktRq _request)
+        [HttpGet("providers")]
+        public async Task<BaseRs<List<providerMktRs>>> ShowProviders([FromQuery] BaseRq<providerMktRq> _request)
             => await _marketplaceService.ShowProviders(_request);
+
+        [HttpGet("provider/{linkpermanent}")]
+        public async Task<BaseRs<List<providerMktRs>>> Show([FromRoute] string linkpermanent)
+            => await _marketplaceService.ShowProviders(null);
     }
 }
