@@ -1,0 +1,49 @@
+name: deploy production AWS
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NETCORE
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    
+    - name: Restore dependencies
+      run: dotnet restore
+    
+    - name: Build
+      run: dotnet build --no-restore
+    
+    - name: Publish
+      run: dotnet publish -c Release -o '${{ github.workspace}}/out'
+    
+    - name: Remove appsettings
+      run: |
+        cd '${{ github.workspace }}/out'
+        rm -f appsettings.Development.json
+    
+    - name: Zip Site
+      run: | 
+        cd '${{ github.workspace }}/out' && sudo apt-get update && sudo apt-get install zip -y
+        zip -r ${{ github.workspace }}/out/site.zip * && zip release.zip site.zip aws-windows-deployment-manifest.json
+    
+    - name: Deploy to EB
+      uses: einaregilsson/beanstalk-deploy@v13
+      with:
+        aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        application_name: clique-terapia
+        environment_name: clique-terapia-env
+        region: us-east-1
+        version_label: ${{ github.run_id }}
+        version_description: ${{ github.sha }}
+        deployment_package: ${{ github.workspace}}/out/site.zip
+        use_existing_version_if_available: false
