@@ -42,7 +42,7 @@ jobs:
         aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         application_name: clique-terapia
         environment_name: clique-terapia-env
-        region: us-east-1
+        region: ${{ secrets.AWS_ACCESS_KEY_REGION }}
         version_label: ${{ github.run_id }}
         version_description: ${{ github.sha }}
         deployment_package: ${{ github.workspace}}/out/site.zip
