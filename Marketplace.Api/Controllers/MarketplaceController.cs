@@ -1,6 +1,7 @@
 using Marketplace.Domain.Models.Request;
 using Marketplace.Domain.Models.Request.marketplace;
 using Marketplace.Domain.Models.Response;
+using Marketplace.Domain.Models.Response.marketplace;
 using Marketplace.Services.Service;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -18,12 +19,8 @@ namespace Marketplace.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<BaseRs<List<providerRq>>> Show([FromQuery] providerRq _request)
-        {
-            await _marketplaceService.ShowProviders(_request);
-            return null;
-        }
-        //   => await _providerService.Show(null);
+        public async Task<BaseRs<List<providerRs>>> Show([FromQuery] providerRq _request)
+            => await _marketplaceService.ShowProviders(_request);
 
         //[HttpGet("{id:int}")]
         //public async Task<BaseRs<bankRs>> FindById([FromRoute] int id)

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Marketplace.Domain.Profiles.Markplace
 {
@@ -11,7 +12,7 @@ namespace Marketplace.Domain.Profiles.Markplace
 
             CreateMap<Entities.Provider, Models.dto.provider.providerDto>()
                 .ForMember(d => d.address,
-                                o => o.MapFrom(s => s.Address.ConvertAll(cc =>
+                                o => o.MapFrom(s => s.Address.Select(cc =>
                                                     new Models.dto.location.Address
                                                     {
                                                         address = cc.address,
