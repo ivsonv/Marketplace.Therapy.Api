@@ -105,7 +105,6 @@ namespace Marketplace.Infra.Repository.Marketplace
                 _current.crp = entity.crp;
                 _current.email = entity.email;
                 _current.image = entity.image;
-                _current.curriculum = entity.curriculum;
 
                 //endereço
                 if (entity.Address != null)

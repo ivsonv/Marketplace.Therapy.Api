@@ -58,6 +58,11 @@ namespace Marketplace.Infra.Mapping
                    .WithOne(w => w.Provider)
                    .HasForeignKey(f => f.provider_id)
                    .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasMany(h => h.ProviderReceipts)
+                   .WithOne(w => w.Provider)
+                   .HasForeignKey(f => f.provider_id)
+                   .OnDelete(DeleteBehavior.Cascade);
         }
     }
 
@@ -130,6 +135,15 @@ namespace Marketplace.Infra.Mapping
         public void Configure(EntityTypeBuilder<Domain.Entities.ProviderTopics> builder)
         {
             builder.ToTable("provider_topics");
+            builder.HasKey(prop => prop.id);
+        }
+    }
+
+    public class ProviderReceiptMap
+    {
+        public void Configure(EntityTypeBuilder<Domain.Entities.ProviderReceipt> builder)
+        {
+            builder.ToTable("provider_receipt");
             builder.HasKey(prop => prop.id);
         }
     }

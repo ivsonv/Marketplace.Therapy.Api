@@ -48,6 +48,7 @@ namespace Marketplace.Infra.Context
             modelBuilder.Entity<ProviderSchedule>(new ProviderScheduleMap().Configure);
             modelBuilder.Entity<ProviderSplitAccount>(new ProviderSplitAccountMap().Configure);
             modelBuilder.Entity<ProviderTopics>(new ProviderTopicsMap().Configure);
+            modelBuilder.Entity<ProviderReceipt>(new ProviderReceiptMap().Configure);
         }
     }
 }

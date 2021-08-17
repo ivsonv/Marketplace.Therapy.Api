@@ -39,6 +39,13 @@
             others = 3
         }
 
+        public enum ProviderGender
+        {
+            men = 0,
+            women = 1,
+            notbinary = 2
+        }
+
         public enum PaymentProvider
         {
             nexxera = 0

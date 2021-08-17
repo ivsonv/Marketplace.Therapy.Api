@@ -10,6 +10,8 @@ namespace Marketplace.Domain.Entities
         public string fantasy_name { get; set; }
         public string company_name { get; set; }
         public string email { get; set; }
+        public string link { get; set; }
+        public DateTime birthdate { get; set; }
         public string crp { get; set; }
         public string phone { get; set; }
         public string password { get; set; }
@@ -17,14 +19,15 @@ namespace Marketplace.Domain.Entities
         public string cpf { get; set; }
         public string image { get; set; }
         public string description { get; set; }
-        public string curriculum { get; set; }
         public string biography { get; set; }
         public string academic_training { get; set; }
         public int interval_between_appointment { get; set; }
         public string nickname { get; set; }
         public decimal price { get; set; }
-        public Helpers.Enumerados.ProviderStatus situation { get; set; }
-
+        public decimal? price_for_thirty { get; set; }
+        public string time_zone { get; set; }
+        public ProviderStatus situation { get; set; }
+        public ProviderGender gender { get; set; }
         public bool active { get; set; }
         public bool remove { get; set; }
 
@@ -36,6 +39,7 @@ namespace Marketplace.Domain.Entities
         public IEnumerable<ProviderTopics> Topics { get; set; }
         public IEnumerable<ProviderLanguages> Languages { get; set; }
         public IEnumerable<Appointment> Appointments { get; set; }
+        public IEnumerable<ProviderReceipt> ProviderReceipts { get; set; }
     }
 
     public class ProviderAddress : shared.BaseAddress
@@ -95,6 +99,18 @@ namespace Marketplace.Domain.Entities
 
         public Provider Provider { get; set; }
         public Topic Topic { get; set; }
+    }
+
+    public class ProviderReceipt : BaseEntity
+    {
+        public string signature { get; set; }
+        public string cpf { get; set; }
+        public string fantasy_name { get; set; }
+        public string cnpj { get; set; }
+        public string address { get; set; }
+
+        public int provider_id { get; set; }
+        public Provider Provider { get; set; }
     }
 
     public class ProviderLanguages : BaseEntity
