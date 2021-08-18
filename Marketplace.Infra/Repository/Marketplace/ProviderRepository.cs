@@ -93,6 +93,7 @@ namespace Marketplace.Infra.Repository.Marketplace
             if (_current != null)
             {
                 _current.academic_training = entity.academic_training;
+                _current.description = entity.description;
                 _current.company_name = entity.company_name;
                 _current.fantasy_name = entity.fantasy_name;
                 _current.biography = entity.biography;
@@ -174,6 +175,7 @@ namespace Marketplace.Infra.Repository.Marketplace
                   .Select(s => new Provider()
                   {
                       fantasy_name = s.fantasy_name,
+                      password = s.password,
                       id = s.id
                   }).FirstOrDefaultAsync();
         }

@@ -27,7 +27,7 @@ namespace Marketplace.Services.Service
             try
             {
                 var lst = await _topicRepository.Show(_request.pagination, _request.search);
-                _res.content = lst.ConvertAll(cc => new topicRs() { id = cc.id, name = cc.name, active = cc.active });
+                _res.content = lst.ConvertAll(cc => new topicRs() { id = cc.id, name = cc.name, active = cc.active, experience = cc.experience });
             }
             catch (System.Exception ex) { _res.setError(ex); }
             return _res;
@@ -38,7 +38,7 @@ namespace Marketplace.Services.Service
             try
             {
                 var lst = await _topicRepository.ShowCache(_request.pagination, _request.search);
-                _res.content = lst.ConvertAll(cc => new topicRs() { id = cc.id, name = cc.name, active = cc.active });
+                _res.content = lst.ConvertAll(cc => new topicRs() { id = cc.id, name = cc.name, active = cc.active, experience = cc.experience });
             }
             catch (System.Exception ex) { _res.setError(ex); }
             return _res;
@@ -49,12 +49,14 @@ namespace Marketplace.Services.Service
             var _res = new BaseRs<topicRs>();
             try
             {
-                var entity = new Domain.Entities.Topic()
+                await _topicRepository.Create(new Domain.Entities.Topic()
                 {
                     active = _request.data.active ?? false,
-                    name = _request.data.name
-                };
-                await _topicRepository.Create(entity);
+                    experience = _request.data.experience,
+                    name = _request.data.name,
+                    id = _request.data.id
+                });
+                _cache.Clear();
             }
             catch (System.Exception ex) { _res.setError(ex); }
             return _res;
@@ -68,9 +70,11 @@ namespace Marketplace.Services.Service
                 await _topicRepository.Update(new Domain.Entities.Topic()
                 {
                     active = _request.data.active ?? false,
+                    experience = _request.data.experience,
                     name = _request.data.name,
                     id = _request.data.id
                 });
+                _cache.Clear();
             }
             catch (System.Exception ex) { _res.setError(ex); }
             return _res;
@@ -85,7 +89,8 @@ namespace Marketplace.Services.Service
                 if (entity != null)
                 {
                     _res.content = new topicRs()
-                    {
+                    {   
+                        experience = entity.experience,
                         active = entity.active,
                         name = entity.name,
                         id = entity.id
@@ -103,6 +108,7 @@ namespace Marketplace.Services.Service
             {
                 await _topicRepository.Delete(await _topicRepository.FindById(id));
                 _res.content = true;
+                _cache.Clear();
             }
             catch (System.Exception ex) { _res.setError(ex); }
             return _res;

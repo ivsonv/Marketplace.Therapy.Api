@@ -3,15 +3,17 @@ using System;
 using Marketplace.Infra.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Marketplace.Infra.Migrations
 {
     [DbContext(typeof(MarketPlaceContext))]
-    partial class MarketPlaceContextModelSnapshot : ModelSnapshot
+    [Migration("20210818140146_add_tables")]
+    partial class add_tables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -697,9 +699,6 @@ namespace Marketplace.Infra.Migrations
 
                     b.Property<DateTime?>("created_at")
                         .HasColumnType("timestamp without time zone");
-
-                    b.Property<bool>("experience")
-                        .HasColumnType("boolean");
 
                     b.Property<string>("name")
                         .HasColumnType("varchar(120)");

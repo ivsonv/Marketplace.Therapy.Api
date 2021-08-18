@@ -64,6 +64,7 @@ namespace Marketplace.Infra.caching
                 return await _context.Topics
                                .Select(s => new Domain.Entities.Topic()
                                {
+                                   experience = s.experience,
                                    active = s.active,
                                    name = s.name,
                                    id = s.id

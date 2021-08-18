@@ -170,45 +170,45 @@ namespace Marketplace.Services.Service
             return _res;
         }
 
-        public async Task<BaseRs<providerAuthRs>> Provider(providerAuthRq auth)
+        public async Task<BaseRs<customerAuthRs>> Provider(customerAuthRq auth)
         {
-            var _res = new BaseRs<providerAuthRs>();
+            var _res = new BaseRs<customerAuthRs>();
             try
             {
-                //_res.error = _validator.Check(auth);
-                //if (_res.error == null)
-                //{
-                //    var _customer = await _customerRepository.FindAuthByEmail(auth.login.IsCompare());
-                //    if (_customer == null)
-                //    {
-                //        _res.setError("Usuário/senha informado não existe.");
-                //        return _res;
-                //    }
+                _res.error = _validator.Check(auth);
+                if (_res.error == null)
+                {
+                    var _provider = await _providerRepository.FindAuthByEmail(auth.login.IsCompare());
+                    if (_provider == null)
+                    {
+                        _res.setError("Usuário/senha informado não existe.");
+                        return _res;
+                    }
 
-                //    if (_customer.password != auth.password.createHash())
-                //    {
-                //        _res.setError("Usuário/Senha informado não existe.");
-                //        return _res;
-                //    }
+                    if (_provider.password != auth.password.createHash())
+                    {
+                        _res.setError("Usuário/Senha informado não existe.");
+                        return _res;
+                    }
 
-                //    var dto = new Domain.Models.dto.auth.AuthDto()
-                //    {
-                //        id = _customer.id,
-                //        name = _customer.name,
-                //        //rules = new List<string>() { Enumerados.UserRule.customer.ToString() }
-                //    };
+                    var dto = new Domain.Models.dto.auth.AuthDto()
+                    {
+                        id = _provider.id,
+                        name = _provider.nickname.IsNotEmpty() ? _provider.nickname : _provider.fantasy_name,
+                        roles = new List<string>() { "account.provider.view" }
+                    };
 
-                //    _res.content = new customerAuthRs()
-                //    {
-                //        accessToken = CustomExtensions.GenerateToken(dto, _configuration["secrets:signingkey"]),
-                //        data = new Domain.Models.Response.auth.AuthData()
-                //        {
-                //            fullName = dto.name,
-                //            rules = dto.rules,
-                //            id = dto.id
-                //        }
-                //    };
-                //}
+                    _res.content = new customerAuthRs()
+                    {
+                        accessToken = CustomExtensions.GenerateToken(dto, _configuration["secrets:signingkey"]),
+                        data = new Domain.Models.Response.auth.AuthData()
+                        {
+                            fullName = dto.name,
+                            roles = dto.roles,
+                            id = dto.id
+                        }
+                    };
+                }
             }
             catch (System.Exception ex) { _res.setError(ex); }
             return _res;

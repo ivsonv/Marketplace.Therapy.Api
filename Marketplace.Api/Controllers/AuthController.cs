@@ -32,7 +32,7 @@ namespace Marketplace.Api.Controllers
             => await _authService.CustomerUpdatePassword(_request);
 
         [HttpPost("provider")]
-        public async Task<BaseRs<providerAuthRs>> ProviderAuth([FromBody] providerAuthRq login)
+        public async Task<BaseRs<customerAuthRs>> ProviderAuth([FromBody] customerAuthRq login)
             => await _authService.Provider(login);
 
         [HttpPost("provider/reset")]
