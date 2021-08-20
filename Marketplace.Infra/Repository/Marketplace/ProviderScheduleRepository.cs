@@ -23,17 +23,21 @@ namespace Marketplace.Infra.Repository.Marketplace
         {
             return null;
         }
-
         public async Task<List<ProviderSchedule>> Show(Pagination pagination)
         {
             return await this.Show(pagination);
+        }
+        public async Task<List<ProviderSchedule>> Show(int provider_id)
+        {
+            return await _repository.Query
+                              .Where(w => w.provider_id == provider_id)
+                              .ToListAsync();
         }
 
         public async Task<ProviderSchedule> FindById(int id)
         {
             return await _repository.Query.FirstOrDefaultAsync(f => f.id == id);
         }
-
         public async Task Create(ProviderSchedule entity)
         {
             _repository.Add(entity);
@@ -57,7 +61,6 @@ namespace Marketplace.Infra.Repository.Marketplace
             _repository.Remove(entity);
             await _repository.SaveChanges();
         }
-
         public Task Delete(List<ProviderSchedule> entity)
         {
             throw new System.NotImplementedException();

@@ -1,3 +1,4 @@
+using Marketplace.Domain.Helpers;
 using Marketplace.Domain.Models.Response;
 using Marketplace.Domain.Models.Response.locations;
 using Marketplace.Services.Service;
@@ -6,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Marketplace.Api.Controllers
 {
+    [CustomAuthorizePermission]
     [Route("api/locations")]
     public class LocationsController : DefaultController
     {

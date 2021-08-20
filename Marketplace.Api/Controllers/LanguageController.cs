@@ -1,8 +1,7 @@
+using Marketplace.Domain.Helpers;
 using Marketplace.Domain.Models.Request;
-using Marketplace.Domain.Models.Request.Categories;
 using Marketplace.Domain.Models.Request.languages;
 using Marketplace.Domain.Models.Response;
-using Marketplace.Domain.Models.Response.Categories;
 using Marketplace.Domain.Models.Response.languages;
 using Marketplace.Services.Service;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace Marketplace.Api.Controllers
 {
+    [CustomAuthorizePermission]
     [Route("api/languages")]
     public class LanguageController : DefaultController
     {

@@ -1,3 +1,4 @@
+using Marketplace.Domain.Helpers;
 using Marketplace.Domain.Models.Request;
 using Marketplace.Domain.Models.Request.topics;
 using Marketplace.Domain.Models.Response;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace Marketplace.Api.Controllers
 {
+    [CustomAuthorizePermission]
     [Route("api/topics")]
     public class TopicController : DefaultController
     {

@@ -27,14 +27,18 @@ namespace Marketplace.Services.Service
             var _res = new BaseRs<List<providerScheduleRs>>();
             try
             {
-                _res.content = (await _providerScheduleRepository.Show(_request.pagination))
-                               .Select(s => new providerScheduleRs()
-                               {
-                                   day_week = s.day_week,
-                                   start = s.start,
-                                   end = s.end,
-                                   id = s.id
-                               }).ToList();
+                if (_request.data.provider_id <= 0)
+                    _res.setError("provider_id não informado.");
+
+                if (_res.error == null)
+                    _res.content = (await _providerScheduleRepository.Show(_request.data.provider_id))
+                                   .Select(s => new providerScheduleRs()
+                                   {
+                                       day_week = s.day_week,
+                                       start = s.start,
+                                       end = s.end,
+                                       id = s.id
+                                   }).ToList();
             }
             catch (System.Exception ex) { _res.setError(ex); }
             return _res;
@@ -57,6 +61,18 @@ namespace Marketplace.Services.Service
             try
             {
                 await _providerScheduleRepository.Update(_request.data);
+            }
+            catch (System.Exception ex) { _res.setError(ex); }
+            return _res;
+        }
+
+        public async Task<BaseRs<bool>> Delete(int id)
+        {
+            var _res = new BaseRs<bool>();
+            try
+            {
+                await _providerScheduleRepository.Delete(await _providerScheduleRepository.FindById(id));
+                _res.content = true;
             }
             catch (System.Exception ex) { _res.setError(ex); }
             return _res;
