@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Marketplace.Domain.Models.dto.auth;
+using Microsoft.AspNetCore.Http;
+using System.Linq;
 
 namespace Marketplace.Domain.Helpers
 {
@@ -10,15 +12,15 @@ namespace Marketplace.Domain.Helpers
             _accessor = accessor;
         }
 
-        //public AuthDTO ActiveUser
-        //{
-        //    get
-        //    {
-        //        return _accessor.HttpContext.User.Claims
-        //                         .FirstOrDefault(f => f.Type == System.Security.Claims.ClaimTypes.UserData)?
-        //                         .Value.Deserialize<AuthDTO>();
-        //    }
-        //}
+        public AuthDto user
+        {
+            get
+            {
+                return _accessor.HttpContext.User.Claims
+                                 .FirstOrDefault(f => f.Type == System.Security.Claims.ClaimTypes.UserData)?
+                                 .Value.Deserialize<AuthDto>();
+            }
+        }
 
     }
 }

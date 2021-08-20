@@ -14,7 +14,7 @@ namespace Marketplace.Infra.Repository.Marketplace
         private readonly BaseRepository<GroupPermission> _repository;
         private readonly BaseRepository<GroupPermissionAttached> _repositoryAttached;
 
-        public GroupPermissionRepository(BaseRepository<GroupPermission> repository, 
+        public GroupPermissionRepository(BaseRepository<GroupPermission> repository,
                                          BaseRepository<GroupPermissionAttached> repositoryAttached)
         {
             _repositoryAttached = repositoryAttached;
@@ -92,6 +92,12 @@ namespace Marketplace.Infra.Repository.Marketplace
                                         })
                                     })
                                     .FirstOrDefaultAsync(f => f.id == id);
+        }
+        public async Task<GroupPermission> FindByName(string name)
+        {
+            return await _repository.Query
+                                    .Include(i => i.PermissionsAttached)
+                                    .FirstOrDefaultAsync(f => f.name.ToLower() == name.ToLower());
         }
 
         public Task<List<GroupPermission>> Show(Pagination pagination, string seach = "")

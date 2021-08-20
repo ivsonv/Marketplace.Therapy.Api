@@ -4,6 +4,7 @@ using Marketplace.Domain.Interface;
 using Marketplace.Domain.Interface.Marketplace;
 using Marketplace.Domain.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -71,20 +72,25 @@ namespace Marketplace.Infra.Repository.Marketplace
                                     .FirstOrDefaultAsync(f => f.id == id);
         }
 
-        public async Task Create(Provider entity)
-        {
-            this.formatData(entity);
-
-            _repository.Add(entity);
-            await _repository.SaveChanges();
-        }
         private void formatData(Provider entity)
         {
             if (!entity.fantasy_name.IsEmpty()) entity.fantasy_name = entity.fantasy_name.Clear().ToUpper();
             if (!entity.company_name.IsEmpty()) entity.company_name = entity.company_name.Clear().ToUpper();
             if (!entity.nickname.IsEmpty()) entity.nickname = entity.nickname.Clear().ToUpper();
         }
+        public async Task Create(Provider entity)
+        {
+            this.formatData(entity);
 
+            var exist = await this.FindAuthByEmail(entity.email);
+            if (exist == null)
+            {
+                _repository.Add(entity);
+                await _repository.SaveChanges();
+            }
+            else
+                throw new ArgumentException("E-mail já cadastrado anteriormente, tente a opção 'esqueci minha senha'");
+        }
         public async Task Update(Provider entity)
         {
             this.formatData(entity);
@@ -92,6 +98,27 @@ namespace Marketplace.Infra.Repository.Marketplace
             var _current = await this.FindById(entity.id);
             if (_current != null)
             {
+                // mudou e-mail
+                if (_current.email != entity.email)
+                {
+                    if ((await this.FindAuthByEmail(entity.email)) != null)
+                        throw new ArgumentException("e-mail já está em uso para outro usuário");
+                }
+
+                // mudou cpf
+                if(_current.cpf.IsNotEmpty())
+                {
+                    if ((await this.FindByCpf(entity.cpf)) != null)
+                        throw new ArgumentException("cpf já está em uso para outro usuário");
+                }
+
+                // mudou cnpj
+                if (_current.cnpj.IsNotEmpty())
+                {
+                    if ((await this.FindByCnpj(entity.cnpj)) != null)
+                        throw new ArgumentException("cnpj já está em uso para outro usuário");
+                }
+
                 _current.academic_training = entity.academic_training;
                 _current.description = entity.description;
                 _current.company_name = entity.company_name;
@@ -181,8 +208,11 @@ namespace Marketplace.Infra.Repository.Marketplace
         }
         public async Task<Provider> FindByEmail(string email)
             => await _repository.Query.FirstOrDefaultAsync(f => f.email == email);
+
         public async Task<Provider> FindByCnpj(string cnpj)
             => await _repository.Query.FirstOrDefaultAsync(f => f.cnpj == cnpj);
+        public async Task<Provider> FindByCpf(string cpf)
+            => await _repository.Query.FirstOrDefaultAsync(f => f.cpf == cpf);
 
         public Task Delete(List<Provider> entity)
         {

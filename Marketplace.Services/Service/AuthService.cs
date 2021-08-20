@@ -1,6 +1,7 @@
 ﻿using Marketplace.Domain.Helpers;
 using Marketplace.Domain.Interface.Marketplace;
 using Marketplace.Domain.Models.dto.customer;
+using Marketplace.Domain.Models.permissions;
 using Marketplace.Domain.Models.Request.auth.customer;
 using Marketplace.Domain.Models.Request.auth.provider;
 using Marketplace.Domain.Models.Response;
@@ -16,6 +17,7 @@ namespace Marketplace.Services.Service
     public class AuthService
     {
         private readonly Validators.CustomerAuthValidator _validator;
+        private readonly IGroupPermissionRepository _groupPermissionRepository;
         private readonly ICustomerRepository _customerRepository;
         private readonly IProviderRepository _providerRepository;
         private readonly IUserRepository _userRepository;
@@ -23,12 +25,14 @@ namespace Marketplace.Services.Service
         private readonly EmailService _emailService;
 
         public AuthService(Validators.CustomerAuthValidator validator,
+                           IGroupPermissionRepository groupPermissionRepository,
                            ICustomerRepository customerRepository,
                            IProviderRepository providerRepository,
                            IUserRepository userRepository,
                            IConfiguration configuration,
                            EmailService emailService)
         {
+            _groupPermissionRepository = groupPermissionRepository;
             _providerRepository = providerRepository;
             _customerRepository = customerRepository;
             _userRepository = userRepository;
@@ -191,11 +195,13 @@ namespace Marketplace.Services.Service
                         return _res;
                     }
 
+                    var _repo = await _groupPermissionRepository.FindByName("provider");
                     var dto = new Domain.Models.dto.auth.AuthDto()
                     {
                         id = _provider.id,
                         name = _provider.nickname.IsNotEmpty() ? _provider.nickname : _provider.fantasy_name,
-                        roles = new List<string>() { "account.provider.view" }
+                        roles = _repo.PermissionsAttached.Select(s => s.name), // nome da permissão
+                        permissions = new List<int>() { _repo.id }             // id do grupo de permissão, usado no customPermission
                     };
 
                     _res.content = new customerAuthRs()
@@ -363,6 +369,5 @@ namespace Marketplace.Services.Service
             catch (System.Exception ex) { _res.setError(ex); }
             return _res;
         }
-
     }
 }

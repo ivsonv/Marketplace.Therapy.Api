@@ -15,7 +15,49 @@ namespace Marketplace.Domain.Models.permissions
             _retorno.AddRange(Customer.permissions);
             _retorno.AddRange(Reports.permissions);
             _retorno.AddRange(Bank.permissions);
+            _retorno.AddRange(Account.permissions);
+            _retorno.AddRange(providerSchedules.permissions);
             return _retorno;
+        }
+
+        public static class providerSchedules
+        {
+            public const string View = "provider.schedule.view";
+            public const string Create = "provider.schedule.create";
+            public const string Edit = "provider.schedule.edit";
+            public const string Delete = "provider.schedule.delete";
+
+            public static List<dto.Item> permissions
+            {
+                get
+                {
+                    return new List<dto.Item>()
+                    {
+                        new dto.Item() {label = "Visualizar Horários", value = View },
+                        new dto.Item() {label = "Criar Horários", value = Create },
+                        new dto.Item() {label = "Editar Horários", value = Edit },
+                        new dto.Item() {label = "Excluir Horários", value = Delete }
+                    };
+                }
+            }
+        }
+
+        public static class Account
+        {
+            public const string ViewProvider = "account.provider";
+            public const string ViewCustomer = "account.customer";
+
+            public static List<dto.Item> permissions
+            {
+                get
+                {
+                    return new List<dto.Item>()
+                    {
+                        new dto.Item() {label = "Area Provedor", value = ViewProvider },
+                        new dto.Item() {label = "Area Cliente", value = ViewCustomer }
+                    };
+                }
+            }
         }
 
         public static class Bank

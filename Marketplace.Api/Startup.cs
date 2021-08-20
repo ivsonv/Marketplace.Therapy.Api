@@ -1,4 +1,5 @@
 using AutoMapper;
+using Marketplace.Domain.Helpers;
 using Marketplace.Domain.Interface.Integrations.caching;
 using Marketplace.Domain.Interface.Integrations.Email;
 using Marketplace.Domain.Interface.Integrations.Locality;
@@ -73,6 +74,7 @@ namespace Marketplace.Api
 
             // repositorios
             services.AddScoped(typeof(BaseRepository<>), typeof(BaseRepository<>));
+            services.AddScoped<CustomAuthenticatedUser>();
 
             // integrations individual
             services.AddTransient<ILocality, LocalityIntegrations>();
@@ -96,6 +98,7 @@ namespace Marketplace.Api
             services.AddScoped<IBankRepository, BankRepository>();
             services.AddScoped<IProviderScheduleRepository, ProviderScheduleRepository>();
 
+
             // services
             services.AddScoped<CategoryService>();
             services.AddScoped<LocationService>();
@@ -111,6 +114,7 @@ namespace Marketplace.Api
             services.AddScoped<MerchantService>();
             services.AddScoped<MarketplaceService>();
             services.AddScoped<ProviderScheduleService>();
+            services.AddScoped<AccountProviderService>();
 
             // validator
             services.AddSingleton<Services.Validators.CustomerValidator>();

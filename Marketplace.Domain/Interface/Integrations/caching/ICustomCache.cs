@@ -11,5 +11,6 @@ namespace Marketplace.Domain.Interface.Integrations.caching
         Task<List<Entities.Language>> GetLanguages();
         Task<List<Entities.Provider>> GetProviders();
         Task<List<Entities.Appointment>> GetAppointments();
+        List<Entities.GroupPermission> GetPermissions();
     }
 }

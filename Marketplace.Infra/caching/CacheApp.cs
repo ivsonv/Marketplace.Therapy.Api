@@ -22,54 +22,12 @@ namespace Marketplace.Infra.caching
 
         public void Clear()
         {
-            _cache.Remove("banks");
+            _cache.Remove("appointments");
+            _cache.Remove("permissions");
+            _cache.Remove("providers");
             _cache.Remove("languages");
             _cache.Remove("topics");
-        }
-
-        public async Task<List<Bank>> GetBanks()
-        {
-            return await _cache.GetOrCreateAsync("banks", async entry =>
-            {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes((_minutes * 10));
-                return await _context.Banks
-                               .Select(s => new Domain.Entities.Bank()
-                               {
-                                   active = s.active,
-                                   code = s.code,
-                                   name = s.name,
-                                   id = s.id
-                               }).AsNoTracking().ToListAsync();
-            });
-        }
-        public async Task<List<Language>> GetLanguages()
-        {
-            return await _cache.GetOrCreateAsync("languages", async entry =>
-            {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes((_minutes * 6));
-                return await _context.Languages
-                               .Select(s => new Domain.Entities.Language()
-                               {
-                                   active = s.active,
-                                   name = s.name,
-                                   id = s.id
-                               }).AsNoTracking().ToListAsync();
-            });
-        }
-        public async Task<List<Topic>> GetTopics()
-        {
-            return await _cache.GetOrCreateAsync("topics", async entry =>
-            {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes((_minutes * 6));
-                return await _context.Topics
-                               .Select(s => new Domain.Entities.Topic()
-                               {
-                                   experience = s.experience,
-                                   active = s.active,
-                                   name = s.name,
-                                   id = s.id
-                               }).AsNoTracking().ToListAsync();
-            });
+            _cache.Remove("banks");
         }
 
         public async Task<List<Appointment>> GetAppointments()
@@ -108,6 +66,68 @@ namespace Marketplace.Infra.caching
                                    price = s.price,
                                    image = s.image,
                                    crp = s.crp,
+                                   id = s.id
+                               }).AsNoTracking().ToListAsync();
+            });
+        }
+        public async Task<List<Language>> GetLanguages()
+        {
+            return await _cache.GetOrCreateAsync("languages", async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes((_minutes * 6));
+                return await _context.Languages
+                               .Select(s => new Domain.Entities.Language()
+                               {
+                                   active = s.active,
+                                   name = s.name,
+                                   id = s.id
+                               }).AsNoTracking().ToListAsync();
+            });
+        }
+        public List<GroupPermission> GetPermissions()
+        {
+            return _cache.GetOrCreate("permissions", entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(_minutes * 100);
+                return _context.GroupPermissions
+                               .Include(i => i.PermissionsAttached)
+                               .Select(s => new GroupPermission()
+                               {
+                                   name = s.name,
+                                   id = s.id,
+                                   PermissionsAttached = s.PermissionsAttached.Select(ss => new GroupPermissionAttached()
+                                   {
+                                       name = ss.name
+                                   })
+                               }).AsNoTracking().ToList();
+            });
+        }
+        public async Task<List<Topic>> GetTopics()
+        {
+            return await _cache.GetOrCreateAsync("topics", async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes((_minutes * 6));
+                return await _context.Topics
+                               .Select(s => new Domain.Entities.Topic()
+                               {
+                                   experience = s.experience,
+                                   active = s.active,
+                                   name = s.name,
+                                   id = s.id
+                               }).AsNoTracking().ToListAsync();
+            });
+        }
+        public async Task<List<Bank>> GetBanks()
+        {
+            return await _cache.GetOrCreateAsync("banks", async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes((_minutes * 10));
+                return await _context.Banks
+                               .Select(s => new Domain.Entities.Bank()
+                               {
+                                   active = s.active,
+                                   code = s.code,
+                                   name = s.name,
                                    id = s.id
                                }).AsNoTracking().ToListAsync();
             });
