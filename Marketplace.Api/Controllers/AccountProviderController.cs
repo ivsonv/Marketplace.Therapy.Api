@@ -22,6 +22,18 @@ namespace Marketplace.Api.Controllers
         public async Task<BaseRs<accountProviderRs>> FindBy()
             => await _account.findByUser();
 
+        [HttpGet("banks")]
+        public async Task<BaseRs<accountProviderRs>> GetBanks(string term)
+            => await _account.fetchBanks(term);
+
+        [HttpGet("topics")]
+        public async Task<BaseRs<accountProviderRs>> GetTopics()
+            => await _account.fetchTopics();
+
+        [HttpGet("languages")]
+        public async Task<BaseRs<accountProviderRs>> GetLanguages()
+            => await _account.fetchLanguages();
+
         //[HttpPut]
         //public async Task<BaseRs<providerRs>> Update([FromBody] BaseRq<providerRq> _request)
         //{
