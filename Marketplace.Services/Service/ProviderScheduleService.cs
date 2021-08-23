@@ -66,12 +66,44 @@ namespace Marketplace.Services.Service
             return _res;
         }
 
+        public async Task<BaseRs<providerScheduleRs>> FindById(int id)
+        {
+            var _res = new BaseRs<providerScheduleRs>();
+            try
+            {
+                var entity = await _providerScheduleRepository.FindById(id);
+                if (entity != null)
+                {
+                    _res.content = new providerScheduleRs();
+                    _res.content.provider_id = entity.provider_id;
+                    _res.content.day_week = entity.day_week;
+                    _res.content.start = entity.start;
+                    _res.content.end = entity.end;
+                    _res.content.id = entity.id;
+                }
+            }
+            catch (System.Exception ex) { _res.setError(ex); }
+            return _res;
+        }
+
         public async Task<BaseRs<bool>> Delete(int id)
         {
             var _res = new BaseRs<bool>();
             try
             {
                 await _providerScheduleRepository.Delete(await _providerScheduleRepository.FindById(id));
+                _res.content = true;
+            }
+            catch (System.Exception ex) { _res.setError(ex); }
+            return _res;
+        }
+
+        public async Task<BaseRs<bool>> Delete(Domain.Entities.ProviderSchedule schedule)
+        {
+            var _res = new BaseRs<bool>();
+            try
+            {
+                await _providerScheduleRepository.Delete(schedule);
                 _res.content = true;
             }
             catch (System.Exception ex) { _res.setError(ex); }

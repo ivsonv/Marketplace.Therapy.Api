@@ -106,14 +106,14 @@ namespace Marketplace.Infra.Repository.Marketplace
                 }
 
                 // mudou cpf
-                if(_current.cpf.IsNotEmpty())
+                if(_current.cpf.IsNotEmpty() && _current.cpf != entity.cpf)
                 {
                     if ((await this.FindByCpf(entity.cpf)) != null)
                         throw new ArgumentException("cpf já está em uso para outro usuário");
                 }
 
                 // mudou cnpj
-                if (_current.cnpj.IsNotEmpty())
+                if (_current.cnpj.IsNotEmpty() && _current.cnpj != entity.cnpj)
                 {
                     if ((await this.FindByCnpj(entity.cnpj)) != null)
                         throw new ArgumentException("cnpj já está em uso para outro usuário");

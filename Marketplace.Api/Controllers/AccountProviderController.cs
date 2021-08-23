@@ -1,5 +1,7 @@
 using Marketplace.Domain.Helpers;
 using Marketplace.Domain.Models.permissions;
+using Marketplace.Domain.Models.Request;
+using Marketplace.Domain.Models.Request.account.provider;
 using Marketplace.Domain.Models.Response;
 using Marketplace.Domain.Models.Response.account.provider;
 using Marketplace.Services.Service;
@@ -18,6 +20,8 @@ namespace Marketplace.Api.Controllers
             _account = accountProviderService;
         }
 
+        #region ..: fetchs :..
+
         [HttpGet]
         public async Task<BaseRs<accountProviderRs>> FindBy()
             => await _account.findByUser();
@@ -33,22 +37,25 @@ namespace Marketplace.Api.Controllers
         [HttpGet("languages")]
         public async Task<BaseRs<accountProviderRs>> GetLanguages()
             => await _account.fetchLanguages();
+        #endregion
 
-        //[HttpPut]
-        //public async Task<BaseRs<providerRs>> Update([FromBody] BaseRq<providerRq> _request)
-        //{
-        //    if (_request.data.id != base.MyUser.id)
-        //        return new BaseRs<providerRs>() { error = new BaseError(new List<string>() { "Solicitação inválida." }) };
+        #region ..: schedules :..
 
-        //    return await _providerService.Update(_request);
-        //}
+        [HttpGet("schedules")]
+        public async Task<BaseRs<accountProviderRs>> GetSchedules()
+            => await _account.fetchSchedules();
 
-        //[HttpGet("situations")]
-        //public dynamic ShowSituations()
-        //    => _providerService.getSituations();
+        [HttpPost("schedules")]
+        public async Task<BaseRs<accountProviderRs>> SaveSchedules([FromBody] BaseRq<accountProviderRq> _request)
+            => await _account.SaveSchedule(_request);
 
-        //[HttpGet("banks")]
-        //public dynamic ShowBanks()
-        //   => _providerService.getSituations();
+        [HttpDelete("schedules/{id:int}")]
+        public async Task<BaseRs<bool>> DeleteSchedule([FromRoute] int id)
+            => await _account.DeleteSchedule(id);
+        #endregion
+
+        [HttpPut]
+        public async Task<BaseRs<accountProviderRs>> UpdateProvider([FromBody] BaseRq<accountProviderRq> _request)
+            => await _account.updateProvider(_request);
     }
 }

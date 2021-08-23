@@ -31,6 +31,13 @@ namespace Marketplace.Infra.Repository.Marketplace
         {
             return await _repository.Query
                               .Where(w => w.provider_id == provider_id)
+                              .Select(s => new ProviderSchedule()
+                              {
+                                  day_week = s.day_week,
+                                  start = s.start,
+                                  end = s.end,
+                                  id = s.id
+                              })
                               .ToListAsync();
         }
 
