@@ -3,15 +3,17 @@ using System;
 using Marketplace.Infra.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Marketplace.Infra.Migrations
 {
     [DbContext(typeof(MarketPlaceContext))]
-    partial class MarketPlaceContextModelSnapshot : ModelSnapshot
+    [Migration("20210824142154_add_new_field_type_appointment")]
+    partial class add_new_field_type_appointment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,9 +53,6 @@ namespace Marketplace.Infra.Migrations
                         .HasColumnType("numeric");
 
                     b.Property<decimal>("price_full")
-                        .HasColumnType("numeric");
-
-                    b.Property<decimal>("price_transfer")
                         .HasColumnType("numeric");
 
                     b.Property<int>("provider_id")

@@ -4,6 +4,7 @@ using Marketplace.Domain.Interface.Integrations.caching;
 using Marketplace.Domain.Interface.Marketplace;
 using Marketplace.Domain.Models.Request;
 using Marketplace.Domain.Models.Request.account.provider;
+using Marketplace.Domain.Models.Request.appointment;
 using Marketplace.Domain.Models.Request.provider;
 using Marketplace.Domain.Models.Request.users;
 using Marketplace.Domain.Models.Response;
@@ -19,16 +20,19 @@ namespace Marketplace.Services.Service
     {
         private readonly CustomAuthenticatedUser _authenticatedUser;
         private readonly ProviderScheduleService _scheduleService;
+        private readonly AppointmentService _appointmentService;
         private readonly ProviderService _providerService;
         private readonly ICustomCache _cache;
         private readonly IMapper _mapper;
 
         public AccountProviderService(ProviderScheduleService scheduleService,
+                                      AppointmentService appointmentService,
                                       ProviderService providerService,
                                       CustomAuthenticatedUser user,
                                       ICustomCache cache,
                                       IMapper mapper)
         {
+            _appointmentService = appointmentService;
             _providerService = providerService;
             _scheduleService = scheduleService;
             _authenticatedUser = user;
@@ -194,6 +198,34 @@ namespace Marketplace.Services.Service
                 _res.content = new accountProviderRs()
                 {
                     schedules = (await _scheduleService.Show(fetch)).content.OrderBy(o => o.day_week).ToList()
+                };
+            }
+            catch (System.Exception ex) { _res.setError(ex); }
+            return _res;
+        }
+
+        public async Task<BaseRs<accountProviderRs>> fetchAppointment(BaseRq<accountProviderRq> _req)
+        {
+            var _res = new BaseRs<accountProviderRs>();
+            try
+            {
+                // -1 = mes atual
+                //month = month == -1 ? CustomExtensions.DateNow.Month : month;
+
+                // fetch
+                var fetch = new BaseRq<appointmentRq>()
+                {
+                    pagination = _req.pagination,
+                    data = new appointmentRq()
+                    {
+                        provider_id = _authenticatedUser.user.id,
+                        //month = month
+                    }
+                };
+
+                _res.content = new accountProviderRs()
+                {
+                    appointments = (await _appointmentService.showByProvider(fetch)).content
                 };
             }
             catch (System.Exception ex) { _res.setError(ex); }

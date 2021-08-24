@@ -30,6 +30,12 @@
             ecommerce = 1,
             mobile = 2
         }
+        public enum AppointmentType
+        {
+            online_session = 0,
+            private_session = 1,
+            personal_session = 2
+        }
 
         public enum ProviderStatus
         {

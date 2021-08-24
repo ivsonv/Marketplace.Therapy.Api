@@ -4,8 +4,10 @@ using Marketplace.Domain.Models.Request;
 using Marketplace.Domain.Models.Request.account.provider;
 using Marketplace.Domain.Models.Response;
 using Marketplace.Domain.Models.Response.account.provider;
+using Marketplace.Domain.Models.Response.provider;
 using Marketplace.Services.Service;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
 
 namespace Marketplace.Api.Controllers
@@ -19,6 +21,10 @@ namespace Marketplace.Api.Controllers
         {
             _account = accountProviderService;
         }
+
+        [HttpPut]
+        public async Task<BaseRs<accountProviderRs>> UpdateProvider([FromBody] BaseRq<accountProviderRq> _request)
+            => await _account.updateProvider(_request);
 
         #region ..: fetchs :..
 
@@ -54,8 +60,11 @@ namespace Marketplace.Api.Controllers
             => await _account.DeleteSchedule(id);
         #endregion
 
-        [HttpPut]
-        public async Task<BaseRs<accountProviderRs>> UpdateProvider([FromBody] BaseRq<accountProviderRq> _request)
-            => await _account.updateProvider(_request);
+        #region ..: appointment :..
+
+        [HttpGet("appointment")]
+        public async Task<BaseRs<accountProviderRs>> fetchAppointment([FromQuery] BaseRq<accountProviderRq> _request)
+            => await _account.fetchAppointment(_request);
+        #endregion
     }
 }
