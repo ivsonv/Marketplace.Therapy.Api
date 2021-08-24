@@ -9,6 +9,8 @@ using Marketplace.Domain.Models.Request.provider;
 using Marketplace.Domain.Models.Request.users;
 using Marketplace.Domain.Models.Response;
 using Marketplace.Domain.Models.Response.account.provider;
+using Marketplace.Domain.Models.Response.appointment;
+using Marketplace.Domain.Models.Response.provider;
 using Marketplace.Domain.Models.Response.users;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,24 +20,21 @@ namespace Marketplace.Services.Service
 {
     public class AccountProviderService
     {
-        private readonly CustomAuthenticatedUser _authenticatedUser;
+        private readonly CustomAuthenticatedUser _authenticatedProvider;
         private readonly ProviderScheduleService _scheduleService;
-        private readonly AppointmentService _appointmentService;
         private readonly ProviderService _providerService;
         private readonly ICustomCache _cache;
         private readonly IMapper _mapper;
 
         public AccountProviderService(ProviderScheduleService scheduleService,
-                                      AppointmentService appointmentService,
                                       ProviderService providerService,
                                       CustomAuthenticatedUser user,
                                       ICustomCache cache,
                                       IMapper mapper)
         {
-            _appointmentService = appointmentService;
             _providerService = providerService;
             _scheduleService = scheduleService;
-            _authenticatedUser = user;
+            _authenticatedProvider = user;
             _mapper = mapper;
             _cache = cache;
         }
@@ -45,7 +44,7 @@ namespace Marketplace.Services.Service
             var _res = new BaseRs<accountProviderRs>();
             try
             {
-                if (_request.data.id != _authenticatedUser.user.id)
+                if (_request.data.id != _authenticatedProvider.user.id)
                     return new BaseRs<accountProviderRs>() { error = new BaseError(new List<string>() { "Solicitação inválida." }) };
 
                 // request provider
@@ -70,7 +69,7 @@ namespace Marketplace.Services.Service
             try
             {
                 // setando usuário
-                _request.data.schedule.provider_id = _authenticatedUser.user.id;
+                _request.data.schedule.provider_id = _authenticatedProvider.user.id;
 
                 // request
                 var _rq = new BaseRq<providerScheduleRq>()
@@ -108,7 +107,7 @@ namespace Marketplace.Services.Service
                     return new BaseRs<bool>() { error = new BaseError(new List<string>() { "Solicitação inválida." }) };
 
                 // excluido pertence ao user.
-                if (entity.content.provider_id != _authenticatedUser.user.id)
+                if (entity.content.provider_id != _authenticatedProvider.user.id)
                     return new BaseRs<bool>() { error = new BaseError(new List<string>() { "Solicitação inválida." }) };
 
                 // remover
@@ -130,7 +129,7 @@ namespace Marketplace.Services.Service
             try
             {
                 _res.content = new accountProviderRs();
-                _res.content.provider = (await _providerService.FindById(_authenticatedUser.user.id)).content;
+                _res.content.provider = (await _providerService.FindById(_authenticatedProvider.user.id)).content;
             }
             catch (System.Exception ex) { _res.setError(ex); }
             return _res;
@@ -191,7 +190,7 @@ namespace Marketplace.Services.Service
                 {
                     data = new providerScheduleRq()
                     {
-                        provider_id = _authenticatedUser.user.id
+                        provider_id = _authenticatedProvider.user.id
                     }
                 };
 
@@ -204,29 +203,43 @@ namespace Marketplace.Services.Service
             return _res;
         }
 
-        public async Task<BaseRs<accountProviderRs>> fetchAppointment(BaseRq<accountProviderRq> _req)
+        // calendar
+        public async Task<BaseRs<accountProviderRs>> fetchCalendar(int month)
         {
             var _res = new BaseRs<accountProviderRs>();
             try
             {
                 // -1 = mes atual
-                //month = month == -1 ? CustomExtensions.DateNow.Month : month;
+                month = month == -1 ? CustomExtensions.DateNow.Month : month;
 
-                // fetch
-                var fetch = new BaseRq<appointmentRq>()
-                {
-                    pagination = _req.pagination,
-                    data = new appointmentRq()
-                    {
-                        provider_id = _authenticatedUser.user.id,
-                        //month = month
-                    }
-                };
+                // list
+                var appointmets = await _cache.GetCalendar();
 
-                _res.content = new accountProviderRs()
+                // cache tras mes atual
+                if (CustomExtensions.DateNow.Month != month)
                 {
-                    appointments = (await _appointmentService.showByProvider(fetch)).content
-                };
+                    // outro mês
+                    if (!appointmets.Any())
+                        appointmets = await _cache.GetCalendar(month);
+                }
+
+                // appointments
+                _res.content = new accountProviderRs();
+                _res.content.appointments = appointmets
+                                             .Where(w => w.provider_id == _authenticatedProvider.user.id)
+                                             .Where(w => w.booking_date.Month == month)
+                                             .Select(s => new providerAppointment()
+                                             {
+                                                 customer = new customerAppointment()
+                                                 {
+                                                     name = s.Customer.name,
+                                                     id = s.customer_id
+                                                 },
+                                                 startds = s.booking_date.ToString("yyyy-MM-dd"),
+                                                 hour = s.booking_date.TimeOfDay,
+                                                 type = s.type,
+                                                 id = s.id
+                                             }).ToList();
             }
             catch (System.Exception ex) { _res.setError(ex); }
             return _res;

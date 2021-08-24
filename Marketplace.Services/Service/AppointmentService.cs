@@ -15,15 +15,12 @@ namespace Marketplace.Services.Service
     {
         private readonly CustomAuthenticatedUser _authenticatedUser;
         private readonly IAppointmentRepository _repository;
-        private readonly ICustomCache _cache;
 
         public AppointmentService(IAppointmentRepository appointmentRepository,
-                                  CustomAuthenticatedUser user,
-                                  ICustomCache cache)
+                                  CustomAuthenticatedUser user)
         {
             _repository = appointmentRepository;
             _authenticatedUser = user;
-            _cache = cache;
         }
 
         public async Task<BaseRs<List<appointmentRs>>> show(BaseRq<appointmentRq> _request)
@@ -37,7 +34,6 @@ namespace Marketplace.Services.Service
             catch (System.Exception ex) { _res.setError(ex); }
             return _res;
         }
-
         public async Task<BaseRs<List<appointmentRs>>> showByProvider(BaseRq<appointmentRq> _request)
         {
             var _res = new BaseRs<List<appointmentRs>>();
@@ -57,5 +53,14 @@ namespace Marketplace.Services.Service
             return _res;
         }
 
-    }
+        public async Task<BaseRs<appointmentRs>> Store(BaseRq<appointmentRq> _request)
+        {
+            var _res = new BaseRs<appointmentRs>();
+            try
+            {
+                await _repository.Create(_request.data);
+            }
+            catch (System.Exception ex) { _res.setError(ex); }
+            return _res;
+        }}
 }

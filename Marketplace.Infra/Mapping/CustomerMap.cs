@@ -28,7 +28,7 @@ namespace Marketplace.Infra.Mapping
 
             builder.HasMany(h => h.Appointments)
                   .WithOne(w => w.Customer)
-                  .HasForeignKey(f => f.provider_id)
+                  .HasForeignKey(f => f.customer_id)
                   .OnDelete(DeleteBehavior.Restrict);
         }
     }

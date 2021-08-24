@@ -1,4 +1,5 @@
 ﻿using Marketplace.Domain.Entities;
+using Marketplace.Domain.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using System;
@@ -24,30 +25,13 @@ namespace Marketplace.Infra.caching
         {
             _cache.Remove("appointments");
             _cache.Remove("permissions");
+            _cache.Remove("calendars");
             _cache.Remove("providers");
             _cache.Remove("languages");
             _cache.Remove("topics");
             _cache.Remove("banks");
         }
 
-        public async Task<List<Appointment>> GetAppointments()
-        {
-            return await _cache.GetOrCreateAsync("appointments", async entry =>
-            {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(_minutes);
-                return await _context.Appointments
-                               .Select(s => new Appointment()
-                               {
-                                   payment_status = s.payment_status,
-                                   booking_date = s.booking_date,
-                                   provider_id = s.provider_id,
-                                   id = s.id
-                               })
-                               .Where(w => w.payment_status == Domain.Helpers.Enumerados.PaymentStatus.confirmed)
-                               .Where(w => w.booking_date >= DateTime.UtcNow)
-                               .AsNoTracking().ToListAsync();
-            });
-        }
         public async Task<List<Provider>> GetProviders()
         {
             return await _cache.GetOrCreateAsync("providers", async entry =>
@@ -131,6 +115,48 @@ namespace Marketplace.Infra.caching
                                    id = s.id
                                }).AsNoTracking().ToListAsync();
             });
+        }
+
+        public async Task<List<Appointment>> GetCalendar()
+        {
+            return await _cache.GetOrCreateAsync("calendars", async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(_minutes * 5);
+
+                DateTime dt = DateTime.Parse($"{CustomExtensions.DateNow.Year}-{CustomExtensions.DateNow.Month}-01"); // dia primeiro do mes atual
+                return await this.GetCalendar(dt, DateTime.MinValue);
+            });
+        }
+        public async Task<List<Appointment>> GetCalendar(int mes)
+        {
+            DateTime dt = DateTime.Parse($"{CustomExtensions.DateNow.Year}-{mes.ToString("00")}-01");
+            DateTime dtend = dt.AddMonths(1).AddDays(-1);
+            return await this.GetCalendar(dt, dtend);
+        }
+        public async Task<List<Appointment>> GetCalendar(DateTime dtstart, DateTime dtend)
+        {
+            // query
+            var query = _context.Appointments
+                                .Include(i => i.Customer)
+                                .Where(w => w.status == Enumerados.AppointmentStatus.confirmed)
+                                .Where(w => w.booking_date >= dtstart);
+
+            // fim
+            if (dtend != DateTime.MinValue)
+                query = query.Where(w => w.booking_date <= dtend);
+
+            // list
+            return await query.Select(s => new Appointment()
+            {
+                Customer = new Customer() { name = s.Customer.name },
+                price_transfer = s.price_transfer,
+                booking_date = s.booking_date,
+                customer_id = s.customer_id,
+                provider_id = s.provider_id,
+                price_full = s.price_full,
+                type = s.type,
+                id = s.id
+            }).AsNoTracking().ToListAsync();
         }
     }
 }

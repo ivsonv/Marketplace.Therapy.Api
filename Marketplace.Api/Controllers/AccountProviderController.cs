@@ -4,7 +4,6 @@ using Marketplace.Domain.Models.Request;
 using Marketplace.Domain.Models.Request.account.provider;
 using Marketplace.Domain.Models.Response;
 using Marketplace.Domain.Models.Response.account.provider;
-using Marketplace.Domain.Models.Response.provider;
 using Marketplace.Services.Service;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -62,9 +61,9 @@ namespace Marketplace.Api.Controllers
 
         #region ..: appointment :..
 
-        [HttpGet("appointment")]
-        public async Task<BaseRs<accountProviderRs>> fetchAppointment([FromQuery] BaseRq<accountProviderRq> _request)
-            => await _account.fetchAppointment(_request);
+        [HttpGet("calendar")]
+        public async Task<BaseRs<accountProviderRs>> FetchCalendar(int month = -1)
+            => await _account.fetchCalendar(month);
         #endregion
     }
 }
