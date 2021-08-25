@@ -22,7 +22,7 @@ namespace Marketplace.Api.Controllers
         }
 
         [HttpPut]
-        public async Task<BaseRs<accountProviderRs>> UpdateProvider([FromBody] BaseRq<accountProviderRq> _request)
+        public async Task<BaseRs<accountProviderRs>> UpdateProvider([FromForm] accountProviderRq _request)
             => await _account.updateProvider(_request);
 
         #region ..: fetchs :..

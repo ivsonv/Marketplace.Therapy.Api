@@ -14,6 +14,7 @@ namespace Marketplace.Domain.Models.dto.provider
         public string cnpj { get; set; } = null;
         public string cpf { get; set; } = null;
         public string image { get; set; } = null;
+        public string signature { get; set; } = null;
         public string crp { get; set; } = null;
         public string description { get; set; } = null;
         public string curriculum { get; set; } = null;

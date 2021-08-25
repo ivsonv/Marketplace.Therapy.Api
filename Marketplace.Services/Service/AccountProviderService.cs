@@ -23,34 +23,66 @@ namespace Marketplace.Services.Service
         private readonly CustomAuthenticatedUser _authenticatedProvider;
         private readonly ProviderScheduleService _scheduleService;
         private readonly ProviderService _providerService;
+        private readonly UploadService _uploadService;
         private readonly ICustomCache _cache;
         private readonly IMapper _mapper;
 
         public AccountProviderService(ProviderScheduleService scheduleService,
                                       ProviderService providerService,
                                       CustomAuthenticatedUser user,
+                                      UploadService uploadService,
                                       ICustomCache cache,
                                       IMapper mapper)
         {
             _providerService = providerService;
             _scheduleService = scheduleService;
+            _uploadService = uploadService;
             _authenticatedProvider = user;
             _mapper = mapper;
             _cache = cache;
         }
 
-        public async Task<BaseRs<accountProviderRs>> updateProvider(BaseRq<accountProviderRq> _request)
+        public async Task<BaseRs<accountProviderRs>> updateProvider(accountProviderRq _request)
         {
             var _res = new BaseRs<accountProviderRs>();
             try
             {
-                if (_request.data.id != _authenticatedProvider.user.id)
+                // convert
+                var entity = _request.data.Deserialize<providerRq>();
+
+                // valid
+                if (entity.id != _authenticatedProvider.user.id)
                     return new BaseRs<accountProviderRs>() { error = new BaseError(new List<string>() { "Solicitação inválida." }) };
+
+                #region ..: imagens :..
+
+                // imagem
+                if (!_request.profile.IsEmpty())
+                {
+                    // remover imagem atual S3
+                    if (entity.image.IsNotEmpty())
+                        await _uploadService.RemoveImage(entity.image, "profile");
+
+                    entity.image = string.Format("{0}.{1}", CustomExtensions.getGuid, _request.profile.FileName.getExtension());
+                    await _uploadService.UploadImage(_request.profile, entity.image, "profile");
+                }
+
+                // assinatura
+                if (!_request.signature.IsEmpty())
+                {
+                    // remover imagem atual S3
+                    if (entity.signature.IsNotEmpty())
+                        await _uploadService.RemoveImage(entity.signature, "signature");
+
+                    entity.image = string.Format("{0}.{1}", CustomExtensions.getGuid, _request.signature.FileName.getExtension());
+                    await _uploadService.UploadImage(_request.signature, entity.signature, "signature");
+                }
+                #endregion
 
                 // request provider
                 var _rq = new BaseRq<providerRq>()
                 {
-                    data = _mapper.Map<providerRq>(_request.data)
+                    data = entity
                 };
 
                 // retorno provider
