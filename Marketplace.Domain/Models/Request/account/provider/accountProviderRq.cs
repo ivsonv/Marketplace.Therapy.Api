@@ -6,7 +6,7 @@ namespace Marketplace.Domain.Models.Request.account.provider
     {
         public string data { get; set; }
         public IFormFile profile { get; set; }
-        public IFormFile signature { get; set; }
+        public IFormFile sig { get; set; }
 
         public Request.provider.providerScheduleRq schedule { get; set; }
     }

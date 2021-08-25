@@ -16,6 +16,7 @@ namespace Marketplace.Infra.Mapping
             builder.Property(prop => prop.cpf).HasColumnType("varchar(11)");
             builder.Property(prop => prop.cnpj).HasColumnType("varchar(14)");
             builder.Property(prop => prop.image).HasColumnType("varchar(50)");
+            builder.Property(prop => prop.signature).HasColumnType("varchar(50)");
             builder.Property(prop => prop.phone).HasColumnType("varchar(255)");
             builder.Property(prop => prop.price).HasColumnType("decimal(10, 2)");
 

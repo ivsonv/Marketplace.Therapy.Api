@@ -24,6 +24,7 @@ namespace Marketplace.Services.Service
         private readonly ProviderScheduleService _scheduleService;
         private readonly ProviderService _providerService;
         private readonly UploadService _uploadService;
+        private readonly BankService _bankService;
         private readonly ICustomCache _cache;
         private readonly IMapper _mapper;
 
@@ -31,6 +32,7 @@ namespace Marketplace.Services.Service
                                       ProviderService providerService,
                                       CustomAuthenticatedUser user,
                                       UploadService uploadService,
+                                      BankService bankService,
                                       ICustomCache cache,
                                       IMapper mapper)
         {
@@ -38,6 +40,7 @@ namespace Marketplace.Services.Service
             _scheduleService = scheduleService;
             _uploadService = uploadService;
             _authenticatedProvider = user;
+            _bankService = bankService;
             _mapper = mapper;
             _cache = cache;
         }
@@ -68,14 +71,14 @@ namespace Marketplace.Services.Service
                 }
 
                 // assinatura
-                if (!_request.signature.IsEmpty())
+                if (!_request.sig.IsEmpty())
                 {
                     // remover imagem atual S3
                     if (entity.signature.IsNotEmpty())
                         await _uploadService.RemoveImage(entity.signature, "signature");
 
-                    entity.image = string.Format("{0}.{1}", CustomExtensions.getGuid, _request.signature.FileName.getExtension());
-                    await _uploadService.UploadImage(_request.signature, entity.signature, "signature");
+                    entity.signature = string.Format("{0}.{1}", CustomExtensions.getGuid, _request.sig.FileName.getExtension());
+                    await _uploadService.UploadImage(_request.sig, entity.signature, "signature");
                 }
                 #endregion
 
@@ -174,6 +177,19 @@ namespace Marketplace.Services.Service
                 _res.content = new accountProviderRs()
                 {
                     languages = await _cache.GetLanguages()
+                };
+            }
+            catch (System.Exception ex) { _res.setError(ex); }
+            return _res;
+        }
+        public BaseRs<accountProviderRs> fetchAccountTypes()
+        {
+            var _res = new BaseRs<accountProviderRs>();
+            try
+            {
+                _res.content = new accountProviderRs()
+                {
+                    accounttypes = _bankService.getAccountTypes()
                 };
             }
             catch (System.Exception ex) { _res.setError(ex); }

@@ -7,6 +7,7 @@ using Marketplace.Domain.Models.Request;
 using Marketplace.Domain.Models.Request.provider;
 using Marketplace.Domain.Models.Response;
 using Marketplace.Domain.Models.Response.provider;
+using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,17 +18,20 @@ namespace Marketplace.Services.Service
     {
         private readonly IProviderRepository _providerRepository;
         private readonly Validators.ProviderValidator _validator;
+        private readonly IConfiguration _configuration;
         private readonly EmailService _emailService;
         private readonly IMapper _mapper;
         private readonly ICustomCache _cache;
 
         public ProviderService(Validators.ProviderValidator validator,
                               IProviderRepository companyRepository,
+                              IConfiguration configuration,
                               EmailService emailService,
                               ICustomCache cache,
                               IMapper mapper)
         {
             _providerRepository = companyRepository;
+            _configuration = configuration;
             _emailService = emailService;
             _validator = validator;
             _mapper = mapper;
@@ -183,6 +187,7 @@ namespace Marketplace.Services.Service
             {
                 var dto = _mapper.Map<providerDto>(await _providerRepository.FindById(id));
                 dto.ds_situation = this.getSituations().First(f => f.value == ((int)dto.situation).ToString()).label;
+                dto.imageurl = dto.image.toImageUrl($"{_configuration["storage:image"]}/profile");
 
                 if (!dto.languages.IsEmpty()) dto.languages.ForEach(fe => { fe.Provider = null; });
                 if (!dto.topics.IsEmpty()) dto.topics.ForEach(fe => { fe.Provider = null; });
@@ -210,6 +215,5 @@ namespace Marketplace.Services.Service
                 //new Domain.Models.dto.Item() { label = "Outros", value = ((int)Enumerados.ProviderStatus.others).ToString() },
             };
         }
-
     }
 }

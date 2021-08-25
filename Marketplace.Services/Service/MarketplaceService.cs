@@ -46,7 +46,7 @@ namespace Marketplace.Services.Service
                     .Select(x => new providerMktRs()
                     {
                         name = x.nickname.IsNotEmpty() ? x.nickname : $"{x.fantasy_name} {x.company_name}",
-                        image = x.image.toImageUrl(_configuration["storage:image"]),
+                        image = x.image.toImageUrl($"{_configuration["storage:image"]}/profile"),
                         price = x.price.ToString(),
                         biography = x.biography,
                         crp = x.crp

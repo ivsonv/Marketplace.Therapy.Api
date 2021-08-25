@@ -22,8 +22,8 @@ namespace Marketplace.Api.Controllers
         }
 
         [HttpPut]
-        public async Task<BaseRs<accountProviderRs>> UpdateProvider([FromForm] accountProviderRq _request)
-            => await _account.updateProvider(_request);
+        public async Task<BaseRs<accountProviderRs>> UpdateProvider([FromForm] accountProviderRq _reAcc)
+            => await _account.updateProvider(_reAcc);
 
         #region ..: fetchs :..
 
@@ -42,6 +42,10 @@ namespace Marketplace.Api.Controllers
         [HttpGet("languages")]
         public async Task<BaseRs<accountProviderRs>> GetLanguages()
             => await _account.fetchLanguages();
+
+        [HttpGet("account-types")]
+        public BaseRs<accountProviderRs> GetAccountTypes()
+            => _account.fetchAccountTypes();
         #endregion
 
         #region ..: schedules :..

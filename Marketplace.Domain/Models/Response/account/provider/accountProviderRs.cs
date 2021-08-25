@@ -9,6 +9,7 @@ namespace Marketplace.Domain.Models.Response.account.provider
         public List<Response.provider.providerScheduleRs> schedules { get; set; }
         public List<Entities.Topic> topics { get; set; }
         public List<banks.bankRs> banks { get; set; }
+        public List<Domain.Models.dto.Item> accounttypes { get; set; }
         public List<Entities.Language> languages { get; set; }
     }
 }

@@ -82,6 +82,7 @@ namespace Marketplace.Api
             services.AddTransient<IStorage, StorageIntegrations>();
             services.AddTransient<IPayment, PaymentIntegrations>();
             services.AddTransient<IMerchant, MerchantIntegrations>();
+            services.AddTransient<IStorage, StorageIntegrations>();
 
             // integrations individual Storage
             services.AddScoped<ICustomCache, CacheApp>();
@@ -117,6 +118,7 @@ namespace Marketplace.Api
             services.AddScoped<ProviderScheduleService>();
             services.AddScoped<AccountProviderService>();
             services.AddScoped<AppointmentService>();
+            services.AddScoped<UploadService>();
 
             // validator
             services.AddSingleton<Services.Validators.CustomerValidator>();

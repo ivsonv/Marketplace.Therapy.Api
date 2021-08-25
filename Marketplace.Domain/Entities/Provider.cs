@@ -18,6 +18,7 @@ namespace Marketplace.Domain.Entities
         public string cnpj { get; set; }
         public string cpf { get; set; }
         public string image { get; set; }
+        public string signature { get; set; }
         public string description { get; set; }
         public string biography { get; set; }
         public string academic_training { get; set; }

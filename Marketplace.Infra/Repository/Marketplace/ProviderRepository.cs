@@ -133,6 +133,7 @@ namespace Marketplace.Infra.Repository.Marketplace
                 _current.crp = entity.crp;
                 _current.email = entity.email;
                 _current.image = entity.image;
+                _current.signature = entity.signature;
 
                 //endereço
                 if (entity.Address != null)
@@ -174,7 +175,7 @@ namespace Marketplace.Infra.Repository.Marketplace
                     var lst = _current.Topics.Where(w => topicsRemoves.Contains(w.topic_id)).ToList();
                     _repositoryTopics.RemoveRange(lst);
 
-                    _current.Topics = null;
+                    //_current.Topics = null;
                 }
 
                 receives = receives.Where(w => !topicsCurrents.Contains(w)).ToList();
