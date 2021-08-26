@@ -895,7 +895,7 @@ namespace Marketplace.Infra.Migrations
             modelBuilder.Entity("Marketplace.Domain.Entities.ProviderReceipt", b =>
                 {
                     b.HasOne("Marketplace.Domain.Entities.Provider", "Provider")
-                        .WithMany("ProviderReceipts")
+                        .WithMany("Receipts")
                         .HasForeignKey("provider_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1001,7 +1001,7 @@ namespace Marketplace.Infra.Migrations
 
                     b.Navigation("Languages");
 
-                    b.Navigation("ProviderReceipts");
+                    b.Navigation("Receipts");
 
                     b.Navigation("Schedules");
 

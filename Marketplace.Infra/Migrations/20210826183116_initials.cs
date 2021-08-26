@@ -9,6 +9,23 @@ namespace Marketplace.Infra.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "banks",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    name = table.Column<string>(type: "varchar(200)", nullable: true),
+                    code = table.Column<string>(type: "varchar(3)", nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_banks", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "categories",
                 columns: table => new
                 {
@@ -52,6 +69,21 @@ namespace Marketplace.Infra.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "group_permissions",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    name = table.Column<string>(type: "varchar(50)", nullable: true),
+                    created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_group_permissions", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "languages",
                 columns: table => new
                 {
@@ -76,19 +108,25 @@ namespace Marketplace.Infra.Migrations
                     fantasy_name = table.Column<string>(type: "varchar(255)", nullable: true),
                     company_name = table.Column<string>(type: "varchar(255)", nullable: true),
                     email = table.Column<string>(type: "varchar(150)", nullable: true),
+                    link = table.Column<string>(type: "text", nullable: true),
+                    birthdate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     crp = table.Column<string>(type: "text", nullable: true),
                     phone = table.Column<string>(type: "varchar(255)", nullable: true),
                     password = table.Column<string>(type: "text", nullable: true),
                     cnpj = table.Column<string>(type: "varchar(14)", nullable: true),
                     cpf = table.Column<string>(type: "varchar(11)", nullable: true),
                     image = table.Column<string>(type: "varchar(50)", nullable: true),
+                    signature = table.Column<string>(type: "varchar(50)", nullable: true),
                     description = table.Column<string>(type: "text", nullable: true),
-                    curriculum = table.Column<string>(type: "text", nullable: true),
                     biography = table.Column<string>(type: "text", nullable: true),
                     academic_training = table.Column<string>(type: "text", nullable: true),
                     interval_between_appointment = table.Column<int>(type: "integer", nullable: false),
                     nickname = table.Column<string>(type: "text", nullable: true),
+                    price = table.Column<decimal>(type: "numeric(10,2)", nullable: false),
+                    price_for_thirty = table.Column<decimal>(type: "numeric", nullable: true),
+                    time_zone = table.Column<string>(type: "text", nullable: true),
                     situation = table.Column<int>(type: "integer", nullable: false),
+                    gender = table.Column<int>(type: "integer", nullable: false),
                     active = table.Column<bool>(type: "boolean", nullable: false),
                     remove = table.Column<bool>(type: "boolean", nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
@@ -106,6 +144,7 @@ namespace Marketplace.Infra.Migrations
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     name = table.Column<string>(type: "varchar(120)", nullable: true),
+                    experience = table.Column<bool>(type: "boolean", nullable: false),
                     active = table.Column<bool>(type: "boolean", nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
@@ -113,6 +152,24 @@ namespace Marketplace.Infra.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_topics", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "users",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    name = table.Column<string>(type: "varchar(200)", nullable: true),
+                    email = table.Column<string>(type: "text", nullable: true),
+                    password = table.Column<string>(type: "text", nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_users", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -169,6 +226,28 @@ namespace Marketplace.Infra.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "group_permissions_attached",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    name = table.Column<string>(type: "varchar(120)", nullable: true),
+                    group_permission_id = table.Column<int>(type: "integer", nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_group_permissions_attached", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_group_permissions_attached_group_permissions_group_permissi~",
+                        column: x => x.group_permission_id,
+                        principalTable: "group_permissions",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "appointments",
                 columns: table => new
                 {
@@ -177,8 +256,10 @@ namespace Marketplace.Infra.Migrations
                     price_commission = table.Column<decimal>(type: "numeric", nullable: false),
                     price_cost = table.Column<decimal>(type: "numeric", nullable: false),
                     price_full = table.Column<decimal>(type: "numeric", nullable: false),
+                    price_transfer = table.Column<decimal>(type: "numeric", nullable: false),
                     price = table.Column<decimal>(type: "numeric", nullable: false),
                     booking_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    type = table.Column<int>(type: "integer", nullable: false),
                     origin = table.Column<int>(type: "integer", nullable: false),
                     payment_status = table.Column<int>(type: "integer", nullable: false),
                     status = table.Column<int>(type: "integer", nullable: false),
@@ -191,8 +272,8 @@ namespace Marketplace.Infra.Migrations
                 {
                     table.PrimaryKey("PK_appointments", x => x.id);
                     table.ForeignKey(
-                        name: "FK_appointments_customer_provider_id",
-                        column: x => x.provider_id,
+                        name: "FK_appointments_customer_customer_id",
+                        column: x => x.customer_id,
                         principalTable: "customer",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Restrict);
@@ -244,6 +325,7 @@ namespace Marketplace.Infra.Migrations
                     account_digit = table.Column<string>(type: "varchar(3)", nullable: true),
                     account_number = table.Column<string>(type: "varchar(20)", nullable: true),
                     bank_code = table.Column<string>(type: "varchar(10)", nullable: true),
+                    account_bank_type = table.Column<int>(type: "integer", nullable: false),
                     provider_id = table.Column<int>(type: "integer", nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
@@ -309,6 +391,32 @@ namespace Marketplace.Infra.Migrations
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_provider_languages_provider_provider_id",
+                        column: x => x.provider_id,
+                        principalTable: "provider",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "provider_receipt",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    signature = table.Column<string>(type: "text", nullable: true),
+                    cpf = table.Column<string>(type: "text", nullable: true),
+                    fantasy_name = table.Column<string>(type: "text", nullable: true),
+                    cnpj = table.Column<string>(type: "text", nullable: true),
+                    address = table.Column<string>(type: "text", nullable: true),
+                    provider_id = table.Column<int>(type: "integer", nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_provider_receipt", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_provider_receipt_provider_provider_id",
                         column: x => x.provider_id,
                         principalTable: "provider",
                         principalColumn: "id",
@@ -390,6 +498,39 @@ namespace Marketplace.Infra.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "user_group_permissions",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    user_id = table.Column<int>(type: "integer", nullable: false),
+                    group_permission_id = table.Column<int>(type: "integer", nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_user_group_permissions", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_user_group_permissions_group_permissions_group_permission_id",
+                        column: x => x.group_permission_id,
+                        principalTable: "group_permissions",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_user_group_permissions_users_user_id",
+                        column: x => x.user_id,
+                        principalTable: "users",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_appointments_customer_id",
+                table: "appointments",
+                column: "customer_id");
+
             migrationBuilder.CreateIndex(
                 name: "IX_appointments_provider_id",
                 table: "appointments",
@@ -404,6 +545,11 @@ namespace Marketplace.Infra.Migrations
                 name: "IX_customer_assessments_customer_id",
                 table: "customer_assessments",
                 column: "customer_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_group_permissions_attached_group_permission_id",
+                table: "group_permissions_attached",
+                column: "group_permission_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_provider_address_provider_id",
@@ -436,6 +582,11 @@ namespace Marketplace.Infra.Migrations
                 column: "provider_id");
 
             migrationBuilder.CreateIndex(
+                name: "IX_provider_receipt_provider_id",
+                table: "provider_receipt",
+                column: "provider_id");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_provider_schedules_provider_id",
                 table: "provider_schedules",
                 column: "provider_id");
@@ -454,6 +605,16 @@ namespace Marketplace.Infra.Migrations
                 name: "IX_provider_topics_topic_id",
                 table: "provider_topics",
                 column: "topic_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_user_group_permissions_group_permission_id",
+                table: "user_group_permissions",
+                column: "group_permission_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_user_group_permissions_user_id",
+                table: "user_group_permissions",
+                column: "user_id");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -462,10 +623,16 @@ namespace Marketplace.Infra.Migrations
                 name: "appointments");
 
             migrationBuilder.DropTable(
+                name: "banks");
+
+            migrationBuilder.DropTable(
                 name: "customer_address");
 
             migrationBuilder.DropTable(
                 name: "customer_assessments");
+
+            migrationBuilder.DropTable(
+                name: "group_permissions_attached");
 
             migrationBuilder.DropTable(
                 name: "provider_address");
@@ -480,6 +647,9 @@ namespace Marketplace.Infra.Migrations
                 name: "provider_languages");
 
             migrationBuilder.DropTable(
+                name: "provider_receipt");
+
+            migrationBuilder.DropTable(
                 name: "provider_schedules");
 
             migrationBuilder.DropTable(
@@ -487,6 +657,9 @@ namespace Marketplace.Infra.Migrations
 
             migrationBuilder.DropTable(
                 name: "provider_topics");
+
+            migrationBuilder.DropTable(
+                name: "user_group_permissions");
 
             migrationBuilder.DropTable(
                 name: "customer");
@@ -502,6 +675,12 @@ namespace Marketplace.Infra.Migrations
 
             migrationBuilder.DropTable(
                 name: "topics");
+
+            migrationBuilder.DropTable(
+                name: "group_permissions");
+
+            migrationBuilder.DropTable(
+                name: "users");
         }
     }
 }

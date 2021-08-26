@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Marketplace.Infra.Migrations
 {
     [DbContext(typeof(MarketPlaceContext))]
-    [Migration("20210804161041_initials")]
+    [Migration("20210826183116_initials")]
     partial class initials
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -55,10 +55,16 @@ namespace Marketplace.Infra.Migrations
                     b.Property<decimal>("price_full")
                         .HasColumnType("numeric");
 
+                    b.Property<decimal>("price_transfer")
+                        .HasColumnType("numeric");
+
                     b.Property<int>("provider_id")
                         .HasColumnType("integer");
 
                     b.Property<int>("status")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("type")
                         .HasColumnType("integer");
 
                     b.Property<DateTime?>("updated_at")
@@ -66,9 +72,38 @@ namespace Marketplace.Infra.Migrations
 
                     b.HasKey("id");
 
+                    b.HasIndex("customer_id");
+
                     b.HasIndex("provider_id");
 
                     b.ToTable("appointments");
+                });
+
+            modelBuilder.Entity("Marketplace.Domain.Entities.Bank", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<bool>("active")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("code")
+                        .HasColumnType("varchar(3)");
+
+                    b.Property<DateTime?>("created_at")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("name")
+                        .HasColumnType("varchar(200)");
+
+                    b.Property<DateTime?>("updated_at")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("id");
+
+                    b.ToTable("banks");
                 });
 
             modelBuilder.Entity("Marketplace.Domain.Entities.Category", b =>
@@ -231,6 +266,53 @@ namespace Marketplace.Infra.Migrations
                     b.ToTable("customer_assessments");
                 });
 
+            modelBuilder.Entity("Marketplace.Domain.Entities.GroupPermission", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<DateTime?>("created_at")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("name")
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<DateTime?>("updated_at")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("id");
+
+                    b.ToTable("group_permissions");
+                });
+
+            modelBuilder.Entity("Marketplace.Domain.Entities.GroupPermissionAttached", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<DateTime?>("created_at")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("group_permission_id")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("name")
+                        .HasColumnType("varchar(120)");
+
+                    b.Property<DateTime?>("updated_at")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("group_permission_id");
+
+                    b.ToTable("group_permissions_attached");
+                });
+
             modelBuilder.Entity("Marketplace.Domain.Entities.Language", b =>
                 {
                     b.Property<int>("id")
@@ -271,6 +353,9 @@ namespace Marketplace.Infra.Migrations
                     b.Property<string>("biography")
                         .HasColumnType("text");
 
+                    b.Property<DateTime>("birthdate")
+                        .HasColumnType("timestamp without time zone");
+
                     b.Property<string>("cnpj")
                         .HasColumnType("varchar(14)");
 
@@ -286,9 +371,6 @@ namespace Marketplace.Infra.Migrations
                     b.Property<string>("crp")
                         .HasColumnType("text");
 
-                    b.Property<string>("curriculum")
-                        .HasColumnType("text");
-
                     b.Property<string>("description")
                         .HasColumnType("text");
 
@@ -298,11 +380,17 @@ namespace Marketplace.Infra.Migrations
                     b.Property<string>("fantasy_name")
                         .HasColumnType("varchar(255)");
 
+                    b.Property<int>("gender")
+                        .HasColumnType("integer");
+
                     b.Property<string>("image")
                         .HasColumnType("varchar(50)");
 
                     b.Property<int>("interval_between_appointment")
                         .HasColumnType("integer");
+
+                    b.Property<string>("link")
+                        .HasColumnType("text");
 
                     b.Property<string>("nickname")
                         .HasColumnType("text");
@@ -313,11 +401,23 @@ namespace Marketplace.Infra.Migrations
                     b.Property<string>("phone")
                         .HasColumnType("varchar(255)");
 
+                    b.Property<decimal>("price")
+                        .HasColumnType("numeric(10,2)");
+
+                    b.Property<decimal?>("price_for_thirty")
+                        .HasColumnType("numeric");
+
                     b.Property<bool>("remove")
                         .HasColumnType("boolean");
 
+                    b.Property<string>("signature")
+                        .HasColumnType("varchar(50)");
+
                     b.Property<int>("situation")
                         .HasColumnType("integer");
+
+                    b.Property<string>("time_zone")
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("updated_at")
                         .HasColumnType("timestamp without time zone");
@@ -380,6 +480,9 @@ namespace Marketplace.Infra.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<int>("account_bank_type")
+                        .HasColumnType("integer");
 
                     b.Property<string>("account_digit")
                         .HasColumnType("varchar(3)");
@@ -466,6 +569,44 @@ namespace Marketplace.Infra.Migrations
                     b.HasIndex("provider_id");
 
                     b.ToTable("provider_languages");
+                });
+
+            modelBuilder.Entity("Marketplace.Domain.Entities.ProviderReceipt", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("address")
+                        .HasColumnType("text");
+
+                    b.Property<string>("cnpj")
+                        .HasColumnType("text");
+
+                    b.Property<string>("cpf")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("created_at")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("fantasy_name")
+                        .HasColumnType("text");
+
+                    b.Property<int>("provider_id")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("signature")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("updated_at")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("provider_id");
+
+                    b.ToTable("provider_receipt");
                 });
 
             modelBuilder.Entity("Marketplace.Domain.Entities.ProviderSchedule", b =>
@@ -570,6 +711,9 @@ namespace Marketplace.Infra.Migrations
                     b.Property<DateTime?>("created_at")
                         .HasColumnType("timestamp without time zone");
 
+                    b.Property<bool>("experience")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("name")
                         .HasColumnType("varchar(120)");
 
@@ -581,11 +725,69 @@ namespace Marketplace.Infra.Migrations
                     b.ToTable("topics");
                 });
 
+            modelBuilder.Entity("Marketplace.Domain.Entities.User", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<bool>("active")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("created_at")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("email")
+                        .HasColumnType("text");
+
+                    b.Property<string>("name")
+                        .HasColumnType("varchar(200)");
+
+                    b.Property<string>("password")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("updated_at")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("id");
+
+                    b.ToTable("users");
+                });
+
+            modelBuilder.Entity("Marketplace.Domain.Entities.UserGroupPermission", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<DateTime?>("created_at")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("group_permission_id")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("updated_at")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("user_id")
+                        .HasColumnType("integer");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("group_permission_id");
+
+                    b.HasIndex("user_id");
+
+                    b.ToTable("user_group_permissions");
+                });
+
             modelBuilder.Entity("Marketplace.Domain.Entities.Appointment", b =>
                 {
                     b.HasOne("Marketplace.Domain.Entities.Customer", "Customer")
                         .WithMany("Appointments")
-                        .HasForeignKey("provider_id")
+                        .HasForeignKey("customer_id")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -619,6 +821,17 @@ namespace Marketplace.Infra.Migrations
                         .IsRequired();
 
                     b.Navigation("Customer");
+                });
+
+            modelBuilder.Entity("Marketplace.Domain.Entities.GroupPermissionAttached", b =>
+                {
+                    b.HasOne("Marketplace.Domain.Entities.GroupPermission", "GroupPermission")
+                        .WithMany("PermissionsAttached")
+                        .HasForeignKey("group_permission_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("GroupPermission");
                 });
 
             modelBuilder.Entity("Marketplace.Domain.Entities.ProviderAddress", b =>
@@ -681,6 +894,17 @@ namespace Marketplace.Infra.Migrations
                     b.Navigation("Provider");
                 });
 
+            modelBuilder.Entity("Marketplace.Domain.Entities.ProviderReceipt", b =>
+                {
+                    b.HasOne("Marketplace.Domain.Entities.Provider", "Provider")
+                        .WithMany("Receipts")
+                        .HasForeignKey("provider_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Provider");
+                });
+
             modelBuilder.Entity("Marketplace.Domain.Entities.ProviderSchedule", b =>
                 {
                     b.HasOne("Marketplace.Domain.Entities.Provider", "Provider")
@@ -722,6 +946,25 @@ namespace Marketplace.Infra.Migrations
                     b.Navigation("Topic");
                 });
 
+            modelBuilder.Entity("Marketplace.Domain.Entities.UserGroupPermission", b =>
+                {
+                    b.HasOne("Marketplace.Domain.Entities.GroupPermission", "GroupPermission")
+                        .WithMany("Users")
+                        .HasForeignKey("group_permission_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Marketplace.Domain.Entities.User", "User")
+                        .WithMany("GroupPermissions")
+                        .HasForeignKey("user_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("GroupPermission");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Marketplace.Domain.Entities.Category", b =>
                 {
                     b.Navigation("ProviderCategories");
@@ -734,6 +977,13 @@ namespace Marketplace.Infra.Migrations
                     b.Navigation("Appointments");
 
                     b.Navigation("Assessment");
+                });
+
+            modelBuilder.Entity("Marketplace.Domain.Entities.GroupPermission", b =>
+                {
+                    b.Navigation("PermissionsAttached");
+
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("Marketplace.Domain.Entities.Language", b =>
@@ -753,6 +1003,8 @@ namespace Marketplace.Infra.Migrations
 
                     b.Navigation("Languages");
 
+                    b.Navigation("Receipts");
+
                     b.Navigation("Schedules");
 
                     b.Navigation("SplitAccounts");
@@ -763,6 +1015,11 @@ namespace Marketplace.Infra.Migrations
             modelBuilder.Entity("Marketplace.Domain.Entities.Topic", b =>
                 {
                     b.Navigation("ProviderTopics");
+                });
+
+            modelBuilder.Entity("Marketplace.Domain.Entities.User", b =>
+                {
+                    b.Navigation("GroupPermissions");
                 });
 #pragma warning restore 612, 618
         }
