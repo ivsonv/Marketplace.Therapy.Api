@@ -45,6 +45,34 @@ namespace Marketplace.Services.Service
             _cache = cache;
         }
 
+        public async Task<BaseRs<accountProviderRs>> storeProvider(accountProviderRq _request)
+        {
+            var _res = new BaseRs<accountProviderRs>();
+            try
+            {
+                // request provider
+                var _rq = new BaseRq<providerRq>()
+                {
+                    data = new providerRq() 
+                    {
+                        company_name = _request.company_name,
+                        fantasy_name = _request.fantasy_name,
+                        password = _request.password,
+                        email = _request.email
+                    }
+                };
+
+                // retorno provider
+                var _resUpdate = await _providerService.Store(_rq);
+                if (_resUpdate.error == null)
+                    _res.content = new accountProviderRs() { provider = _resUpdate.content };
+                else
+                    _res.error = _resUpdate.error;
+            }
+            catch (System.Exception ex) { _res.setError(ex); }
+            return _res;
+        }
+
         public async Task<BaseRs<accountProviderRs>> updateProvider(accountProviderRq _request)
         {
             var _res = new BaseRs<accountProviderRs>();
@@ -73,12 +101,19 @@ namespace Marketplace.Services.Service
                 // assinatura
                 if (!_request.sig.IsEmpty())
                 {
-                    // remover imagem atual S3
-                    if (entity.signature.IsNotEmpty())
-                        await _uploadService.RemoveImage(entity.signature, "signature");
+                    // receipts
+                    if (entity.receipts.IsEmpty())
+                        return new BaseRs<accountProviderRs>() { error = new BaseError(new List<string>() { "Assinatura - Solicitação inválida." }) };
 
-                    entity.signature = string.Format("{0}.{1}", CustomExtensions.getGuid, _request.sig.FileName.getExtension());
-                    await _uploadService.UploadImage(_request.sig, entity.signature, "signature");
+                    // remover imagem atual S3, caso tenha
+                    if (entity.receipts[0].signature.IsNotEmpty())
+                        await _uploadService.RemoveImage(entity.receipts[0].signature, "signature");
+
+                    // key
+                    entity.receipts[0].signature = string.Format("{0}.{1}", CustomExtensions.getGuid, _request.sig.FileName.getExtension());
+
+                    // signature
+                    await _uploadService.UploadImage(_request.sig, entity.receipts[0].signature, "signature");
                 }
                 #endregion
 

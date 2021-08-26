@@ -5,13 +5,13 @@ using Marketplace.Domain.Models.Request.account.provider;
 using Marketplace.Domain.Models.Response;
 using Marketplace.Domain.Models.Response.account.provider;
 using Marketplace.Services.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
 
 namespace Marketplace.Api.Controllers
 {
-    [CustomAuthorizePermission(Permissions = permission.Account.ViewProvider)]
     [Route("api/account-provider")]
     public class AccountProviderController : DefaultController
     {
@@ -21,51 +21,55 @@ namespace Marketplace.Api.Controllers
             _account = accountProviderService;
         }
 
-        [HttpPut]
+        [HttpPut, CustomAuthorizePermission(Permissions = permission.Account.ViewProvider)]
         public async Task<BaseRs<accountProviderRs>> UpdateProvider([FromForm] accountProviderRq _reAcc)
             => await _account.updateProvider(_reAcc);
 
+        [HttpPost]
+        public async Task<BaseRs<accountProviderRs>> StoreProvider([FromBody] accountProviderRq _reAcc)
+            => await _account.storeProvider(_reAcc);
+
         #region ..: fetchs :..
 
-        [HttpGet]
+        [HttpGet, CustomAuthorizePermission(Permissions = permission.Account.ViewProvider)]
         public async Task<BaseRs<accountProviderRs>> FindBy()
             => await _account.findByUser();
 
-        [HttpGet("banks")]
+        [HttpGet("banks"), CustomAuthorizePermission(Permissions = permission.Account.ViewProvider)]
         public async Task<BaseRs<accountProviderRs>> GetBanks(string term)
             => await _account.fetchBanks(term);
 
-        [HttpGet("topics")]
+        [HttpGet("topics"), CustomAuthorizePermission(Permissions = permission.Account.ViewProvider)]
         public async Task<BaseRs<accountProviderRs>> GetTopics()
             => await _account.fetchTopics();
 
-        [HttpGet("languages")]
+        [HttpGet("languages"), CustomAuthorizePermission(Permissions = permission.Account.ViewProvider)]
         public async Task<BaseRs<accountProviderRs>> GetLanguages()
             => await _account.fetchLanguages();
 
-        [HttpGet("account-types")]
+        [HttpGet("account-types"), CustomAuthorizePermission(Permissions = permission.Account.ViewProvider)]
         public BaseRs<accountProviderRs> GetAccountTypes()
             => _account.fetchAccountTypes();
         #endregion
 
         #region ..: schedules :..
 
-        [HttpGet("schedules")]
+        [HttpGet("schedules"), CustomAuthorizePermission(Permissions = permission.Account.ViewProvider)]
         public async Task<BaseRs<accountProviderRs>> GetSchedules()
             => await _account.fetchSchedules();
 
-        [HttpPost("schedules")]
+        [HttpPost("schedules"), CustomAuthorizePermission(Permissions = permission.Account.ViewProvider)]
         public async Task<BaseRs<accountProviderRs>> SaveSchedules([FromBody] BaseRq<accountProviderRq> _request)
             => await _account.SaveSchedule(_request);
 
-        [HttpDelete("schedules/{id:int}")]
+        [HttpDelete("schedules/{id:int}"), CustomAuthorizePermission(Permissions = permission.Account.ViewProvider)]
         public async Task<BaseRs<bool>> DeleteSchedule([FromRoute] int id)
             => await _account.DeleteSchedule(id);
         #endregion
 
         #region ..: appointment :..
 
-        [HttpGet("calendar")]
+        [HttpGet("calendar"), CustomAuthorizePermission(Permissions = permission.Account.ViewProvider)]
         public async Task<BaseRs<accountProviderRs>> FetchCalendar(int month = -1)
             => await _account.fetchCalendar(month);
         #endregion

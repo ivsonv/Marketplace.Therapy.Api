@@ -15,6 +15,7 @@ namespace Marketplace.Domain.Models.dto.provider
         public string cpf { get; set; } = null;
         public string image { get; set; } = null;
         public string imageurl { get; set; } = null;
+        public string signatureurl { get; set; } = null;
         public string signature { get; set; } = null;
         public string crp { get; set; } = null;
         public string description { get; set; } = null;
@@ -30,6 +31,7 @@ namespace Marketplace.Domain.Models.dto.provider
         public List<location.Address> address { get; set; } = null;
 
         public List<Entities.ProviderBankAccount> bankAccounts { get; set; } = null;
+        public List<Entities.ProviderReceipt> receipts { get; set; } = null;
         public List<Entities.ProviderLanguages> languages { get; set; } = null;
         public List<Entities.ProviderTopics> topics { get; set; } = null;
         public List<Entities.ProviderSplitAccount> splitAccounts { get; set; } = null;

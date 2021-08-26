@@ -55,7 +55,6 @@ namespace Marketplace.Infra.Repository.Marketplace
                 id = s.id
             }).ToListAsync();
         }
-
         public async Task<List<Provider>> Show(Pagination pagination)
         {
             return await this.Show(pagination);
@@ -69,6 +68,7 @@ namespace Marketplace.Infra.Repository.Marketplace
                                     .Include(i => i.Languages)
                                     .Include(i => i.Topics)
                                     .Include(i => i.SplitAccounts)
+                                    .Include(i => i.Receipts)
                                     .FirstOrDefaultAsync(f => f.id == id);
         }
 
@@ -133,7 +133,7 @@ namespace Marketplace.Infra.Repository.Marketplace
                 _current.crp = entity.crp;
                 _current.email = entity.email;
                 _current.image = entity.image;
-                _current.signature = entity.signature;
+                //_current.signature = entity.signature;
 
                 //endereço
                 if (entity.Address != null)
@@ -142,6 +142,10 @@ namespace Marketplace.Infra.Repository.Marketplace
                 // dados bancarios
                 if (entity.BankAccounts != null)
                     _current.BankAccounts = entity.BankAccounts;
+
+                // dados assinatura
+                if (entity.Receipts != null)
+                    _current.Receipts = entity.Receipts;
 
                 #region ..: Idiomas :..
 
@@ -174,8 +178,6 @@ namespace Marketplace.Infra.Repository.Marketplace
                 {
                     var lst = _current.Topics.Where(w => topicsRemoves.Contains(w.topic_id)).ToList();
                     _repositoryTopics.RemoveRange(lst);
-
-                    //_current.Topics = null;
                 }
 
                 receives = receives.Where(w => !topicsCurrents.Contains(w)).ToList();
@@ -202,6 +204,7 @@ namespace Marketplace.Infra.Repository.Marketplace
             return await _repository.Get(g => g.email == email)
                   .Select(s => new Provider()
                   {
+                      image = s.image,
                       fantasy_name = s.fantasy_name,
                       password = s.password,
                       id = s.id

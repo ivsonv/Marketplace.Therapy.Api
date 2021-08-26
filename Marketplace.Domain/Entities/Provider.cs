@@ -40,7 +40,7 @@ namespace Marketplace.Domain.Entities
         public IEnumerable<ProviderTopics> Topics { get; set; }
         public IEnumerable<ProviderLanguages> Languages { get; set; }
         public IEnumerable<Appointment> Appointments { get; set; }
-        public IEnumerable<ProviderReceipt> ProviderReceipts { get; set; }
+        public IEnumerable<ProviderReceipt> Receipts { get; set; }
     }
 
     public class ProviderAddress : shared.BaseAddress

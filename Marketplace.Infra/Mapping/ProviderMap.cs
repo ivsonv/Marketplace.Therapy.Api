@@ -60,7 +60,7 @@ namespace Marketplace.Infra.Mapping
                    .HasForeignKey(f => f.provider_id)
                    .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasMany(h => h.ProviderReceipts)
+            builder.HasMany(h => h.Receipts)
                    .WithOne(w => w.Provider)
                    .HasForeignKey(f => f.provider_id)
                    .OnDelete(DeleteBehavior.Cascade);

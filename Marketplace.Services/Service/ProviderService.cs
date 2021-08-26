@@ -85,18 +85,14 @@ namespace Marketplace.Services.Service
                     #region ..: check already exists :..
 
                     _request.data.email = _request.data.email.IsCompare();
-                    var company = await _providerRepository.FindByEmail(_request.data.email);
-                    if (company != null)
+                    if (_request.data.cnpj.IsNotEmpty())
                     {
-                        _res.setError("e-mail já cadastrado anteriormente, tente a opção recuperar 'minha senha'");
-                        return _res;
-                    }
-
-                    company = await _providerRepository.FindByCnpj(_request.data.cnpj);
-                    if (company != null)
-                    {
-                        _res.setError("CNPJ já cadastrado anteriormente, tente a opção recuperar 'minha senha'");
-                        return _res;
+                        var company = await _providerRepository.FindByCnpj(_request.data.cnpj);
+                        if (company != null)
+                        {
+                            _res.setError("CNPJ já cadastrado anteriormente, tente a opção recuperar 'minha senha'");
+                            return _res;
+                        }
                     }
                     #endregion
 
@@ -124,7 +120,7 @@ namespace Marketplace.Services.Service
             {
                 #region ..: pré validations :..
 
-                _request.data.phone = _request.data.phone.clearMask().Replace(" ", "");
+                _request.data.phone = _request.data.phone.clearMask();
                 _request.data.email = _request.data.email.IsCompare();
                 _request.data.cnpj = _request.data.cnpj.clearMask();
                 _request.data.cpf = _request.data.cpf.clearMask();
@@ -136,6 +132,23 @@ namespace Marketplace.Services.Service
                 if (!_request.data.cnpj.IsEmpty())
                     if (!_request.data.cnpj.IsCnpj())
                         _res.error = new BaseError(new List<string> { "CNPJ informado não e válido." });
+
+                if (!_request.data.receipts.IsEmpty())
+                {
+                    _request.data.receipts.ForEach(fe =>
+                    {
+                        fe.cpf = fe.cpf.clearMask();
+                        if (!fe.cpf.IsEmpty())
+                            if (!fe.cpf.IsCpf())
+                                _res.error = new BaseError(new List<string> { "CPF informado na assinatura não e válido." });
+
+                        fe.cnpj = fe.cnpj.clearMask();
+                        if (!fe.cnpj.IsEmpty())
+                            if (!fe.cnpj.IsCnpj())
+                                _res.error = new BaseError(new List<string> { "CNPJ informado na assinatura não e válido." });
+                    });
+                }
+
 
                 if (_res.error == null)
                     _res.error = _validator.Check(_request);
@@ -171,6 +184,19 @@ namespace Marketplace.Services.Service
                     }
                     #endregion
 
+                    #region ..: assinatura :..
+
+                    if (!_request.data.receipts.IsEmpty())
+                    {
+                        if (_request.data.receipts.Any(a => a.signature.IsEmpty()))
+                        {
+                            _request.data.receipts = _request.data.receipts.Where(w => !w.signature.IsEmpty()).ToList();
+                            if (!_request.data.receipts.Any())
+                                _request.data.receipts = null;
+                        }
+                    }
+                    #endregion
+
                     // dados
                     var entity = _mapper.Map<Domain.Entities.Provider>(_request.data);
                     await _providerRepository.Update(entity);
@@ -188,6 +214,9 @@ namespace Marketplace.Services.Service
                 var dto = _mapper.Map<providerDto>(await _providerRepository.FindById(id));
                 dto.ds_situation = this.getSituations().First(f => f.value == ((int)dto.situation).ToString()).label;
                 dto.imageurl = dto.image.toImageUrl($"{_configuration["storage:image"]}/profile");
+
+                if (dto.receipts.Any(a => a.signature.IsNotEmpty()))
+                    dto.signatureurl = dto.receipts[0].signature.toImageUrl($"{_configuration["storage:image"]}/signature");
 
                 if (!dto.languages.IsEmpty()) dto.languages.ForEach(fe => { fe.Provider = null; });
                 if (!dto.topics.IsEmpty()) dto.topics.ForEach(fe => { fe.Provider = null; });

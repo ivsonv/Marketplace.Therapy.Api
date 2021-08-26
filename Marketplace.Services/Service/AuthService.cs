@@ -204,11 +204,15 @@ namespace Marketplace.Services.Service
                         permissions = new List<int>() { _repo.id }             // id do grupo de permissão, usado no customPermission
                     };
 
+                    // content
                     _res.content = new customerAuthRs()
                     {
                         accessToken = CustomExtensions.GenerateToken(dto, _configuration["secrets:signingkey"]),
                         data = new Domain.Models.Response.auth.AuthData()
                         {
+                            avatar = _provider.image.IsNotEmpty()
+                            ? _provider.image.toImageUrl($"{_configuration["storage:image"]}/profile")
+                            : null,
                             fullName = dto.name,
                             roles = dto.roles,
                             id = dto.id
