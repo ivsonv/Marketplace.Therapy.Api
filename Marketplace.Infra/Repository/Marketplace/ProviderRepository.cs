@@ -30,16 +30,16 @@ namespace Marketplace.Infra.Repository.Marketplace
             string name = search.Split('|')[0].Replace("null", "").ToLower().Clear();
             int? situation = (search.Split('|')[1] != "-1") ? int.Parse(search.Split('|')[1]) : null;
 
-            var query = _repository.Get(order: o => o.id, pagination);
+            var query = _repository.Query.AsQueryable();
 
             // filter name
             if (name.IsNotEmpty())
-                query = query.Where(w => w.fantasy_name != null && w.fantasy_name.ToLower().Contains(name) ||
-                                         w.company_name != null && w.company_name.ToLower().Contains(name) ||
-                                         w.nickname != null && w.nickname.ToLower().Contains(name) ||
-                                         w.email != null && w.email.ToLower().Contains(name) ||
-                                         w.cnpj != null && w.cnpj.ToLower().Contains(name) ||
-                                         w.cpf != null && w.cpf.ToLower().Contains(name));
+                query = query.Where(w => w.fantasy_name.ToLower().Trim().Contains(name) ||
+                                         w.company_name.ToLower().Trim().Contains(name) ||
+                                         w.email.ToLower().Trim().Contains(name) ||
+                                         w.nickname != null && w.nickname.ToLower().Trim().Contains(name) ||
+                                         w.cnpj != null && w.cnpj.ToLower().Trim().Contains(name) ||
+                                         w.cpf != null && w.cpf.ToLower().Trim().Contains(name));
             // filter situation
             if (situation != null)
                 query = query.Where(w => (int)w.situation == situation);
@@ -53,7 +53,9 @@ namespace Marketplace.Infra.Repository.Marketplace
                 cnpj = s.cnpj,
                 cpf = s.cpf,
                 id = s.id
-            }).ToListAsync();
+            }).Skip(pagination.size * pagination.page)
+              .Take(pagination.size).OrderBy(o => o.id)
+              .ToListAsync();
         }
         public async Task<List<Provider>> Show(Pagination pagination)
         {
@@ -106,7 +108,7 @@ namespace Marketplace.Infra.Repository.Marketplace
                 }
 
                 // mudou cpf
-                if(_current.cpf.IsNotEmpty() && _current.cpf != entity.cpf)
+                if (_current.cpf.IsNotEmpty() && _current.cpf != entity.cpf)
                 {
                     if ((await this.FindByCpf(entity.cpf)) != null)
                         throw new ArgumentException("cpf já está em uso para outro usuário");
