@@ -9,8 +9,9 @@ namespace Marketplace.Domain.Models.Response.marketplace
         public string image { get; set; }
         public string introduction { get; set; }
         public string biography { get; set; }
-        public string price { get; set; }
+        public decimal price { get; set; }
         public string crp { get; set; }
+        public string state { get; set; }
         public string linkpermanent { get; set; }
         public List<providerMktDate> dates { get; set; }
     }

@@ -34,12 +34,12 @@ namespace Marketplace.Services.Service
                 if (_request.data.name.IsNotEmpty())
                     list = list.Where(w => w.fantasy_name.IsCompare().Contains(_request.data.name.IsCompare()) ||
                                            w.company_name.IsCompare().Contains(_request.data.name.IsCompare()) ||
-                                           w.nickname.IsCompare().Contains(_request.data.name.IsCompare())
-                                           ).ToList();
+                                           w.nickname.IsCompare().Contains(_request.data.name.IsCompare())).ToList();
 
                 // list
                 _request.pagination.size = 20; //force
                 _res.content = list
+                    .Where(w => w.image.IsNotEmpty())
                     .OrderBy(o => o.fantasy_name)
                     .Skip(_request.pagination.size * _request.pagination.page)
                     .Take(_request.pagination.size)
@@ -47,8 +47,10 @@ namespace Marketplace.Services.Service
                     {
                         name = x.nickname.IsNotEmpty() ? x.nickname : $"{x.fantasy_name} {x.company_name}",
                         image = x.image.toImageUrl($"{_configuration["storage:image"]}/profile"),
-                        price = x.price.ToString(),
-                        biography = x.biography,
+                        state = !x.Address.IsEmpty()
+                        ? x.Address.First().uf : null,
+                        introduction = x.description,
+                        price = x.price,
                         crp = x.crp
                     }).ToList();
             }

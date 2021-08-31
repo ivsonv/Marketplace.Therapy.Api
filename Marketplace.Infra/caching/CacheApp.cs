@@ -38,6 +38,8 @@ namespace Marketplace.Infra.caching
             {
                 entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(_minutes);
                 return await _context.Providers
+                               .Include(i => i.Address)
+                               .Include(i => i.Topics)
                                .Select(s => new Provider()
                                {
                                    Languages = s.Languages.Any() ? s.Languages.Select(tt => new ProviderLanguages() { id = tt.id }) : null,
@@ -45,7 +47,7 @@ namespace Marketplace.Infra.caching
                                    Topics = s.Topics.Any() ? s.Topics.Select(tt => new ProviderTopics() { id = tt.id }) : null,
                                    fantasy_name = s.fantasy_name,
                                    company_name = s.company_name,
-                                   biography = s.biography,
+                                   description = s.description,
                                    nickname = s.nickname,
                                    price = s.price,
                                    image = s.image,
