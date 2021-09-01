@@ -12,7 +12,7 @@ namespace Marketplace.Domain.Models.Response.marketplace
         public decimal price { get; set; }
         public string crp { get; set; }
         public string state { get; set; }
-        public string linkpermanent { get; set; }
+        public string link { get; set; }
         public List<providerMktDate> dates { get; set; }
     }
 

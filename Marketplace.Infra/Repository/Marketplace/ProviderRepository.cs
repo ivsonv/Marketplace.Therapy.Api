@@ -121,6 +121,17 @@ namespace Marketplace.Infra.Repository.Marketplace
                         throw new ArgumentException("cnpj já está em uso para outro usuário");
                 }
 
+                // preencher automatico
+                if (entity.link.IsEmpty())
+                    entity.link = $"{entity.fantasy_name}-{entity.company_name}".IsCompare();
+
+                // mudou link meu site
+                if (_current.link.IsNotEmpty() && _current.link != entity.link)
+                {
+                    if ((await this.FindByLink(entity.link)) != null)
+                        throw new ArgumentException("link já está em uso para outro usuário.");
+                }
+
                 _current.academic_training = entity.academic_training;
                 _current.description = entity.description;
                 _current.company_name = entity.company_name;
@@ -135,7 +146,7 @@ namespace Marketplace.Infra.Repository.Marketplace
                 _current.crp = entity.crp;
                 _current.email = entity.email;
                 _current.image = entity.image;
-                //_current.signature = entity.signature;
+                _current.link = entity.link;
 
                 //endereço
                 if (entity.Address != null)
@@ -214,12 +225,13 @@ namespace Marketplace.Infra.Repository.Marketplace
         }
         public async Task<Provider> FindByEmail(string email)
             => await _repository.Query.FirstOrDefaultAsync(f => f.email == email);
-
         public async Task<Provider> FindByCnpj(string cnpj)
             => await _repository.Query.FirstOrDefaultAsync(f => f.cnpj == cnpj);
+        public async Task<Provider> FindByLink(string link)
+            => await _repository.Query.FirstOrDefaultAsync(f => f.link == link);
+
         public async Task<Provider> FindByCpf(string cpf)
             => await _repository.Query.FirstOrDefaultAsync(f => f.cpf == cpf);
-
         public Task Delete(List<Provider> entity)
         {
             throw new System.NotImplementedException();

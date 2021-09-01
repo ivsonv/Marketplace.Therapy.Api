@@ -51,6 +51,7 @@ namespace Marketplace.Infra.caching
                                    nickname = s.nickname,
                                    price = s.price,
                                    image = s.image,
+                                   link = s.link,
                                    crp = s.crp,
                                    id = s.id
                                }).AsNoTracking().ToListAsync();

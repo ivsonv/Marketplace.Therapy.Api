@@ -51,6 +51,7 @@ namespace Marketplace.Services.Service
                         ? x.Address.First().uf : null,
                         introduction = x.description,
                         price = x.price,
+                        link = x.link,
                         crp = x.crp
                     }).ToList();
             }

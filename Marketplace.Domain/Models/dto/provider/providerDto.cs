@@ -11,6 +11,7 @@ namespace Marketplace.Domain.Models.dto.provider
         public string email { get; set; } = null;
         public string phone { get; set; } = null;
         public string password { get; set; } = null;
+        public string link { get; set; } = null;
         public string cnpj { get; set; } = null;
         public string cpf { get; set; } = null;
         public string image { get; set; } = null;
