@@ -58,5 +58,58 @@ namespace Marketplace.Services.Service
             catch (System.Exception ex) { _res.setError(ex); }
             return _res;
         }
+        public async Task<BaseRs<providerMktRs>> FindByProvider(string link)
+        {
+            var _res = new BaseRs<providerMktRs>();
+            try
+            {
+                var provider = (await _cache.GetProviders()).FirstOrDefault(f => f.link.IsCompare() == link.IsCompare());
+                _res.content = new providerMktRs()
+                {
+                    name = provider.nickname.IsNotEmpty() ? provider.nickname : $"{provider.fantasy_name} {provider.company_name}",
+                    image = provider.image.toImageUrl($"{_configuration["storage:image"]}/profile"),
+                    state = !provider.Address.IsEmpty()
+                        ? provider.Address.First().uf : null,
+                    introduction = provider.description,
+                    biography = provider.biography,
+                    price = provider.price,
+                    link = provider.link,
+                    crp = provider.crp
+                };
+
+                // topics
+                if (!provider.Topics.IsEmpty())
+                {
+                    // topics do provider
+                    var ids = provider.Topics.Select(s => s.topic_id);
+
+                    // pegar topics vinculado
+                    var topics = (await _cache.GetTopics()).Where(w => w.active && ids.Any(a => a == w.id)).ToList();
+
+                    // separar experiencia / especialidade
+                    if (topics.Any())
+                    {
+                        // experiencia
+                        if (topics.Any(a => a.experience))
+                            _res.content.experiences = topics.Where(w => w.experience)
+                                                             .Select(s => new providerMktItem()
+                                                             {
+                                                                 name = s.name
+                                                             });
+
+                        // especialidade
+                        if (topics.Any(a => !a.experience))
+                            _res.content.expertises = topics.Where(w => !w.experience)
+                                                         .Select(s => new providerMktItem()
+                                                         {
+                                                             name = s.name
+                                                         });
+                    }
+
+                }
+            }
+            catch (System.Exception ex) { _res.setError(ex); }
+            return _res;
+        }
     }
 }

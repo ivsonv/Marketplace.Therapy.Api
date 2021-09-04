@@ -14,6 +14,14 @@ namespace Marketplace.Domain.Models.Response.marketplace
         public string state { get; set; }
         public string link { get; set; }
         public List<providerMktDate> dates { get; set; }
+
+        public IEnumerable<providerMktItem> experiences { get; set; } = null;
+        public IEnumerable<providerMktItem> expertises { get; set; } = null;
+    }
+
+    public class providerMktItem
+    {
+        public string name { get; set; }
     }
 
     public class providerMktDate

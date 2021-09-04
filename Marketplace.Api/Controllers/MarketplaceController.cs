@@ -40,7 +40,7 @@ namespace Marketplace.Api.Controllers
             => await _marketplaceService.ShowProviders(_request);
 
         [HttpGet("provider/{linkpermanent}")]
-        public async Task<BaseRs<List<providerMktRs>>> Show([FromRoute] string linkpermanent)
-            => await _marketplaceService.ShowProviders(null);
+        public async Task<BaseRs<providerMktRs>> Show([FromRoute] string linkpermanent)
+            => await _marketplaceService.FindByProvider(linkpermanent);
     }
 }

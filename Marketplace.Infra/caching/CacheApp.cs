@@ -42,13 +42,15 @@ namespace Marketplace.Infra.caching
                                .Include(i => i.Topics)
                                .Select(s => new Provider()
                                {
-                                   Languages = s.Languages.Any() ? s.Languages.Select(tt => new ProviderLanguages() { id = tt.id }) : null,
+                                   Languages = s.Languages.Any() ? s.Languages.Select(tt => new ProviderLanguages() { language_id = tt.language_id }) : null,
+                                   Topics = s.Topics.Any() ? s.Topics.Select(tt => new ProviderTopics() { topic_id = tt.topic_id }) : null,
                                    Address = s.Address.Any() ? s.Address.Select(tt => new ProviderAddress() { uf = tt.uf }) : null,
-                                   Topics = s.Topics.Any() ? s.Topics.Select(tt => new ProviderTopics() { id = tt.id }) : null,
                                    fantasy_name = s.fantasy_name,
                                    company_name = s.company_name,
                                    description = s.description,
+                                   biography = s.biography,
                                    nickname = s.nickname,
+                                   active = s.active,
                                    price = s.price,
                                    image = s.image,
                                    link = s.link,
