@@ -105,7 +105,6 @@ namespace Marketplace.Services.Service
                                                              name = s.name
                                                          });
                     }
-
                 }
             }
             catch (System.Exception ex) { _res.setError(ex); }

@@ -147,6 +147,7 @@ namespace Marketplace.Infra.Repository.Marketplace
                 _current.email = entity.email;
                 _current.image = entity.image;
                 _current.link = entity.link;
+                _current.price = entity.price;
 
                 //endereço
                 if (entity.Address != null)

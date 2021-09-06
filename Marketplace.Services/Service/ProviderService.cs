@@ -211,9 +211,12 @@ namespace Marketplace.Services.Service
             var _res = new BaseRs<providerRs>() { content = new providerRs() };
             try
             {
-                var dto = _mapper.Map<providerDto>(await _providerRepository.FindById(id));
+                var _provide = await _providerRepository.FindById(id);
+
+                var dto = _mapper.Map<providerDto>(_provide);
                 dto.ds_situation = this.getSituations().First(f => f.value == ((int)dto.situation).ToString()).label;
                 dto.imageurl = dto.image.toImageUrl($"{_configuration["storage:image"]}/profile");
+                dto.price = _provide.price;
 
                 if (dto.receipts.Any(a => a.signature.IsNotEmpty()))
                     dto.signatureurl = dto.receipts[0].signature.toImageUrl($"{_configuration["storage:image"]}/signature");

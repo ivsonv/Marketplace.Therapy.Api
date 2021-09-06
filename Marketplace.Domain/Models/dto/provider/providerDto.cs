@@ -25,6 +25,7 @@ namespace Marketplace.Domain.Models.dto.provider
         public string academic_training { get; set; } = null;
         public int? interval_between_appointment { get; set; } = null;
         public string ds_situation { get; set; }
+        public decimal price { get; set; }
 
         public bool active { get; set; }
         public bool remove { get; set; }
