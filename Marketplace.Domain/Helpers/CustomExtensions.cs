@@ -16,6 +16,7 @@ namespace Marketplace.Domain.Helpers
     public static class CustomExtensions
     {
         public static bool IsEmpty<T>(this List<T> lst) => (lst == null || !lst.Any());
+        public static bool IsNotEmpty<T>(this List<T> lst) => (lst != null && lst.Any());
         public static bool IsEmpty<T>(this IEnumerable<T> lst) => (lst == null || !lst.Any());
         public static bool IsEmpty(this string vl) => string.IsNullOrWhiteSpace(vl);
         public static bool IsNotEmpty(this string vl) => !string.IsNullOrWhiteSpace(vl);

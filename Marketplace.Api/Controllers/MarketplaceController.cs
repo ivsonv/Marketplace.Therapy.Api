@@ -42,5 +42,9 @@ namespace Marketplace.Api.Controllers
         [HttpGet("provider/{linkpermanent}")]
         public async Task<BaseRs<providerMktRs>> Show([FromRoute] string linkpermanent)
             => await _marketplaceService.FindByProvider(linkpermanent);
+
+        [HttpGet("provider/{linkpermanent}/hours")]
+        public async Task<BaseRs<providerMktRs>> ShowHours([FromRoute] string linkpermanent)
+            => await _marketplaceService.AvailableHours(linkpermanent);
     }
 }
