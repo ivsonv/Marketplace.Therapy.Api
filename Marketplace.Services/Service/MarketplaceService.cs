@@ -1,5 +1,6 @@
 ﻿using Marketplace.Domain.Helpers;
 using Marketplace.Domain.Interface.Integrations.caching;
+using Marketplace.Domain.Interface.Integrations.Payment;
 using Marketplace.Domain.Models.Request;
 using Marketplace.Domain.Models.Request.marketplace;
 using Marketplace.Domain.Models.Response;
@@ -13,17 +14,19 @@ using System.Threading.Tasks;
 namespace Marketplace.Services.Service
 {
     public class MarketplaceService
-    {
+    {   
         private readonly ProviderScheduleService _scheduleService;
         private readonly IConfiguration _configuration;
         private readonly ICustomCache _cache;
 
         public MarketplaceService(ProviderScheduleService scheduleService,
                                   IConfiguration configuration,
-                                  ICustomCache cache)
+                                  ICustomCache cache,
+                                  IPayment payment)
         {
             _scheduleService = scheduleService;
             _configuration = configuration;
+            _payment = payment;
             _cache = cache;
         }
 

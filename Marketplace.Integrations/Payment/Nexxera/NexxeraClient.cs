@@ -17,12 +17,12 @@ namespace Marketplace.Integrations.Payment.Nexxera
     {
         #region ..:  dados para teste :..
 
-        private static string TokenDeAcesso = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3MiOlsiY2FyZFBheW1lbnRzIiwicmVjdXJyZW5jZVBsYW5zIiwicmVjdXJyZW5jZXMiLCJjaGVja291dCIsImJvbGV0b1BheW1lbnRzIl0sImlzcyI6ImFkOGI0M2M1LTFmZWQtNDc5Ni1hMTg3LTFiZjMzZDM2OTFiMSIsImV4cCI6MTg4NjY3NjkzNX0.I-LqnRYbkO7YjmblPomBtU-BeV6lVCgf7XywrTZyJzg";
-        public static readonly string CheckOutURL = "https://checkout-nix-qa.cloudint.nexxera.com/checkout/"; // TST
-        public static readonly string ApiUrl = "https://gateway-nix-qa.cloudint.nexxera.com/v2/"; // TST
-        public static readonly string MerchantApiUrl = "https://merchant-sign-up-core-receivable-gateway-qa.cloudint.nexxera.com/registration/api/"; // TST
-        //URL Base QA/Testes: https://merchant-sign-up-core-receivable-gateway-qa.cloudint.nexxera.com/registration/api
-        private readonly static string TokenDeAcessoMerchantApiURl = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm9kdWN0SWQiOiJhNTM3NzM1NC02NjJlLTQ3MDEtZTQxOS0wOGQzYzIyNmEwMTUiLCJjYXJkUmVwb3NpdG9yeUlkIjoiOTUxMDg4ZWUtMjNjYi00YzU5LTlmZmQtYjY0ZjM4MzEwYmVlIiwic3ViIjoiOWNmZTQ2NDctMzY1OS00ZWM1LTg3ZGItMDhkN2Q1OTYxOTcxIiwiYWNjZXNzIjoibWVyY2hhbnRTaWduVXAifQ.5YLDyXBKBI38p2Zu8fB7CdJM0Ot7m8hiEWk1L7rI4hc";
+       //private static string TokenDeAcesso = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3MiOlsiY2FyZFBheW1lbnRzIiwicmVjdXJyZW5jZVBsYW5zIiwicmVjdXJyZW5jZXMiLCJjaGVja291dCIsImJvbGV0b1BheW1lbnRzIl0sImlzcyI6ImFkOGI0M2M1LTFmZWQtNDc5Ni1hMTg3LTFiZjMzZDM2OTFiMSIsImV4cCI6MTg4NjY3NjkzNX0.I-LqnRYbkO7YjmblPomBtU-BeV6lVCgf7XywrTZyJzg";
+       //public static readonly string CheckOutURL = "https://checkout-nix-qa.cloudint.nexxera.com/checkout/"; // TST
+       //public static readonly string ApiUrl = "https://gateway-nix-qa.cloudint.nexxera.com/v2/"; // TST
+       //public static readonly string MerchantApiUrl = "https://merchant-sign-up-core-receivable-gateway-qa.cloudint.nexxera.com/registration/api/"; // TST
+       ////URL Base QA/Testes: https://merchant-sign-up-core-receivable-gateway-qa.cloudint.nexxera.com/registration/api
+       //private readonly static string TokenDeAcessoMerchantApiURl = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm9kdWN0SWQiOiJhNTM3NzM1NC02NjJlLTQ3MDEtZTQxOS0wOGQzYzIyNmEwMTUiLCJjYXJkUmVwb3NpdG9yeUlkIjoiOTUxMDg4ZWUtMjNjYi00YzU5LTlmZmQtYjY0ZjM4MzEwYmVlIiwic3ViIjoiOWNmZTQ2NDctMzY1OS00ZWM1LTg3ZGItMDhkN2Q1OTYxOTcxIiwiYWNjZXNzIjoibWVyY2hhbnRTaWduVXAifQ.5YLDyXBKBI38p2Zu8fB7CdJM0Ot7m8hiEWk1L7rI4hc";
         #endregion
 
         #region ..: Dados para produção :..
@@ -32,12 +32,11 @@ namespace Marketplace.Integrations.Payment.Nexxera
         // ProductID: 63245ee3-81bb-4fc3-ec31-08d39e8e2006
         // Card Repository ID : dbc09b29-43ab-430c-a98a-ec648fec7121
 
-        //private readonly static string TokenDeAcessoMerchantApiURl = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm9kdWN0SWQiOiJhNTM3NzM1NC02NjJlLTQ3MDEtZTQxOS0wOGQzYzIyNmEwMTUiLCJjYXJkUmVwb3NpdG9yeUlkIjoiOTUxMDg4ZWUtMjNjYi00YzU5LTlmZmQtYjY0ZjM4MzEwYmVlIiwic3ViIjoiOWNmZTQ2NDctMzY1OS00ZWM1LTg3ZGItMDhkN2Q1OTYxOTcxIiwiYWNjZXNzIjoibWVyY2hhbnRTaWduVXAifQ.5YLDyXBKBI38p2Zu8fB7CdJM0Ot7m8hiEWk1L7rI4hc";
-        //private static string TokenDeAcesso = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3MiOlsiY2FyZFBheW1lbnRzIiwicmVjdXJyZW5jZVBsYW5zIiwicmVjdXJyZW5jZXMiLCJjaGVja291dCIsImJvbGV0b1BheW1lbnRzIl0sImlzcyI6IjY2ODkxYWYyLWVkZDMtNDAyOS1hYzcwLTUyMWUxODI1MDQ3ZCIsImV4cCI6MTkwNDgxNDk3NH0.v7wcfTBDHgFlvLZr7wzIrMztaV0-e-MFUIkj81X6cBo";
-        //private static readonly string CheckOutURL = "https://checkout-nix.nexxera.io/checkout/"; // PROD
-        //private static readonly string ApiUrl = "https://gateway-nix.nexxera.io/v2/"; // PROD
-        //private static readonly string MerchantApiUrl = "https://merchant-sign-up-core-receivable-gateway-prd.nexxera.io/registration/api/products/a5377354-662e-4701-e419-08d3c226a015/Customers/merchant/signup";
-
+        private readonly static string TokenDeAcessoMerchantApiURl = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm9kdWN0SWQiOiJhNTM3NzM1NC02NjJlLTQ3MDEtZTQxOS0wOGQzYzIyNmEwMTUiLCJjYXJkUmVwb3NpdG9yeUlkIjoiOTUxMDg4ZWUtMjNjYi00YzU5LTlmZmQtYjY0ZjM4MzEwYmVlIiwic3ViIjoiOWNmZTQ2NDctMzY1OS00ZWM1LTg3ZGItMDhkN2Q1OTYxOTcxIiwiYWNjZXNzIjoibWVyY2hhbnRTaWduVXAifQ.5YLDyXBKBI38p2Zu8fB7CdJM0Ot7m8hiEWk1L7rI4hc";
+        private static string TokenDeAcesso = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3MiOlsiY2FyZFBheW1lbnRzIiwicmVjdXJyZW5jZVBsYW5zIiwicmVjdXJyZW5jZXMiLCJjaGVja291dCIsImJvbGV0b1BheW1lbnRzIl0sImlzcyI6IjY2ODkxYWYyLWVkZDMtNDAyOS1hYzcwLTUyMWUxODI1MDQ3ZCIsImV4cCI6MTkwNDgxNDk3NH0.v7wcfTBDHgFlvLZr7wzIrMztaV0-e-MFUIkj81X6cBo";
+        private static readonly string CheckOutURL = "https://checkout-nix.nexxera.io/checkout/"; // PROD
+        private static readonly string ApiUrl = "https://gateway-nix.nexxera.io/v2/"; // PROD
+        private static readonly string MerchantApiUrl = "https://merchant-sign-up-core-receivable-gateway-prd.nexxera.io/registration/api/products/a5377354-662e-4701-e419-08d3c226a015/Customers/merchant/signup";
         #endregion
 
         private static void IsValidarMerchant(providerDto provider)
@@ -194,7 +193,7 @@ namespace Marketplace.Integrations.Payment.Nexxera
 
                 #region ..: description :..
 
-                // descriptions
+                // description
                 req.items = new List<string>()
                 {
                     $"TERAPIA ONLINE COM {_pay.Provider.fantasy_name} {_pay.Provider.company_name}"
