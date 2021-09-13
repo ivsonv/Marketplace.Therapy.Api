@@ -1,6 +1,7 @@
 ﻿using Marketplace.Domain.Helpers;
 using Marketplace.Domain.Models.dto.payment;
 using Marketplace.Domain.Models.dto.provider;
+using Marketplace.Integrations.Payment.Nexxera.repository;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -16,11 +17,12 @@ namespace Marketplace.Integrations.Payment.Nexxera
     {
         #region ..:  dados para teste :..
 
-        //private string TokenDeAcesso = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3MiOlsiY2FyZFBheW1lbnRzIiwicmVjdXJyZW5jZVBsYW5zIiwicmVjdXJyZW5jZXMiLCJjaGVja291dCIsImJvbGV0b1BheW1lbnRzIl0sImlzcyI6ImFkOGI0M2M1LTFmZWQtNDc5Ni1hMTg3LTFiZjMzZDM2OTFiMSIsImV4cCI6MTg4NjY3NjkzNX0.I-LqnRYbkO7YjmblPomBtU-BeV6lVCgf7XywrTZyJzg";
-        //public readonly string CheckOutURL = "https://checkout-nix-qa.cloudint.nexxera.com/checkout/"; // TST
-        //public readonly string ApiUrl = "https://gateway-nix-qa.cloudint.nexxera.com/v2/"; // TST
-        //public readonly string MerchantApiUrl = "https://merchant-sign-up-core-receivable-gateway-qa.cloudint.nexxera.com/registration/api/"; // TST
-        // URL Base QA/Testes: https://merchant-sign-up-core-receivable-gateway-qa.cloudint.nexxera.com/registration/api
+        private static string TokenDeAcesso = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3MiOlsiY2FyZFBheW1lbnRzIiwicmVjdXJyZW5jZVBsYW5zIiwicmVjdXJyZW5jZXMiLCJjaGVja291dCIsImJvbGV0b1BheW1lbnRzIl0sImlzcyI6ImFkOGI0M2M1LTFmZWQtNDc5Ni1hMTg3LTFiZjMzZDM2OTFiMSIsImV4cCI6MTg4NjY3NjkzNX0.I-LqnRYbkO7YjmblPomBtU-BeV6lVCgf7XywrTZyJzg";
+        public static readonly string CheckOutURL = "https://checkout-nix-qa.cloudint.nexxera.com/checkout/"; // TST
+        public static readonly string ApiUrl = "https://gateway-nix-qa.cloudint.nexxera.com/v2/"; // TST
+        public static readonly string MerchantApiUrl = "https://merchant-sign-up-core-receivable-gateway-qa.cloudint.nexxera.com/registration/api/"; // TST
+        //URL Base QA/Testes: https://merchant-sign-up-core-receivable-gateway-qa.cloudint.nexxera.com/registration/api
+        private readonly static string TokenDeAcessoMerchantApiURl = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm9kdWN0SWQiOiJhNTM3NzM1NC02NjJlLTQ3MDEtZTQxOS0wOGQzYzIyNmEwMTUiLCJjYXJkUmVwb3NpdG9yeUlkIjoiOTUxMDg4ZWUtMjNjYi00YzU5LTlmZmQtYjY0ZjM4MzEwYmVlIiwic3ViIjoiOWNmZTQ2NDctMzY1OS00ZWM1LTg3ZGItMDhkN2Q1OTYxOTcxIiwiYWNjZXNzIjoibWVyY2hhbnRTaWduVXAifQ.5YLDyXBKBI38p2Zu8fB7CdJM0Ot7m8hiEWk1L7rI4hc";
         #endregion
 
         #region ..: Dados para produção :..
@@ -30,19 +32,13 @@ namespace Marketplace.Integrations.Payment.Nexxera
         // ProductID: 63245ee3-81bb-4fc3-ec31-08d39e8e2006
         // Card Repository ID : dbc09b29-43ab-430c-a98a-ec648fec7121
 
-        private readonly static string TokenDeAcessoMerchantApiURl = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm9kdWN0SWQiOiJhNTM3NzM1NC02NjJlLTQ3MDEtZTQxOS0wOGQzYzIyNmEwMTUiLCJjYXJkUmVwb3NpdG9yeUlkIjoiOTUxMDg4ZWUtMjNjYi00YzU5LTlmZmQtYjY0ZjM4MzEwYmVlIiwic3ViIjoiOWNmZTQ2NDctMzY1OS00ZWM1LTg3ZGItMDhkN2Q1OTYxOTcxIiwiYWNjZXNzIjoibWVyY2hhbnRTaWduVXAifQ.5YLDyXBKBI38p2Zu8fB7CdJM0Ot7m8hiEWk1L7rI4hc";
-        private static string TokenDeAcesso = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3MiOlsiY2FyZFBheW1lbnRzIiwicmVjdXJyZW5jZVBsYW5zIiwicmVjdXJyZW5jZXMiLCJjaGVja291dCIsImJvbGV0b1BheW1lbnRzIl0sImlzcyI6IjY2ODkxYWYyLWVkZDMtNDAyOS1hYzcwLTUyMWUxODI1MDQ3ZCIsImV4cCI6MTkwNDgxNDk3NH0.v7wcfTBDHgFlvLZr7wzIrMztaV0-e-MFUIkj81X6cBo";
-        private static readonly string CheckOutURL = "https://checkout-nix.nexxera.io/checkout/"; // PROD
-        private static readonly string ApiUrl = "https://gateway-nix.nexxera.io/v2/"; // PROD
-        private static readonly string MerchantApiUrl = "https://merchant-sign-up-core-receivable-gateway-prd.nexxera.io/registration/api/products/a5377354-662e-4701-e419-08d3c226a015/Customers/merchant/signup";
+        //private readonly static string TokenDeAcessoMerchantApiURl = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm9kdWN0SWQiOiJhNTM3NzM1NC02NjJlLTQ3MDEtZTQxOS0wOGQzYzIyNmEwMTUiLCJjYXJkUmVwb3NpdG9yeUlkIjoiOTUxMDg4ZWUtMjNjYi00YzU5LTlmZmQtYjY0ZjM4MzEwYmVlIiwic3ViIjoiOWNmZTQ2NDctMzY1OS00ZWM1LTg3ZGItMDhkN2Q1OTYxOTcxIiwiYWNjZXNzIjoibWVyY2hhbnRTaWduVXAifQ.5YLDyXBKBI38p2Zu8fB7CdJM0Ot7m8hiEWk1L7rI4hc";
+        //private static string TokenDeAcesso = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3MiOlsiY2FyZFBheW1lbnRzIiwicmVjdXJyZW5jZVBsYW5zIiwicmVjdXJyZW5jZXMiLCJjaGVja291dCIsImJvbGV0b1BheW1lbnRzIl0sImlzcyI6IjY2ODkxYWYyLWVkZDMtNDAyOS1hYzcwLTUyMWUxODI1MDQ3ZCIsImV4cCI6MTkwNDgxNDk3NH0.v7wcfTBDHgFlvLZr7wzIrMztaV0-e-MFUIkj81X6cBo";
+        //private static readonly string CheckOutURL = "https://checkout-nix.nexxera.io/checkout/"; // PROD
+        //private static readonly string ApiUrl = "https://gateway-nix.nexxera.io/v2/"; // PROD
+        //private static readonly string MerchantApiUrl = "https://merchant-sign-up-core-receivable-gateway-prd.nexxera.io/registration/api/products/a5377354-662e-4701-e419-08d3c226a015/Customers/merchant/signup";
 
         #endregion
-
-
-        public static void Buy(PaymentDto _payment)
-        {
-
-        }
 
         private static void IsValidarMerchant(providerDto provider)
         {
@@ -117,7 +113,7 @@ namespace Marketplace.Integrations.Payment.Nexxera
             try
             {
                 string RsJSON = postMerchant(MerchantApiUrl, _request.Serialize());
-                var _return = RsJSON.Deserialize<repository.MerchantRs>();
+                var _return = RsJSON.Deserialize<MerchantRs>();
                 if (_return.errors != null && _return.errors.Any())
                     throw new ArgumentException($"Erro ao criar estabelecimento (${string.Join("#", _return.errors)})");
 
@@ -136,6 +132,110 @@ namespace Marketplace.Integrations.Payment.Nexxera
             catch { throw; }
         }
 
+        public static void Buy(PaymentDto _payment)
+        {
+            _payment.payments.ForEach(_pay =>
+            {
+                // account merchant
+                var _account = _pay.Provider.splitAccounts.First(f => f.payment_provider == Enumerados.PaymentProvider.nexxera);
+
+                // split merchant
+                var _split = _account.json.Deserialize<MerchantRs>();
+
+                // token transaction
+                TokenDeAcesso = GerarTokenJWT(_split.production.accessKey, _split.production.apiSecretKey);
+
+                // request
+                var req = new CheckOutRq()
+                {
+                    returnUrl = $"{_pay.webhook_url}/payment?code={_pay.productSale.id}",
+                    merchantOrderId = _pay.productSale.id.ToString(),
+                    amount = ((int)_pay.totalprice).ToString(),
+                    installments = 1
+                };
+
+                #region ..: customer :..
+
+                req.customer = new CheckOutCustomer()
+                {
+                    identity = _pay.Customer.cpf.IsNotEmpty() ? _pay.Customer.cpf : _pay.Customer.cnpj,
+                    identityType = _pay.Customer.cpf.IsNotEmpty() ? "CPF" : "CNPJ",
+                    name = _pay.Customer.name.ToUpper(),
+                    email = _pay.Customer.email,
+                    birthdate = ""
+                };
+                #endregion
+
+                #region ..: opções de pagamento :..
+
+                // debito
+                req.debitCard = new CheckOutdebitCard() { amount = (int)_pay.totalprice };
+
+                // credito
+                req.creditCard = new CheckOutcreditCard()
+                {
+                    installments = new List<CheckOutcreditCardinstallments>()
+                {
+                    new CheckOutcreditCardinstallments()
+                    {
+                        template = $"1x de {decimal.Round((decimal)_pay.totalprice / 1, 2).ToString()}",
+                        amount = ((int)_pay.totalprice).ToString(),
+                        Number = 1,
+                    },
+                    new repository.CheckOutcreditCardinstallments()
+                    {
+                        template = $"2x de {decimal.Round(((decimal)_pay.totalprice / 2), 2).ToString()}",
+                        amount = ((int)_pay.totalprice).ToString(),
+                        Number = 2,
+                    }
+                }
+                };
+                #endregion
+
+                #region ..: description :..
+
+                // descriptions
+                req.items = new List<string>()
+                {
+                    $"TERAPIA ONLINE COM {_pay.Provider.fantasy_name} {_pay.Provider.company_name}"
+                };
+                #endregion
+
+                string rq = req.Serialize();
+                string rs = "";
+
+                try
+                {
+                    //send
+                    rs = post(CheckOutURL, req.Serialize(), "Order");
+
+                    // convert
+                    var chRs = rs.Deserialize<CheckOutRs>();
+
+                    // erro generico
+                    if (chRs.errors.IsNotEmpty())
+                        throw new ArgumentException($"Erro ao processar pagamento, {string.Join("#", chRs.errors)}");
+
+                    // url de checkout
+                    if (chRs.checkoutUrl.IsEmpty())
+                        throw new ArgumentException($"Erro ao processar checkout, {string.Join("#", chRs.errors)}");
+
+                    // transaction code
+                    _pay.transactionCode = chRs.checkoutUrl.Replace(CheckOutURL, "");
+                    _pay.transactionCode = chRs.checkoutUrl.Replace("payment?orderId=", "");
+
+                    // url redirect
+                    _pay.transactionUrl = chRs.checkoutUrl;
+                }
+                catch { throw; }
+                finally
+                {
+                    _pay.LogRq = rq;
+                    _pay.LogRs = rs;
+                };
+            });
+        }
+
         private static string GerarTokenJWT(string accesskey, string apikey)
         {
             byte[] key = Convert.FromBase64String(apikey);
@@ -151,87 +251,6 @@ namespace Marketplace.Integrations.Payment.Nexxera
             var stringToken = tokenHandler.WriteToken(token);
 
             return stringToken;
-        }
-
-        private static string Get(string url, string scao)
-        {
-            string res = "";
-            try
-            {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url + scao);
-                request.Headers.Add("Authorization", "Bearer " + TokenDeAcesso);
-                request.ContentType = "application/json";
-                request.UseDefaultCredentials = true;
-                request.Method = "GET";
-
-                using (var httpResponse = (HttpWebResponse)request.GetResponse())
-                {
-                    using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
-                    {
-                        res = streamReader.ReadToEnd();
-                    }
-                }
-            }
-            catch (WebException ex)
-            {
-                if (ex.Response != null)
-                {
-                    using (var streamReader = new StreamReader(ex.Response.GetResponseStream()))
-                    {
-                        res = streamReader.ReadToEnd();
-                    }
-                }
-            }
-            catch (Exception ex) { throw; }
-
-            return res;
-        }
-        private static string post(string url, string json, string scao)
-        {
-            string res = "";
-            try
-            {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url + scao);
-                request.Headers.Add("Authorization", "Bearer " + TokenDeAcesso);
-                request.ContentType = "application/json";
-                request.UseDefaultCredentials = true;
-                request.Method = "POST";
-
-                var byteArray = Encoding.UTF8.GetBytes(json);
-                request.ContentLength = byteArray.Length;
-
-                using (var streamWriter = request.GetRequestStream())
-                {
-                    streamWriter.Write(byteArray, 0, byteArray.Length);
-                    streamWriter.Flush();
-                    streamWriter.Close();
-                }
-
-                var httpResponse = (HttpWebResponse)request.GetResponse();
-                using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
-                {
-                    res = streamReader.ReadToEnd();
-                }
-            }
-            catch (WebException ex)
-            {
-                if (ex.Response != null)
-                {
-                    using (var streamReader = new StreamReader(ex.Response.GetResponseStream()))
-                    {
-                        res = streamReader.ReadToEnd();
-                    }
-                }
-
-                if (string.IsNullOrWhiteSpace(res))
-                    throw ex;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-
-            return res;
         }
         private static string postMerchant(string url, string json)
         {
@@ -281,6 +300,53 @@ namespace Marketplace.Integrations.Payment.Nexxera
             return res;
         }
 
+        private static string post(string url, string json, string scao)
+        {
+            string res = "";
+            try
+            {
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url + scao);
+                request.Headers.Add("Authorization", "Bearer " + TokenDeAcesso);
+                request.ContentType = "application/json";
+                request.UseDefaultCredentials = true;
+                request.Method = "POST";
+
+                var byteArray = Encoding.UTF8.GetBytes(json);
+                request.ContentLength = byteArray.Length;
+
+                using (var streamWriter = request.GetRequestStream())
+                {
+                    streamWriter.Write(byteArray, 0, byteArray.Length);
+                    streamWriter.Flush();
+                    streamWriter.Close();
+                }
+
+                var httpResponse = (HttpWebResponse)request.GetResponse();
+                using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                {
+                    res = streamReader.ReadToEnd();
+                }
+            }
+            catch (WebException ex)
+            {
+                if (ex.Response != null)
+                {
+                    using (var streamReader = new StreamReader(ex.Response.GetResponseStream()))
+                    {
+                        res = streamReader.ReadToEnd();
+                    }
+                }
+
+                if (string.IsNullOrWhiteSpace(res))
+                    throw ex;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return res;
+        }
         private static string Put(string url, string scao)
         {
             string res = "";
@@ -325,6 +391,39 @@ namespace Marketplace.Integrations.Payment.Nexxera
             {
                 throw;
             }
+            return res;
+        }
+        private static string Get(string url, string scao)
+        {
+            string res = "";
+            try
+            {
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url + scao);
+                request.Headers.Add("Authorization", "Bearer " + TokenDeAcesso);
+                request.ContentType = "application/json";
+                request.UseDefaultCredentials = true;
+                request.Method = "GET";
+
+                using (var httpResponse = (HttpWebResponse)request.GetResponse())
+                {
+                    using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                    {
+                        res = streamReader.ReadToEnd();
+                    }
+                }
+            }
+            catch (WebException ex)
+            {
+                if (ex.Response != null)
+                {
+                    using (var streamReader = new StreamReader(ex.Response.GetResponseStream()))
+                    {
+                        res = streamReader.ReadToEnd();
+                    }
+                }
+            }
+            catch (Exception ex) { throw; }
+
             return res;
         }
     }

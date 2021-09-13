@@ -5,9 +5,7 @@ using Marketplace.Domain.Models.Request.account.provider;
 using Marketplace.Domain.Models.Response;
 using Marketplace.Domain.Models.Response.account.provider;
 using Marketplace.Services.Service;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Threading.Tasks;
 
 namespace Marketplace.Api.Controllers

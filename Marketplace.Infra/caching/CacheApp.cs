@@ -21,15 +21,21 @@ namespace Marketplace.Infra.caching
             _context = context;
         }
 
-        public void Clear()
+        public void Clear(string key = "")
         {
-            _cache.Remove("appointments");
-            _cache.Remove("permissions");
-            _cache.Remove("calendars");
-            _cache.Remove("providers");
-            _cache.Remove("languages");
-            _cache.Remove("topics");
-            _cache.Remove("banks");
+            if (key.IsEmpty())
+            {
+                _cache.Remove("appointments");
+                _cache.Remove("appointments");
+                _cache.Remove("permissions");
+                _cache.Remove("calendars");
+                _cache.Remove("providers");
+                _cache.Remove("languages");
+                _cache.Remove("topics");
+                _cache.Remove("banks");
+            }
+            else
+                _cache.Remove(key);
         }
 
         public async Task<List<Provider>> GetProviders()
@@ -122,6 +128,24 @@ namespace Marketplace.Infra.caching
             });
         }
 
+        public async Task<List<Appointment>> GetAppointments()
+        {
+            return await _cache.GetOrCreateAsync("appointments", async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes((_minutes * 20));
+                return await _context.Appointments
+                               .Select(s => new Appointment()
+                               {
+                                   payment_status = s.payment_status,
+                                   price_transfer = s.price_transfer,
+                                   booking_date = s.booking_date,
+                                   price_full = s.price_full,
+                                   price = s.price,
+                                   customer_id = s.customer_id,
+                                   provider_id = s.provider_id,
+                               }).AsNoTracking().ToListAsync();
+            });
+        }
         public async Task<List<Appointment>> GetCalendar()
         {
             return await _cache.GetOrCreateAsync("calendars", async entry =>
