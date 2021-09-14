@@ -160,7 +160,7 @@ namespace Marketplace.Domain.Helpers
 
         public static string toWeekds(this int week)
         {
-            switch(week)
+            switch (week)
             {
                 case 0: return "Domingo";
                 case 1: return "Segunda Feira";
@@ -192,6 +192,10 @@ namespace Marketplace.Domain.Helpers
             //    tokenDescriptor.Subject.AddClaim(new Claim(ClaimTypes.Role, item));
 
             return tokenHandler.WriteToken(tokenHandler.CreateToken(tokenDescriptor));
+        }
+        public static decimal PercentValue(this decimal total, decimal percent)
+        {
+            return (percent * total) / 100;
         }
     }
 }

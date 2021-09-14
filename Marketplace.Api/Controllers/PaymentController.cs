@@ -1,10 +1,9 @@
 using Marketplace.Domain.Models.Request;
 using Marketplace.Domain.Models.Request.payment;
 using Marketplace.Domain.Models.Response;
-using Marketplace.Domain.Models.Response.marketplace;
+using Marketplace.Domain.Models.Response.payment;
 using Marketplace.Services.Service;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Marketplace.Api.Controllers
@@ -20,7 +19,7 @@ namespace Marketplace.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<BaseRs<providerMktRs>> Store([FromBody] BaseRq<paymentRq> _request)
+        public async Task<BaseRs<paymentRs>> Store([FromBody] BaseRq<paymentRq> _request)
             => await _paymentService.Store(_request);
     }
 }

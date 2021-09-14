@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Marketplace.Domain.Entities
 {
@@ -33,10 +35,24 @@ namespace Marketplace.Domain.Entities
         public Helpers.Enumerados.AppointmentOrigin origin { get; set; }
         public Helpers.Enumerados.PaymentStatus payment_status { get; set; }
         public Helpers.Enumerados.AppointmentStatus status { get; set; }
+        public string transaction_code { get; set; }
 
         public int customer_id { get; set; }
         public int provider_id { get; set; }
         public Provider Provider { get; set; }
         public Customer Customer { get; set; }
+        public IList<AppointmentLog> Logs { get; set; }
+    }
+
+    public class AppointmentLog : BaseEntity
+    {
+        [Column(TypeName = "jsonb")]
+        public string jsonRq { get; set; }
+
+        [Column(TypeName = "jsonb")]
+        public string jsonRs { get; set; }
+        public string description { get; set; }
+        public int appointment_id { get; set; }
+        public Appointment Appointment { get; set; }
     }
 }

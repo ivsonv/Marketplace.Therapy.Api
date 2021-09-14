@@ -11,4 +11,13 @@ namespace Marketplace.Infra.Mapping
             builder.HasKey(prop => prop.id);
         }
     }
+
+    public class AppointmentLogMap
+    {
+        public void Configure(EntityTypeBuilder<Domain.Entities.AppointmentLog> builder)
+        {
+            builder.ToTable("appointments_logs");
+            builder.HasKey(prop => prop.id);
+        }
+    }
 }

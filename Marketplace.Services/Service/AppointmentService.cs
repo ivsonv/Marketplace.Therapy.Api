@@ -62,5 +62,17 @@ namespace Marketplace.Services.Service
             }
             catch (System.Exception ex) { _res.setError(ex); }
             return _res;
-        }}
+        }
+
+        public async Task<BaseRs<appointmentRs>> Update(BaseRq<appointmentRq> _request)
+        {
+            var _res = new BaseRs<appointmentRs>();
+            try
+            {
+                await _repository.Update(_request.data);
+            }
+            catch (System.Exception ex) { _res.setError(ex); }
+            return _res;
+        }
+    }
 }

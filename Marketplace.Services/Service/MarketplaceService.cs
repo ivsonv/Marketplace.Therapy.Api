@@ -21,12 +21,10 @@ namespace Marketplace.Services.Service
 
         public MarketplaceService(ProviderScheduleService scheduleService,
                                   IConfiguration configuration,
-                                  ICustomCache cache,
-                                  IPayment payment)
+                                  ICustomCache cache)
         {
             _scheduleService = scheduleService;
             _configuration = configuration;
-            _payment = payment;
             _cache = cache;
         }
 
@@ -144,7 +142,7 @@ namespace Marketplace.Services.Service
                     {
                         var pp = new providerMktDate()
                         {
-                            date = CustomExtensions.DateNow.AddDays(i)
+                            date = CustomExtensions.DateNow.AddDays(i).Date
                         };
 
                         // 24 horas
