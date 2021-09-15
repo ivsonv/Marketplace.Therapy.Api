@@ -63,6 +63,7 @@ namespace Marketplace.Infra.Repository.Marketplace
             return await _repository.Get(g => g.email == email)
                 .Select(s => new Customer()
                 {
+                    password = s.password,
                     name = s.name,
                     id = s.id
                 }).FirstOrDefaultAsync();

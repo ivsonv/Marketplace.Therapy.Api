@@ -40,6 +40,7 @@ namespace Marketplace.Services.Service
             _emailService = emailService;
             _validator = validator;
         }
+
         public async Task<BaseRs<customerAuthRs>> Customer(customerAuthRq auth)
         {
             var _res = new BaseRs<customerAuthRs>();
@@ -61,13 +62,17 @@ namespace Marketplace.Services.Service
                         return _res;
                     }
 
+                    // userRuleCustomer
+                    var _repo = await _groupPermissionRepository.FindByName("customer");
                     var dto = new Domain.Models.dto.auth.AuthDto()
                     {
                         id = _customer.id,
                         name = _customer.name,
-                        //rules = new List<string>() { Enumerados.UserRule.customer.ToString() }
+                        roles = _repo.PermissionsAttached.Select(s => s.name), // nome da permissão
+                        permissions = new List<int>() { _repo.id }             // id do grupo de permissão, usado no customPermission
                     };
 
+                    // content
                     _res.content = new customerAuthRs()
                     {
                         accessToken = CustomExtensions.GenerateToken(dto, _configuration["secrets:signingkey"]),
@@ -75,6 +80,7 @@ namespace Marketplace.Services.Service
                         {
                             fullName = dto.name,
                             roles = dto.roles,
+                            avatar = null,
                             id = dto.id
                         }
                     };

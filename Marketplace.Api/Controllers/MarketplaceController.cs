@@ -1,3 +1,4 @@
+using Marketplace.Domain.Helpers;
 using Marketplace.Domain.Models.Request;
 using Marketplace.Domain.Models.Request.marketplace;
 using Marketplace.Domain.Models.Response;
@@ -5,6 +6,7 @@ using Marketplace.Domain.Models.Response.marketplace;
 using Marketplace.Domain.Models.Response.topics;
 using Marketplace.Services.Service;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -44,7 +46,7 @@ namespace Marketplace.Api.Controllers
             => await _marketplaceService.FindByProvider(linkpermanent);
 
         [HttpGet("provider/{linkpermanent}/hours")]
-        public async Task<BaseRs<providerMktRs>> ShowHours([FromRoute] string linkpermanent)
-            => await _marketplaceService.AvailableHours(linkpermanent);
+        public async Task<BaseRs<providerMktRs>> ShowHours([FromRoute] string linkpermanent, [FromQuery] string dt_start) 
+            => await _marketplaceService.AvailableHours(linkpermanent, dt_start.toConvertDate());
     }
 }

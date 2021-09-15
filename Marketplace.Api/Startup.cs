@@ -119,6 +119,7 @@ namespace Marketplace.Api
             services.AddScoped<AccountProviderService>();
             services.AddScoped<AppointmentService>();
             services.AddScoped<UploadService>();
+            services.AddScoped<AccountCustomerService>();
 
             // validator
             services.AddSingleton<Services.Validators.CustomerValidator>();

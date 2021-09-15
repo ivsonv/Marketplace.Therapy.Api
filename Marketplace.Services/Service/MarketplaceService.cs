@@ -80,7 +80,8 @@ namespace Marketplace.Services.Service
                     biography = provider.biography,
                     price = provider.price,
                     link = provider.link,
-                    crp = provider.crp
+                    crp = provider.crp,
+                    id = provider.id,
                 };
 
                 // topics
@@ -116,7 +117,7 @@ namespace Marketplace.Services.Service
             catch (System.Exception ex) { _res.setError(ex); }
             return _res;
         }
-        public async Task<BaseRs<providerMktRs>> AvailableHours(string link)
+        public async Task<BaseRs<providerMktRs>> AvailableHours(string link, DateTime dtStart)
         {
             var _res = new BaseRs<providerMktRs>() { content = new providerMktRs() };
             try
@@ -137,15 +138,20 @@ namespace Marketplace.Services.Service
 
                 if (schedule.content.IsNotEmpty())
                 {
+                    if (dtStart == DateTime.MinValue)
+                        dtStart = CustomExtensions.DateNow;
+                    else
+                    {
+                        dtStart.AddHours(CustomExtensions.DateNow.Hour);
+                    }
+
                     // qtd dias
                     for (int i = 0; i < 4; i++)
                     {
-                        var pp = new providerMktDate()
-                        {
-                            ds_date = $"{CustomExtensions.DateNow.AddDays(i).Date.Day.ToString("00")}/{CustomExtensions.DateNow.AddDays(i).Date.Month.toMonthds().Substring(0, 3).ToUpper()}",
-                            ds_week = ((int)CustomExtensions.DateNow.AddDays(i).Date.DayOfWeek).toWeekds().Split(' ')[0].ToUpper(),
-                            date = CustomExtensions.DateNow.AddDays(i),
-                        };
+                        var pp = new providerMktDate();
+                        pp.ds_date = $"{dtStart.AddDays(i).Date.Day.ToString("00")}/{dtStart.AddDays(i).Date.Month.toMonthds().Substring(0, 3).ToUpper()}";
+                        pp.ds_week = ((int)dtStart.AddDays(i).Date.DayOfWeek).toWeekds().Split(' ')[0].ToUpper();
+                        pp.date = dtStart.AddDays(i);
 
                         // 24 horas
                         pp.hours = new List<providerMktDateHour>();

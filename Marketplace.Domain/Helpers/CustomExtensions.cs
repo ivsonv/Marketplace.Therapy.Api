@@ -24,6 +24,12 @@ namespace Marketplace.Domain.Helpers
         public static bool IsNumber(this string vl) => int.TryParse(vl, out int ss);
         public static int ToInt(this string vl) => int.Parse(vl);
         public static DateTime toDate(this string vl) => DateTime.Parse(vl);
+        public static DateTime toConvertDate(this string vl)
+        {
+            DateTime dt = DateTime.MinValue;
+            DateTime.TryParse(vl, out dt);
+            return dt;
+        }
         public static string toImageUrl(this string str, string urlPrefix)
         {
             if (str.IsNotEmpty())
