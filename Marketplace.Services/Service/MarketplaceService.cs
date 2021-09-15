@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 namespace Marketplace.Services.Service
 {
     public class MarketplaceService
-    {   
+    {
         private readonly ProviderScheduleService _scheduleService;
         private readonly IConfiguration _configuration;
         private readonly ICustomCache _cache;
@@ -138,11 +138,13 @@ namespace Marketplace.Services.Service
                 if (schedule.content.IsNotEmpty())
                 {
                     // qtd dias
-                    for (int i = 0; i < 6; i++)
+                    for (int i = 0; i < 4; i++)
                     {
                         var pp = new providerMktDate()
                         {
-                            date = CustomExtensions.DateNow.AddDays(i).Date
+                            ds_date = $"{CustomExtensions.DateNow.AddDays(i).Date.Day.ToString("00")}/{CustomExtensions.DateNow.AddDays(i).Date.Month.toMonthds().Substring(0, 3).ToUpper()}",
+                            ds_week = ((int)CustomExtensions.DateNow.AddDays(i).Date.DayOfWeek).toWeekds().Split(' ')[0].ToUpper(),
+                            date = CustomExtensions.DateNow.AddDays(i),
                         };
 
                         // 24 horas
@@ -181,7 +183,7 @@ namespace Marketplace.Services.Service
                                 };
 
                                 // dentro da faixa configurada pelo provider ?
-                                if (_hour2.hour >= week.start && 
+                                if (_hour2.hour >= week.start &&
                                     _hour2.hour <= week.end)
                                 {
                                     pp.hours.Add(_hour2);
@@ -196,10 +198,10 @@ namespace Marketplace.Services.Service
                         // add
                         _res.content.dates.Add(pp);
                     }
+                    _res.content.displayDates = _res.content.dates.Max(m => m.hours.Count);
                 }
-
             }
-            catch (System.Exception ex) { _res.setError(ex); }
+            catch (Exception ex) { _res.setError(ex); }
             return _res;
         }
     }

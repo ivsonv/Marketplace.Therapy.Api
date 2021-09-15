@@ -14,6 +14,7 @@ namespace Marketplace.Domain.Models.Response.marketplace
         public string state { get; set; }
         public string link { get; set; }
         public List<providerMktDate> dates { get; set; }
+        public int displayDates { get; set; }
 
         public IEnumerable<providerMktItem> experiences { get; set; } = null;
         public IEnumerable<providerMktItem> expertises { get; set; } = null;
@@ -24,10 +25,19 @@ namespace Marketplace.Domain.Models.Response.marketplace
         public string name { get; set; }
     }
 
+    public class providerMktDisplayDate
+    {
+        public TimeSpan one { get; set; }
+        public TimeSpan two { get; set; }
+        public TimeSpan three { get; set; }
+        public TimeSpan ffor { get; set; }
+    }
+
     public class providerMktDate
     {
         public DateTime date { get; set; }
         public string ds_date { get; set; }
+        public string ds_week { get; set; }
         public List<providerMktDateHour> hours { get; set; }
     }
 
