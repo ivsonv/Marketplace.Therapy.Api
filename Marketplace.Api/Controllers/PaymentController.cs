@@ -1,3 +1,4 @@
+using Marketplace.Domain.Helpers;
 using Marketplace.Domain.Models.Request;
 using Marketplace.Domain.Models.Request.payment;
 using Marketplace.Domain.Models.Response;
@@ -18,7 +19,7 @@ namespace Marketplace.Api.Controllers
             _paymentService = paymentService;
         }
 
-        [HttpPost]
+        [HttpPost, CustomAuthorizePermission]
         public async Task<BaseRs<paymentRs>> Store([FromBody] BaseRq<paymentRq> _request)
             => await _paymentService.Store(_request);
     }
