@@ -25,6 +25,10 @@ namespace Marketplace.Api.Controllers
         public async Task<BaseRs<accountCustomerRs>> StoreCustomer([FromBody] accountCustomerRq _reAcc)
             => await _account.storeCustomer(_reAcc);
 
+        [HttpGet("appointments"), CustomAuthorizePermission(Permissions = permission.Account.ViewCustomer)]
+        public async Task<BaseRs<accountCustomerRs>> FetchCalendar(BaseRq<string> _rec)
+            => await _account.fetchAppointments(_rec);
+
         //[HttpPut, CustomAuthorizePermission(Permissions = permission.Account.ViewCustomer)]
         //public async Task<BaseRs<accountCustomerRs>> UpdateProvider([FromForm] accountCustomerRq _reAcc)
         //    => await _account.updateProvider(_reAcc);

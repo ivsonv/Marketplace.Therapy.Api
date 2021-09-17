@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
+using Marketplace.Domain.Interface.Integrations.caching;
 
 namespace Marketplace.Services.Service
 {
@@ -18,6 +19,7 @@ namespace Marketplace.Services.Service
         private readonly CustomerService _customerService;
         private readonly ProviderService _providerService;
         private readonly IConfiguration _configuration;
+        private readonly ICustomCache _cache;
         private readonly IPayment _payment;
 
         public PaymentService(CustomAuthenticatedUser customerUser,
@@ -25,6 +27,7 @@ namespace Marketplace.Services.Service
                               ProviderService providerService,
                               CustomerService customerService,
                               IConfiguration configuration,
+                              ICustomCache cache,
                               IPayment payment)
         {
             _appointmentService = appointmentService;
@@ -33,6 +36,7 @@ namespace Marketplace.Services.Service
             _configuration = configuration;
             _customerUser = customerUser;
             _payment = payment;
+            _cache = cache;
         }
 
         public async Task<BaseRs<paymentRs>> Store(BaseRq<paymentRq> _request)
@@ -81,7 +85,7 @@ namespace Marketplace.Services.Service
                     }
                 };
                 await _appointmentService.Store(app);
-
+                //_cache.Clear("calendars");
 
                 // payment request
                 var dto = new Domain.Models.dto.payment.PaymentDto()
@@ -112,7 +116,6 @@ namespace Marketplace.Services.Service
                     description = "pi"
                 });
                 await _appointmentService.Update(app);
-
 
                 // retorno chamada
                 _res.content = new paymentRs() 

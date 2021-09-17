@@ -40,6 +40,24 @@ namespace Marketplace.Infra.Repository.Marketplace
         {
             return this.Show(pagination);
         }
+        public async Task<List<Appointment>> ShowByCustomer(Pagination pagination, int customer_id)
+        {
+            return await _repository.Query
+                    .Include(i => i.Provider)
+                    .Where(w => w.status == Enumerados.AppointmentStatus.confirmed)
+                    .Where(w => w.customer_id == customer_id)
+                    .Select(s => new Appointment()
+                    {
+                        Provider = new Provider() { fantasy_name = s.Provider.fantasy_name, company_name = s.Provider.company_name },
+                        booking_date = s.booking_date,
+                        status = s.status,
+                        id = s.id
+                    })
+                    .OrderBy(o => o.booking_date)
+                    .Skip(pagination.size * pagination.page).Take(pagination.size)
+                    .ToListAsync();
+        }
+
         public async Task<List<Appointment>> Show(Pagination pagination, int provider_id)
         {
             return await _repository.Query

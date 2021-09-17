@@ -13,12 +13,15 @@ namespace Marketplace.Services.Service
     public class AccountCustomerService
     {
         private readonly CustomAuthenticatedUser _authenticatedCustomer;
+        private readonly AppointmentService _appointmentService;
         private readonly CustomerService _customerService;
 
-        public AccountCustomerService(CustomerService customerService,
+        public AccountCustomerService(AppointmentService appointmentService,
+                                      CustomerService customerService,
                                       CustomAuthenticatedUser user,
                                       ICustomCache cache)
         {
+            _appointmentService = appointmentService;
             _customerService = customerService;
             _authenticatedCustomer = user;
         }
@@ -48,6 +51,37 @@ namespace Marketplace.Services.Service
             catch (System.Exception ex) { _res.setError(ex); }
             return _res;
         }
+        public async Task<BaseRs<accountCustomerRs>> fetchAppointments(BaseRq<string> _request)
+        {
+            var _res = new BaseRs<accountCustomerRs>();
+            try
+            {
+                var rq = new BaseRq<Domain.Models.Request.appointment.appointmentRq>()
+                {
+                    pagination = _request.pagination,
+                    data = new Domain.Models.Request.appointment.appointmentRq()
+                    {
+                        customer_id = _authenticatedCustomer.user.id
+                    }
+                };
+
+                var lst = await _appointmentService.showByCustomer(rq);
+                if(lst.content.IsNotEmpty())
+                {
+                    _res.content = new accountCustomerRs();
+                    _res.content.appointments = lst.content.ConvertAll(cc => new CustomerAppointment()
+                    {
+                        provider_name = $"{cc.Provider.fantasy_name} {cc.Provider.company_name}",
+                        data = $"{cc.booking_date.ToString("dd/MM/yyyy")}",
+                        hora = $"{cc.booking_date.ToString("HH:mm")}",
+                        dsStatus = cc.status.ToString(),
+                        id = cc.id
+                    });
+                }
+            }
+            catch (System.Exception ex) { _res.setError(ex); }
+            return _res;
+        }
 
         public async Task<BaseRs<accountProviderRs>> findByUser()
         {
@@ -61,5 +95,6 @@ namespace Marketplace.Services.Service
             //catch (System.Exception ex) { _res.setError(ex); }
             //return _res;
         }
+
     }
 }

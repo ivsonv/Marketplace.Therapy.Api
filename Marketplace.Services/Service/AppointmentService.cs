@@ -12,15 +12,33 @@ using System.Threading.Tasks;
 namespace Marketplace.Services.Service
 {
     public class AppointmentService
-    {
-        private readonly CustomAuthenticatedUser _authenticatedUser;
+    {   
         private readonly IAppointmentRepository _repository;
 
-        public AppointmentService(IAppointmentRepository appointmentRepository,
-                                  CustomAuthenticatedUser user)
+        public AppointmentService(IAppointmentRepository appointmentRepository)
         {
             _repository = appointmentRepository;
-            _authenticatedUser = user;
+        }
+
+        public async Task<BaseRs<appointmentRs>> Store(BaseRq<appointmentRq> _request)
+        {
+            var _res = new BaseRs<appointmentRs>();
+            try
+            {
+                await _repository.Create(_request.data);
+            }
+            catch (System.Exception ex) { _res.setError(ex); }
+            return _res;
+        }
+        public async Task<BaseRs<appointmentRs>> Update(BaseRq<appointmentRq> _request)
+        {
+            var _res = new BaseRs<appointmentRs>();
+            try
+            {
+                await _repository.Update(_request.data);
+            }
+            catch (System.Exception ex) { _res.setError(ex); }
+            return _res;
         }
 
         public async Task<BaseRs<List<appointmentRs>>> show(BaseRq<appointmentRq> _request)
@@ -52,24 +70,19 @@ namespace Marketplace.Services.Service
             catch (System.Exception ex) { _res.setError(ex); }
             return _res;
         }
-
-        public async Task<BaseRs<appointmentRs>> Store(BaseRq<appointmentRq> _request)
+        public async Task<BaseRs<List<appointmentRs>>> showByCustomer(BaseRq<appointmentRq> _request)
         {
-            var _res = new BaseRs<appointmentRs>();
+            var _res = new BaseRs<List<appointmentRs>>();
             try
             {
-                await _repository.Create(_request.data);
-            }
-            catch (System.Exception ex) { _res.setError(ex); }
-            return _res;
-        }
-
-        public async Task<BaseRs<appointmentRs>> Update(BaseRq<appointmentRq> _request)
-        {
-            var _res = new BaseRs<appointmentRs>();
-            try
-            {
-                await _repository.Update(_request.data);
+                var lst = await _repository.ShowByCustomer(_request.pagination, _request.data.customer_id);
+                _res.content = lst.ConvertAll(cc => new appointmentRs()
+                {
+                    Provider = cc.Provider,
+                    booking_date = cc.booking_date,
+                    status = cc.status,
+                    id = cc.id
+                });
             }
             catch (System.Exception ex) { _res.setError(ex); }
             return _res;
