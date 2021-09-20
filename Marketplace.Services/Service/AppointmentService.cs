@@ -1,23 +1,25 @@
-﻿using Marketplace.Domain.Entities;
-using Marketplace.Domain.Helpers;
-using Marketplace.Domain.Interface.Integrations.caching;
+﻿using AutoMapper;
+using Marketplace.Domain.Entities;
 using Marketplace.Domain.Interface.Marketplace;
 using Marketplace.Domain.Models.Request;
 using Marketplace.Domain.Models.Request.appointment;
 using Marketplace.Domain.Models.Response;
 using Marketplace.Domain.Models.Response.appointment;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Marketplace.Services.Service
 {
     public class AppointmentService
-    {   
+    {
         private readonly IAppointmentRepository _repository;
+        private readonly IMapper _mapper;
 
-        public AppointmentService(IAppointmentRepository appointmentRepository)
+        public AppointmentService(IAppointmentRepository appointmentRepository, IMapper mapper)
         {
             _repository = appointmentRepository;
+            _mapper = mapper;
         }
 
         public async Task<BaseRs<appointmentRs>> Store(BaseRq<appointmentRq> _request)
@@ -76,13 +78,32 @@ namespace Marketplace.Services.Service
             try
             {
                 var lst = await _repository.ShowByCustomer(_request.pagination, _request.data.customer_id);
-                _res.content = lst.ConvertAll(cc => new appointmentRs()
+                if (lst.Any())
                 {
-                    Provider = cc.Provider,
-                    booking_date = cc.booking_date,
-                    status = cc.status,
-                    id = cc.id
-                });
+                    _res.content = new List<appointmentRs>();
+                    lst.ForEach(fe =>
+                    {
+                        _res.content.Add(_mapper.Map<appointmentRs>(fe));
+                    });
+                }
+            }
+            catch (System.Exception ex) { _res.setError(ex); }
+            return _res;
+        }
+        public async Task<BaseRs<appointmentRs>> FindByAppointmentCustomer(int appointment_id, int customer_id)
+        {
+            var _res = new BaseRs<appointmentRs>();
+            try
+            {
+                var app = await _repository.FindByAppointmentIdCustomer(appointment_id: appointment_id, customer_id: customer_id);
+                if (app != null)
+                {
+                    _res.content = _mapper.Map<appointmentRs>(app);
+                    _res.content.dsStatusPayment = _res.content.payment_status.ToString();
+                    _res.content.dsStatus = _res.content.status.ToString();
+                    _res.content.start = _res.content.booking_date.ToString("dd/MM/yyyy");
+                    _res.content.hour = _res.content.booking_date.TimeOfDay;
+                }
             }
             catch (System.Exception ex) { _res.setError(ex); }
             return _res;

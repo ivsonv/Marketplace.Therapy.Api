@@ -106,5 +106,19 @@ namespace Marketplace.Infra.Repository.Marketplace
         {
             throw new System.NotImplementedException();
         }
+
+        public async Task<Appointment> FindByAppointmentIdCustomer(int customer_id, int appointment_id)
+        {
+            return await _repository.Query
+                                    .Include(i => i.Provider)
+                                    .Where(w => w.customer_id == customer_id && w.id == appointment_id)
+                                    .Select(s => new Appointment()
+                                    {
+                                        Provider = new Provider() { fantasy_name = s.Provider.fantasy_name, company_name = s.Provider.company_name },
+                                        payment_status = s.payment_status,
+                                        booking_date = s.booking_date,
+                                        status = s.status
+                                    }).FirstOrDefaultAsync();
+        }
     }
 }

@@ -100,7 +100,6 @@ namespace Marketplace.Api
             services.AddScoped<IProviderScheduleRepository, ProviderScheduleRepository>();
             services.AddScoped<IAppointmentRepository, AppointmentRepository>();
 
-
             // services
             services.AddScoped<CategoryService>();
             services.AddScoped<LocationService>();
@@ -136,6 +135,7 @@ namespace Marketplace.Api
                 mc.AddProfile(new MappingProvider());
                 mc.AddProfile(new MappingGroupPermission());
                 mc.AddProfile(new MappingUsers());
+                mc.AddProfile(new MappingAppointments());
             });
             services.AddSingleton(mappingConfig.CreateMapper());
             #endregion

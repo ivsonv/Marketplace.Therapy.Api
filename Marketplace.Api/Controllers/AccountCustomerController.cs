@@ -2,10 +2,8 @@ using Marketplace.Domain.Helpers;
 using Marketplace.Domain.Models.permissions;
 using Marketplace.Domain.Models.Request;
 using Marketplace.Domain.Models.Request.account.customer;
-using Marketplace.Domain.Models.Request.account.provider;
 using Marketplace.Domain.Models.Response;
 using Marketplace.Domain.Models.Response.account.customer;
-using Marketplace.Domain.Models.Response.account.provider;
 using Marketplace.Services.Service;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -29,8 +27,8 @@ namespace Marketplace.Api.Controllers
         public async Task<BaseRs<accountCustomerRs>> FetchCalendar(BaseRq<string> _rec)
             => await _account.fetchAppointments(_rec);
 
-        //[HttpPut, CustomAuthorizePermission(Permissions = permission.Account.ViewCustomer)]
-        //public async Task<BaseRs<accountCustomerRs>> UpdateProvider([FromForm] accountCustomerRq _reAcc)
-        //    => await _account.updateProvider(_reAcc);
+        [HttpGet("appointment/{id}"), CustomAuthorizePermission(Permissions = permission.Account.ViewCustomer)]
+        public async Task<BaseRs<accountCustomerRs>> FetchAppointment([FromRoute] int id)
+            => await _account.fetchAppointment(id);
     }
 }

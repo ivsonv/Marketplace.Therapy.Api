@@ -33,7 +33,7 @@ namespace Marketplace.Services.Service
             {
                 var _rq = new BaseRq<customerRq>()
                 {
-                    data = new customerRq() 
+                    data = new customerRq()
                     {
                         name = _request.name.Clear().ToUpper(),
                         password = _request.password,
@@ -66,7 +66,7 @@ namespace Marketplace.Services.Service
                 };
 
                 var lst = await _appointmentService.showByCustomer(rq);
-                if(lst.content.IsNotEmpty())
+                if (lst.content.IsNotEmpty())
                 {
                     _res.content = new accountCustomerRs();
                     _res.content.appointments = lst.content.ConvertAll(cc => new CustomerAppointment()
@@ -78,6 +78,26 @@ namespace Marketplace.Services.Service
                         id = cc.id
                     });
                 }
+            }
+            catch (System.Exception ex) { _res.setError(ex); }
+            return _res;
+        }
+
+        public async Task<BaseRs<accountCustomerRs>> fetchAppointment(int id)
+        {
+            var _res = new BaseRs<accountCustomerRs>();
+            try
+            {
+                var resApp = await _appointmentService.FindByAppointmentCustomer(customer_id: _authenticatedCustomer.user.id, appointment_id: id);
+                if (resApp.error == null)
+                {
+                    _res.content = new accountCustomerRs()
+                    {
+                        appointment = resApp.content
+                    };
+                }
+                else
+                    _res.error = resApp.error;
             }
             catch (System.Exception ex) { _res.setError(ex); }
             return _res;
@@ -95,6 +115,5 @@ namespace Marketplace.Services.Service
             //catch (System.Exception ex) { _res.setError(ex); }
             //return _res;
         }
-
     }
 }
