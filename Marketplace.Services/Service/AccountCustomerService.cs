@@ -82,13 +82,31 @@ namespace Marketplace.Services.Service
             catch (System.Exception ex) { _res.setError(ex); }
             return _res;
         }
-
         public async Task<BaseRs<accountCustomerRs>> fetchAppointment(int id)
         {
             var _res = new BaseRs<accountCustomerRs>();
             try
             {
                 var resApp = await _appointmentService.FindByAppointmentCustomer(customer_id: _authenticatedCustomer.user.id, appointment_id: id);
+                if (resApp.error == null)
+                {
+                    _res.content = new accountCustomerRs()
+                    {
+                        appointment = resApp.content
+                    };
+                }
+                else
+                    _res.error = resApp.error;
+            }
+            catch (System.Exception ex) { _res.setError(ex); }
+            return _res;
+        }
+        public async Task<BaseRs<accountCustomerRs>> fetchAppointmentInvoice(int id)
+        {
+            var _res = new BaseRs<accountCustomerRs>();
+            try
+            {
+                var resApp = await _appointmentService.FindByAppointmentInvoice(customer_id: _authenticatedCustomer.user.id, appointment_id: id);
                 if (resApp.error == null)
                 {
                     _res.content = new accountCustomerRs()

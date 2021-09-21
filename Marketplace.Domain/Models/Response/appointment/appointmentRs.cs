@@ -8,5 +8,6 @@ namespace Marketplace.Domain.Models.Response.appointment
         public TimeSpan hour { get; set; }
         public string dsStatus { get; set; }
         public string dsStatusPayment { get; set; }
+        public string issued { get; set; }
     }
 }

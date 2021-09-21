@@ -30,5 +30,9 @@ namespace Marketplace.Api.Controllers
         [HttpGet("appointment/{id}"), CustomAuthorizePermission(Permissions = permission.Account.ViewCustomer)]
         public async Task<BaseRs<accountCustomerRs>> FetchAppointment([FromRoute] int id)
             => await _account.fetchAppointment(id);
+
+        [HttpGet("appointment/{id}/invoice"), CustomAuthorizePermission(Permissions = permission.Account.ViewCustomer)]
+        public async Task<BaseRs<accountCustomerRs>> FetchAppointmentInvoice([FromRoute] int id)
+            => await _account.fetchAppointmentInvoice(id);
     }
 }

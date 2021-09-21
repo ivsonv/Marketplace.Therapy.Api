@@ -57,7 +57,6 @@ namespace Marketplace.Infra.Repository.Marketplace
                     .Skip(pagination.size * pagination.page).Take(pagination.size)
                     .ToListAsync();
         }
-
         public async Task<List<Appointment>> Show(Pagination pagination, int provider_id)
         {
             return await _repository.Query
@@ -119,6 +118,13 @@ namespace Marketplace.Infra.Repository.Marketplace
                                         booking_date = s.booking_date,
                                         status = s.status
                                     }).FirstOrDefaultAsync();
+        }
+        public async Task<Appointment> FindByAppointmentInvoice(int customer_id, int appointment_id)
+        {
+            return await _repository.Query
+                                    .Include(i => i.Provider).ThenInclude(t => t.Receipts)
+                                    .Include(i => i.Customer)
+                                    .FirstOrDefaultAsync(w => w.customer_id == customer_id && w.id == appointment_id);
         }
     }
 }

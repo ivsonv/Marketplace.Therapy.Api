@@ -5,6 +5,7 @@ using Marketplace.Domain.Models.Request;
 using Marketplace.Domain.Models.Request.appointment;
 using Marketplace.Domain.Models.Response;
 using Marketplace.Domain.Models.Response.appointment;
+using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,11 +15,16 @@ namespace Marketplace.Services.Service
     public class AppointmentService
     {
         private readonly IAppointmentRepository _repository;
+        private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
 
-        public AppointmentService(IAppointmentRepository appointmentRepository, IMapper mapper)
+
+        public AppointmentService(IAppointmentRepository appointmentRepository,
+                                  IConfiguration configuration,
+                                  IMapper mapper)
         {
             _repository = appointmentRepository;
+            _configuration = configuration;
             _mapper = mapper;
         }
 
@@ -103,6 +109,28 @@ namespace Marketplace.Services.Service
                     _res.content.dsStatus = _res.content.status.ToString();
                     _res.content.start = _res.content.booking_date.ToString("dd/MM/yyyy");
                     _res.content.hour = _res.content.booking_date.TimeOfDay;
+                }
+            }
+            catch (System.Exception ex) { _res.setError(ex); }
+            return _res;
+        }
+        public async Task<BaseRs<appointmentRs>> FindByAppointmentInvoice(int appointment_id, int customer_id)
+        {
+            var _res = new BaseRs<appointmentRs>();
+            try
+            {
+                var app = await _repository.FindByAppointmentInvoice(appointment_id: appointment_id, customer_id: customer_id);
+                if (app != null)
+                {
+                    _res.content = _mapper.Map<appointmentRs>(app);
+                    _res.content.dsStatusPayment = _res.content.payment_status.ToString();
+                    _res.content.dsStatus = _res.content.status.ToString();
+                    _res.content.start = _res.content.booking_date.ToString("dd/MM/yyyy");
+                    _res.content.hour = _res.content.booking_date.TimeOfDay;
+                    _res.content.issued = Domain.Helpers.CustomExtensions.DateNow.ToString("dd/MM/yyyy");
+                    _res.content.Provider.password = null;
+
+                    _res.content.Provider.Receipts.First().signature = $"{_configuration["storage:image"]}/signature/{_res.content.Provider.Receipts.First().signature}";
                 }
             }
             catch (System.Exception ex) { _res.setError(ex); }
