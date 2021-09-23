@@ -2,8 +2,10 @@ using Marketplace.Domain.Helpers;
 using Marketplace.Domain.Models.permissions;
 using Marketplace.Domain.Models.Request;
 using Marketplace.Domain.Models.Request.account.provider;
+using Marketplace.Domain.Models.Request.provider;
 using Marketplace.Domain.Models.Response;
 using Marketplace.Domain.Models.Response.account.provider;
+using Marketplace.Domain.Models.Response.provider;
 using Marketplace.Services.Service;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -78,6 +80,13 @@ namespace Marketplace.Api.Controllers
         [HttpGet("appointment/{id}/invoice"), CustomAuthorizePermission(Permissions = permission.Account.ViewProvider)]
         public async Task<BaseRs<accountProviderRs>> FetchAppointmentInvoice([FromRoute] int id)
             => await _account.fetchAppointmentInvoice(id);
+        #endregion
+
+        #region ..: reports :..
+
+        [HttpPost("reports"), CustomAuthorizePermission(Permissions = permission.Account.ViewProvider)]
+        public async Task<BaseRs<providerReportsRs>> FetchReports([FromBody] BaseRq<providerReportsRq> Req)
+            => await _account.fetchReports(Req);
         #endregion
     }
 }

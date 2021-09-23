@@ -26,6 +26,8 @@ namespace Marketplace.Services.Service
         private readonly ProviderService _providerService;
         private readonly UploadService _uploadService;
         private readonly BankService _bankService;
+
+        private readonly IAppointmentRepository _appointmentRepository;
         private readonly ICustomCache _cache;
         private readonly IMapper _mapper;
 
@@ -35,6 +37,7 @@ namespace Marketplace.Services.Service
                                       CustomAuthenticatedUser user,
                                       UploadService uploadService,
                                       BankService bankService,
+                                      IAppointmentRepository appointmentRepository,
                                       ICustomCache cache,
                                       IMapper mapper)
         {
@@ -44,6 +47,8 @@ namespace Marketplace.Services.Service
             _uploadService = uploadService;
             _authenticatedProvider = user;
             _bankService = bankService;
+
+            _appointmentRepository = appointmentRepository;
             _mapper = mapper;
             _cache = cache;
         }
@@ -75,7 +80,6 @@ namespace Marketplace.Services.Service
             catch (System.Exception ex) { _res.setError(ex); }
             return _res;
         }
-
         public async Task<BaseRs<accountProviderRs>> updateProvider(accountProviderRq _request)
         {
             var _res = new BaseRs<accountProviderRs>();
@@ -369,6 +373,48 @@ namespace Marketplace.Services.Service
                     }
                 }
                 else _res.error = resApp.error;
+            }
+            catch (System.Exception ex) { _res.setError(ex); }
+            return _res;
+        }
+
+        // reports
+        public async Task<BaseRs<providerReportsRs>> fetchReports(BaseRq<providerReportsRq> Req)
+        {
+            var _res = new BaseRs<providerReportsRs>();
+            try
+            {
+                if (Req.data.end != System.DateTime.MinValue && Req.data.start != System.DateTime.MinValue)
+                    if (Req.data.end < Req.data.start)
+                    {
+                        _res.error = new BaseError(new List<string>() { "Data Final não pode ser maior que a data de inicio." });
+                        return _res;
+                    }
+
+                System.TimeSpan diff = Req.data.end.Date.Subtract(Req.data.start.Date);
+                if (diff.TotalDays > 45)
+                {
+                    _res.error = new BaseError(new List<string>() { "Periodo máximo permitido e de 45 dias." });
+                    return _res;
+                }
+
+                var lst = await _appointmentRepository.Reports(
+                    provider_id: _authenticatedProvider.user.id,
+                    dtStart: Req.data.start, dtEnd: Req.data.end,
+                    pagination: Req.pagination,
+                    term: Req.search);
+                if (lst.Any())
+                {
+                    _res.content = new providerReportsRs();
+                    _res.content.reports = lst.ConvertAll(c => new providerReport()
+                    {
+                        start = c.booking_date.ToString("dd/MM/yyyy"),
+                        hour = c.booking_date.ToString("HH:mm"),
+                        customer = c.Customer.name,
+                        revenue = c.price_transfer,
+                        id = c.id
+                    });
+                }
             }
             catch (System.Exception ex) { _res.setError(ex); }
             return _res;

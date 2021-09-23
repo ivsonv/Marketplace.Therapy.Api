@@ -6,6 +6,7 @@ using Marketplace.Domain.Interface.Marketplace;
 using Marketplace.Domain.Interface.Shared;
 using Marketplace.Domain.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -127,6 +128,33 @@ namespace Marketplace.Infra.Repository.Marketplace
                                     .Include(i => i.Provider).ThenInclude(t => t.Receipts)
                                     .Include(i => i.Customer)
                                     .FirstOrDefaultAsync(w => w.id == appointment_id);
+        }
+
+        public async Task<List<Appointment>> Reports(Pagination pagination, string term, DateTime dtStart, DateTime dtEnd, int provider_id)
+        {
+            var query = _repository.Query
+                        .Include(i => i.Customer)
+                        .Where(w => w.provider_id == provider_id);
+
+            if (term.IsNotEmpty())
+                query = query.Where(w => w.Customer.name.ToLower().Contains(term.ToLower()));
+
+            if (dtStart != DateTime.MinValue)
+                query = query.Where(w => w.booking_date.Date >= dtStart.Date);
+
+            if (dtEnd != DateTime.MinValue)
+                query = query.Where(w => w.booking_date.Date <= dtEnd.Date);
+
+            // appointment
+            return await query.Select(s => new Appointment()
+            {
+                Customer = new Customer() { name = s.Customer.name },
+                price_transfer = s.price_transfer,
+                booking_date = s.booking_date,
+                id = s.id
+            }).Skip(pagination.size * pagination.page).Take(pagination.size)
+              .AsNoTracking().ToListAsync();
+
         }
     }
 }
