@@ -96,12 +96,12 @@ namespace Marketplace.Services.Service
             catch (System.Exception ex) { _res.setError(ex); }
             return _res;
         }
-        public async Task<BaseRs<appointmentRs>> FindByAppointmentCustomer(int appointment_id, int customer_id)
+        public async Task<BaseRs<appointmentRs>> FindByAppointment(int appointment_id)
         {
             var _res = new BaseRs<appointmentRs>();
             try
             {
-                var app = await _repository.FindByAppointmentIdCustomer(appointment_id: appointment_id, customer_id: customer_id);
+                var app = await _repository.FindByAppointmentDetails(appointment_id: appointment_id);
                 if (app != null)
                 {
                     _res.content = _mapper.Map<appointmentRs>(app);
@@ -114,12 +114,12 @@ namespace Marketplace.Services.Service
             catch (System.Exception ex) { _res.setError(ex); }
             return _res;
         }
-        public async Task<BaseRs<appointmentRs>> FindByAppointmentInvoice(int appointment_id, int customer_id)
+        public async Task<BaseRs<appointmentRs>> FindByAppointmentInvoice(int appointment_id)
         {
             var _res = new BaseRs<appointmentRs>();
             try
             {
-                var app = await _repository.FindByAppointmentInvoice(appointment_id: appointment_id, customer_id: customer_id);
+                var app = await _repository.FindByAppointmentInvoice(appointment_id: appointment_id);
                 if (app != null)
                 {
                     _res.content = _mapper.Map<appointmentRs>(app);

@@ -87,13 +87,17 @@ namespace Marketplace.Services.Service
             var _res = new BaseRs<accountCustomerRs>();
             try
             {
-                var resApp = await _appointmentService.FindByAppointmentCustomer(customer_id: _authenticatedCustomer.user.id, appointment_id: id);
-                if (resApp.error == null)
+                var resApp = await _appointmentService.FindByAppointment(appointment_id: id);
+                if (resApp.error == null && resApp.content != null)
                 {
-                    _res.content = new accountCustomerRs()
+                    // apenas agendamento do cliente.
+                    if (resApp.content.Customer.id == _authenticatedCustomer.user.id)
                     {
-                        appointment = resApp.content
-                    };
+                        _res.content = new accountCustomerRs()
+                        {
+                            appointment = resApp.content
+                        };
+                    }
                 }
                 else
                     _res.error = resApp.error;
@@ -106,13 +110,17 @@ namespace Marketplace.Services.Service
             var _res = new BaseRs<accountCustomerRs>();
             try
             {
-                var resApp = await _appointmentService.FindByAppointmentInvoice(customer_id: _authenticatedCustomer.user.id, appointment_id: id);
-                if (resApp.error == null)
+                var resApp = await _appointmentService.FindByAppointmentInvoice(appointment_id: id);
+                if (resApp.error == null && resApp.content != null)
                 {
-                    _res.content = new accountCustomerRs()
+                    // apenas agendamento do cliente.
+                    if (resApp.content.Customer.id == _authenticatedCustomer.user.id)
                     {
-                        appointment = resApp.content
-                    };
+                        _res.content = new accountCustomerRs()
+                        {
+                            appointment = resApp.content
+                        };
+                    }
                 }
                 else
                     _res.error = resApp.error;

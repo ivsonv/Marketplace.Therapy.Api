@@ -106,25 +106,27 @@ namespace Marketplace.Infra.Repository.Marketplace
             throw new System.NotImplementedException();
         }
 
-        public async Task<Appointment> FindByAppointmentIdCustomer(int customer_id, int appointment_id)
+        public async Task<Appointment> FindByAppointmentDetails(int appointment_id)
         {
             return await _repository.Query
                                     .Include(i => i.Provider)
-                                    .Where(w => w.customer_id == customer_id && w.id == appointment_id)
+                                    .Include(i => i.Customer)
+                                    .Where(w => w.id == appointment_id)
                                     .Select(s => new Appointment()
                                     {
-                                        Provider = new Provider() { fantasy_name = s.Provider.fantasy_name, company_name = s.Provider.company_name },
+                                        Provider = new Provider() { fantasy_name = s.Provider.fantasy_name, company_name = s.Provider.company_name, id = s.provider_id },
+                                        Customer = new Customer() { name = s.Customer.name, id = s.Customer.id },
                                         payment_status = s.payment_status,
                                         booking_date = s.booking_date,
                                         status = s.status
                                     }).FirstOrDefaultAsync();
         }
-        public async Task<Appointment> FindByAppointmentInvoice(int customer_id, int appointment_id)
+        public async Task<Appointment> FindByAppointmentInvoice(int appointment_id)
         {
             return await _repository.Query
                                     .Include(i => i.Provider).ThenInclude(t => t.Receipts)
                                     .Include(i => i.Customer)
-                                    .FirstOrDefaultAsync(w => w.customer_id == customer_id && w.id == appointment_id);
+                                    .FirstOrDefaultAsync(w => w.id == appointment_id);
         }
     }
 }

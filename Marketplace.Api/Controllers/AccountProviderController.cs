@@ -70,6 +70,14 @@ namespace Marketplace.Api.Controllers
         [HttpGet("calendar"), CustomAuthorizePermission(Permissions = permission.Account.ViewProvider)]
         public async Task<BaseRs<accountProviderRs>> FetchCalendar(int month = -1)
             => await _account.fetchCalendar(month);
+
+        [HttpGet("appointment/{id}"), CustomAuthorizePermission(Permissions = permission.Account.ViewProvider)]
+        public async Task<BaseRs<accountProviderRs>> FetchAppointment([FromRoute] int id)
+            => await _account.fetchAppointment(id);
+
+        [HttpGet("appointment/{id}/invoice"), CustomAuthorizePermission(Permissions = permission.Account.ViewProvider)]
+        public async Task<BaseRs<accountProviderRs>> FetchAppointmentInvoice([FromRoute] int id)
+            => await _account.fetchAppointmentInvoice(id);
         #endregion
     }
 }

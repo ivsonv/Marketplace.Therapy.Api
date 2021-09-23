@@ -22,6 +22,7 @@ namespace Marketplace.Services.Service
     {
         private readonly CustomAuthenticatedUser _authenticatedProvider;
         private readonly ProviderScheduleService _scheduleService;
+        private readonly AppointmentService _appointmentService;
         private readonly ProviderService _providerService;
         private readonly UploadService _uploadService;
         private readonly BankService _bankService;
@@ -29,6 +30,7 @@ namespace Marketplace.Services.Service
         private readonly IMapper _mapper;
 
         public AccountProviderService(ProviderScheduleService scheduleService,
+                                      AppointmentService appointmentService,
                                       ProviderService providerService,
                                       CustomAuthenticatedUser user,
                                       UploadService uploadService,
@@ -36,6 +38,7 @@ namespace Marketplace.Services.Service
                                       ICustomCache cache,
                                       IMapper mapper)
         {
+            _appointmentService = appointmentService;
             _providerService = providerService;
             _scheduleService = scheduleService;
             _uploadService = uploadService;
@@ -53,7 +56,7 @@ namespace Marketplace.Services.Service
                 // request provider
                 var _rq = new BaseRq<providerRq>()
                 {
-                    data = new providerRq() 
+                    data = new providerRq()
                     {
                         company_name = _request.company_name,
                         fantasy_name = _request.fantasy_name,
@@ -323,6 +326,49 @@ namespace Marketplace.Services.Service
                                                  type = s.type,
                                                  id = s.id
                                              }).ToList();
+            }
+            catch (System.Exception ex) { _res.setError(ex); }
+            return _res;
+        }
+        public async Task<BaseRs<accountProviderRs>> fetchAppointment(int id)
+        {
+            var _res = new BaseRs<accountProviderRs>();
+            try
+            {
+                var resApp = await _appointmentService.FindByAppointment(appointment_id: id);
+                if (resApp.error == null && resApp.content != null)
+                {
+                    // apenas agendamento do provedor.
+                    if (resApp.content.Provider.id == _authenticatedProvider.user.id)
+                        _res.content = new accountProviderRs()
+                        {
+                            appointment = resApp.content
+                        };
+                }
+                else
+                    _res.error = resApp.error;
+            }
+            catch (System.Exception ex) { _res.setError(ex); }
+            return _res;
+        }
+        public async Task<BaseRs<accountProviderRs>> fetchAppointmentInvoice(int id)
+        {
+            var _res = new BaseRs<accountProviderRs>();
+            try
+            {
+                var resApp = await _appointmentService.FindByAppointmentInvoice(appointment_id: id);
+                if (resApp.error == null && resApp.content != null)
+                {
+                    // apenas agendamento do cliente.
+                    if (resApp.content.Provider.id == _authenticatedProvider.user.id)
+                    {
+                        _res.content = new accountProviderRs()
+                        {
+                            appointment = resApp.content
+                        };
+                    }
+                }
+                else _res.error = resApp.error;
             }
             catch (System.Exception ex) { _res.setError(ex); }
             return _res;
