@@ -9,6 +9,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
 using Marketplace.Domain.Interface.Integrations.caching;
+using AutoMapper;
+using Marketplace.Domain.Models.Request.appointment;
+using System.Linq;
 
 namespace Marketplace.Services.Service
 {
@@ -21,6 +24,7 @@ namespace Marketplace.Services.Service
         private readonly IConfiguration _configuration;
         private readonly ICustomCache _cache;
         private readonly IPayment _payment;
+        private readonly IMapper _mapper;
 
         public PaymentService(CustomAuthenticatedUser customerUser,
                               AppointmentService appointmentService,
@@ -28,7 +32,8 @@ namespace Marketplace.Services.Service
                               CustomerService customerService,
                               IConfiguration configuration,
                               ICustomCache cache,
-                              IPayment payment)
+                              IPayment payment,
+                              IMapper mapper)
         {
             _appointmentService = appointmentService;
             _providerService = providerService;
@@ -36,6 +41,7 @@ namespace Marketplace.Services.Service
             _configuration = configuration;
             _customerUser = customerUser;
             _payment = payment;
+            _mapper = mapper;
             _cache = cache;
         }
 
@@ -109,19 +115,87 @@ namespace Marketplace.Services.Service
                 app.data.transaction_code = dto.payments[0].transactionCode;
 
                 //logs
-                app.data.Logs.Add(new Domain.Entities.AppointmentLog()
+                app.data.Logs = new List<Domain.Entities.AppointmentLog>()
                 {
-                    jsonRq = dto.payments[0].LogRq,
-                    jsonRs = dto.payments[0].LogRs,
-                    description = "pi"
-                });
+                    new Domain.Entities.AppointmentLog()
+                    {
+                        jsonRq = dto.payments[0].LogRq,
+                        jsonRs = dto.payments[0].LogRs,
+                        description = "pi"
+                    }
+                };
                 await _appointmentService.Update(app);
 
                 // retorno chamada
-                _res.content = new paymentRs() 
+                _res.content = new paymentRs()
                 {
                     url = dto.payments[0].transactionUrl
                 };
+            }
+            catch (Exception ex) { _res.setError(ex); }
+            return _res;
+        }
+
+        public async Task<BaseRs<paymentRs>> Consult(consultRq consult)
+        {
+            var _res = new BaseRs<paymentRs>();
+            try
+            {
+                // appointment
+                var appointment = await _appointmentService.FindById(consult.code);
+                if (appointment.content.transaction_code != consult.token)
+                    appointment.content.transaction_code = consult.token;
+
+                // search payment
+                var dto = new Domain.Models.dto.payment.PaymentDto()
+                {
+                    payments = new List<Domain.Models.dto.payment.PaymentList>()
+                    {
+                        new Domain.Models.dto.payment.PaymentList()
+                        {
+                            transactionCode = appointment.content.transaction_code,
+                            Provider = new Domain.Models.dto.provider.providerDto()
+                            {
+                                splitAccounts = appointment.content.Provider.SplitAccounts.ToList()
+                            }
+                        }
+                    }
+                };
+                await _payment.Search(dto);
+
+                // atualizar status
+                var _pay = dto.payments[0];
+                if (appointment.content.payment_status != _pay.paymentStatus)
+                {
+                    // logs
+                    appointment.content.Logs = new List<Domain.Entities.AppointmentLog>()
+                    {
+                        new Domain.Entities.AppointmentLog()
+                        {
+                            description = $"status: {appointment.content.payment_status}>{_pay.paymentStatus}",
+                            jsonRq = dto.payments[0].LogRq,
+                            jsonRs = dto.payments[0].LogRs
+                        }
+                    };
+
+                    // atribuir
+                    appointment.content.payment_status = _pay.paymentStatus;
+                    appointment.content.status = _pay.status;
+                    appointment.content.Customer = null;
+                    appointment.content.Provider = null;
+
+                    // atualiza
+                    var resUp = await _appointmentService.UpdateStatus(appointment.content);
+                    if (resUp.error != null)
+                    {
+                        // tenta novamente
+                        if (resUp.error.message[0].IndexOf("cannot be tracked because another instance with the same key value for {'id'} is already being tracked") > -1)
+                            resUp = await _appointmentService.UpdateStatus(appointment.content);
+
+                        if (resUp.error != null)
+                            _res.error = resUp.error;
+                    }
+                }
             }
             catch (Exception ex) { _res.setError(ex); }
             return _res;

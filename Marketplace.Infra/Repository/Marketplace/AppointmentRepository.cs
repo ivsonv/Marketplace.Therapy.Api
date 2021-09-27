@@ -54,7 +54,7 @@ namespace Marketplace.Infra.Repository.Marketplace
                         status = s.status,
                         id = s.id
                     })
-                    .OrderBy(o => o.booking_date)
+                    .OrderByDescending(o => o.booking_date)
                     .Skip(pagination.size * pagination.page).Take(pagination.size)
                     .ToListAsync();
         }
@@ -72,14 +72,16 @@ namespace Marketplace.Infra.Repository.Marketplace
                         type = s.type,
                         id = s.id
                     })
-                    .OrderBy(o => o.booking_date)
+                    .OrderByDescending(o => o.booking_date)
                     .Skip(pagination.size * pagination.page).Take(pagination.size)
                     .ToListAsync();
         }
 
         public async Task<Appointment> FindById(int id)
         {
-            return await _repository.Find(id);
+            return await _repository.Query
+                .Include(i => i.Provider).ThenInclude(t => t.SplitAccounts)
+                .FirstOrDefaultAsync(f => f.id == id);
         }
         public async Task Create(Appointment entity)
         {

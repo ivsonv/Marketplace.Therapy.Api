@@ -13,15 +13,15 @@
             pending = 0,
             confirmed = 1,
             canceled = 2,
-            approved = 3,
-            refunded = 4
+            notAuthorized = 3
         }
 
         public enum AppointmentStatus
         {
             pending = 0,
             confirmed = 1,
-            canceled = 2
+            canceled = 2,
+            notAuthorized = 3
         }
 
         public enum AppointmentOrigin

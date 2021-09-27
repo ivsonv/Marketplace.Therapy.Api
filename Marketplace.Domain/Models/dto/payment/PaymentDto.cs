@@ -17,6 +17,8 @@ namespace Marketplace.Domain.Models.dto.payment
         public ProductSale productSale { get; set; }
         public double totalprice { get; set; }
         public CardDto card { get; set; }
+        public Helpers.Enumerados.PaymentStatus paymentStatus { get; set; }
+        public Helpers.Enumerados.AppointmentStatus status { get; set; }
         public string LogRq { get; set; }
         public string LogRs { get; set; }
         public string webhook_url { get; set; }

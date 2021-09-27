@@ -1,4 +1,5 @@
 using Marketplace.Domain.Helpers;
+using Marketplace.Domain.Models.permissions;
 using Marketplace.Domain.Models.Request;
 using Marketplace.Domain.Models.Request.payment;
 using Marketplace.Domain.Models.Response;
@@ -19,8 +20,12 @@ namespace Marketplace.Api.Controllers
             _paymentService = paymentService;
         }
 
-        [HttpPost, CustomAuthorizePermission]
+        [HttpPost, CustomAuthorizePermission(Permissions = permission.Account.ViewCustomer)]
         public async Task<BaseRs<paymentRs>> Store([FromBody] BaseRq<paymentRq> _request)
             => await _paymentService.Store(_request);
+
+        [HttpPost("consult")]
+        public async Task<BaseRs<paymentRs>> Consult([FromBody] consultRq Req)
+            => await _paymentService.Consult(Req);
     }
 }

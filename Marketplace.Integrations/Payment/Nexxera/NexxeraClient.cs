@@ -17,12 +17,12 @@ namespace Marketplace.Integrations.Payment.Nexxera
     {
         #region ..:  dados para teste :..
 
-       //private static string TokenDeAcesso = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3MiOlsiY2FyZFBheW1lbnRzIiwicmVjdXJyZW5jZVBsYW5zIiwicmVjdXJyZW5jZXMiLCJjaGVja291dCIsImJvbGV0b1BheW1lbnRzIl0sImlzcyI6ImFkOGI0M2M1LTFmZWQtNDc5Ni1hMTg3LTFiZjMzZDM2OTFiMSIsImV4cCI6MTg4NjY3NjkzNX0.I-LqnRYbkO7YjmblPomBtU-BeV6lVCgf7XywrTZyJzg";
-       //public static readonly string CheckOutURL = "https://checkout-nix-qa.cloudint.nexxera.com/checkout/"; // TST
-       //public static readonly string ApiUrl = "https://gateway-nix-qa.cloudint.nexxera.com/v2/"; // TST
-       //public static readonly string MerchantApiUrl = "https://merchant-sign-up-core-receivable-gateway-qa.cloudint.nexxera.com/registration/api/"; // TST
-       ////URL Base QA/Testes: https://merchant-sign-up-core-receivable-gateway-qa.cloudint.nexxera.com/registration/api
-       //private readonly static string TokenDeAcessoMerchantApiURl = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm9kdWN0SWQiOiJhNTM3NzM1NC02NjJlLTQ3MDEtZTQxOS0wOGQzYzIyNmEwMTUiLCJjYXJkUmVwb3NpdG9yeUlkIjoiOTUxMDg4ZWUtMjNjYi00YzU5LTlmZmQtYjY0ZjM4MzEwYmVlIiwic3ViIjoiOWNmZTQ2NDctMzY1OS00ZWM1LTg3ZGItMDhkN2Q1OTYxOTcxIiwiYWNjZXNzIjoibWVyY2hhbnRTaWduVXAifQ.5YLDyXBKBI38p2Zu8fB7CdJM0Ot7m8hiEWk1L7rI4hc";
+        //private static string TokenDeAcesso = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3MiOlsiY2FyZFBheW1lbnRzIiwicmVjdXJyZW5jZVBsYW5zIiwicmVjdXJyZW5jZXMiLCJjaGVja291dCIsImJvbGV0b1BheW1lbnRzIl0sImlzcyI6ImFkOGI0M2M1LTFmZWQtNDc5Ni1hMTg3LTFiZjMzZDM2OTFiMSIsImV4cCI6MTg4NjY3NjkzNX0.I-LqnRYbkO7YjmblPomBtU-BeV6lVCgf7XywrTZyJzg";
+        //public static readonly string CheckOutURL = "https://checkout-nix-qa.cloudint.nexxera.com/checkout/"; // TST
+        //public static readonly string ApiUrl = "https://gateway-nix-qa.cloudint.nexxera.com/v2/"; // TST
+        //public static readonly string MerchantApiUrl = "https://merchant-sign-up-core-receivable-gateway-qa.cloudint.nexxera.com/registration/api/"; // TST
+        ////URL Base QA/Testes: https://merchant-sign-up-core-receivable-gateway-qa.cloudint.nexxera.com/registration/api
+        //private readonly static string TokenDeAcessoMerchantApiURl = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm9kdWN0SWQiOiJhNTM3NzM1NC02NjJlLTQ3MDEtZTQxOS0wOGQzYzIyNmEwMTUiLCJjYXJkUmVwb3NpdG9yeUlkIjoiOTUxMDg4ZWUtMjNjYi00YzU5LTlmZmQtYjY0ZjM4MzEwYmVlIiwic3ViIjoiOWNmZTQ2NDctMzY1OS00ZWM1LTg3ZGItMDhkN2Q1OTYxOTcxIiwiYWNjZXNzIjoibWVyY2hhbnRTaWduVXAifQ.5YLDyXBKBI38p2Zu8fB7CdJM0Ot7m8hiEWk1L7rI4hc";
         #endregion
 
         #region ..: Dados para produção :..
@@ -174,20 +174,20 @@ namespace Marketplace.Integrations.Payment.Nexxera
                 req.creditCard = new CheckOutcreditCard()
                 {
                     installments = new List<CheckOutcreditCardinstallments>()
-                {
-                    new CheckOutcreditCardinstallments()
                     {
-                        template = $"1x de {decimal.Round((decimal)_pay.totalprice / 1, 2).ToString()}",
-                        amount = ((int)_pay.totalprice).ToString(),
-                        Number = 1,
-                    },
-                    new repository.CheckOutcreditCardinstallments()
-                    {
-                        template = $"2x de {decimal.Round(((decimal)_pay.totalprice / 2), 2).ToString()}",
-                        amount = ((int)_pay.totalprice).ToString(),
-                        Number = 2,
+                        new CheckOutcreditCardinstallments()
+                        {
+                            template = "1x de " + decimal.Round(((decimal)_pay.totalprice / 1), 2).ToString(),
+                            amount = ((int)_pay.totalprice).ToString(),
+                            Number = 1,
+                        },
+                        new repository.CheckOutcreditCardinstallments()
+                        {
+                            template = "2x de " + decimal.Round(((decimal)_pay.totalprice / 2), 2).ToString(),
+                            amount = ((int)_pay.totalprice).ToString(),
+                            Number = 2,
+                        }
                     }
-                }
                 };
                 #endregion
 
@@ -219,12 +219,12 @@ namespace Marketplace.Integrations.Payment.Nexxera
                     if (chRs.checkoutUrl.IsEmpty())
                         throw new ArgumentException($"Erro ao processar checkout, {string.Join("#", chRs.errors)}");
 
-                    // transaction code
-                    _pay.transactionCode = chRs.checkoutUrl.Replace(CheckOutURL, "");
-                    _pay.transactionCode = chRs.checkoutUrl.Replace("payment?orderId=", "");
-
                     // url redirect
                     _pay.transactionUrl = chRs.checkoutUrl;
+
+                    // transaction code
+                    if (chRs.checkoutUrl.Contains("payment?orderId="))
+                        _pay.transactionCode = chRs.checkoutUrl.Split("payment?orderId=")[1];
                 }
                 catch { throw; }
                 finally
@@ -233,6 +233,85 @@ namespace Marketplace.Integrations.Payment.Nexxera
                     _pay.LogRs = rs;
                 };
             });
+        }
+
+        public static void Search(PaymentDto dto)
+        {
+            var _pay = dto.payments[0];
+            string rs = "";
+
+            try
+            {
+                // account merchant
+                var _account = _pay.Provider.splitAccounts.First(f => f.payment_provider == Enumerados.PaymentProvider.nexxera);
+
+                // split merchant
+                var _split = _account.json.Deserialize<MerchantRs>();
+
+                // token transaction
+                TokenDeAcesso = GerarTokenJWT(_split.production.accessKey, _split.production.apiSecretKey);
+                rs = Get(ApiUrl, $"orders/cardpayments/{_pay.transactionCode}");
+
+                if (!rs.IsNotEmpty())
+                    throw new ArgumentException($"Codigo de transação informado não existe");
+
+                // convert
+                var payRs = rs.Deserialize<repository.ConsultRs>();
+
+                // trata erros
+                if (payRs.errors.IsNotEmpty())
+                    throw new ArgumentException($"Erro ao verificar pagamento, {string.Join("#", payRs.errors)}");
+
+                // retorno
+                // 0 - Iniciado
+                // 1 - Pré - autorizado
+                // 2 - Capturado
+                // 3 - Cancelado
+                // 4 - Em análise
+                // 9 - Não autorizado
+                switch (payRs.payment.paymentStatus.Trim())
+                {
+                    case "2":
+                        _pay.paymentStatus = Enumerados.PaymentStatus.confirmed;
+                        _pay.status = Enumerados.AppointmentStatus.confirmed;
+                        break;
+                    case "3":
+                        _pay.paymentStatus = Enumerados.PaymentStatus.canceled;
+                        _pay.status = Enumerados.AppointmentStatus.canceled;
+                        break;
+                    case "9":
+                        _pay.paymentStatus = Enumerados.PaymentStatus.notAuthorized;
+                        _pay.status = Enumerados.AppointmentStatus.notAuthorized;
+                        break;
+                    default:
+                        _pay.paymentStatus = Enumerados.PaymentStatus.pending;
+                        _pay.status = Enumerados.AppointmentStatus.pending;
+                        break;
+                }
+            }
+            catch { throw; }
+            finally
+            {
+                _pay.LogRq = null;
+                _pay.LogRs = rs;
+            };
+
+        }
+        private static string dsPayment(string codigo)
+        {
+
+            switch (codigo.Trim())
+            {
+                case "0": return "iniciado";
+                case "1": return "pre-autorizado";
+                case "2": return "capturado";
+                case "3": return "cancelado";
+                case "4": return "em analise";
+                case "9": return "nao autorizado";
+
+                default:
+                    return "desconhecido: " + codigo;
+            }
         }
 
         private static string GerarTokenJWT(string accesskey, string apikey)

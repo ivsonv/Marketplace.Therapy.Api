@@ -9,6 +9,11 @@ namespace Marketplace.Infra.Mapping
         {
             builder.ToTable("appointments");
             builder.HasKey(prop => prop.id);
+
+            builder.HasMany(h => h.Logs)
+                   .WithOne(w => w.Appointment)
+                   .HasForeignKey(f => f.appointment_id)
+                   .OnDelete(DeleteBehavior.Cascade);
         }
     }
 

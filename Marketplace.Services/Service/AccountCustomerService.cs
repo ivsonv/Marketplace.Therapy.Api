@@ -6,6 +6,7 @@ using Marketplace.Domain.Models.Request.customers;
 using Marketplace.Domain.Models.Response;
 using Marketplace.Domain.Models.Response.account.customer;
 using Marketplace.Domain.Models.Response.account.provider;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Marketplace.Services.Service
@@ -18,8 +19,7 @@ namespace Marketplace.Services.Service
 
         public AccountCustomerService(AppointmentService appointmentService,
                                       CustomerService customerService,
-                                      CustomAuthenticatedUser user,
-                                      ICustomCache cache)
+                                      CustomAuthenticatedUser user)
         {
             _appointmentService = appointmentService;
             _customerService = customerService;
@@ -128,7 +128,6 @@ namespace Marketplace.Services.Service
             catch (System.Exception ex) { _res.setError(ex); }
             return _res;
         }
-
         public async Task<BaseRs<accountProviderRs>> findByUser()
         {
             return null;

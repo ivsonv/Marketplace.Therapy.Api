@@ -48,6 +48,16 @@ namespace Marketplace.Services.Service
             catch (System.Exception ex) { _res.setError(ex); }
             return _res;
         }
+        public async Task<BaseRs<appointmentRs>> UpdateStatus(Appointment _app)
+        {
+            var _res = new BaseRs<appointmentRs>();
+            try
+            {
+                await _repository.Update(_app);
+            }
+            catch (System.Exception ex) { _res.setError(ex); }
+            return _res;
+        }
 
         public async Task<BaseRs<List<appointmentRs>>> show(BaseRq<appointmentRq> _request)
         {
@@ -96,6 +106,17 @@ namespace Marketplace.Services.Service
             catch (System.Exception ex) { _res.setError(ex); }
             return _res;
         }
+        public async Task<BaseRs<appointmentRs>> FindById(int appointment_id)
+        {
+            var _res = new BaseRs<appointmentRs>();
+            try
+            {
+                var app = await _repository.FindById(appointment_id);
+                _res.content = _mapper.Map<appointmentRs>(app);
+            }
+            catch (System.Exception ex) { _res.setError(ex); }
+            return _res;
+        }
         public async Task<BaseRs<appointmentRs>> FindByAppointment(int appointment_id)
         {
             var _res = new BaseRs<appointmentRs>();
@@ -130,7 +151,10 @@ namespace Marketplace.Services.Service
                     _res.content.issued = Domain.Helpers.CustomExtensions.DateNow.ToString("dd/MM/yyyy");
                     _res.content.Provider.password = null;
 
-                    _res.content.Provider.Receipts.First().signature = $"{_configuration["storage:image"]}/signature/{_res.content.Provider.Receipts.First().signature}";
+                    if (_res.content.Provider.Receipts.Any())
+                        _res.content.Provider.Receipts.First().signature = $"{_configuration["storage:image"]}/signature/{_res.content.Provider.Receipts.First().signature}";
+                    else
+                        _res.setError("psicólogo não tem assinatura cadastrada, acione suporte.");
                 }
             }
             catch (System.Exception ex) { _res.setError(ex); }
