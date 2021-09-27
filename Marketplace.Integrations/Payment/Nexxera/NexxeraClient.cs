@@ -177,13 +177,13 @@ namespace Marketplace.Integrations.Payment.Nexxera
                     {
                         new CheckOutcreditCardinstallments()
                         {
-                            template = "1x de " + decimal.Round(((decimal)_pay.totalprice / 1), 2).ToString(),
+                            template = "1x de R$ " + decimal.Round(((decimal)_pay.totalprice / 1), 2).ToString(),
                             amount = ((int)_pay.totalprice).ToString(),
                             Number = 1,
                         },
                         new repository.CheckOutcreditCardinstallments()
                         {
-                            template = "2x de " + decimal.Round(((decimal)_pay.totalprice / 2), 2).ToString(),
+                            template = "2x de R$ " + decimal.Round(((decimal)_pay.totalprice / 2), 2).ToString(),
                             amount = ((int)_pay.totalprice).ToString(),
                             Number = 2,
                         }
