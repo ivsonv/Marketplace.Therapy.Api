@@ -37,7 +37,8 @@ namespace Marketplace.Services.Service
                     {
                         name = _request.name.Clear().ToUpper(),
                         password = _request.password,
-                        email = _request.email
+                        email = _request.email, 
+                        cpf = _request.cpf.clearMask()
                     }
                 };
 
