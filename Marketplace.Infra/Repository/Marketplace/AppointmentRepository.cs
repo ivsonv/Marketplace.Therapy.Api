@@ -131,7 +131,6 @@ namespace Marketplace.Infra.Repository.Marketplace
                                     .Include(i => i.Customer)
                                     .FirstOrDefaultAsync(w => w.id == appointment_id);
         }
-
         public async Task<List<Appointment>> Reports(Pagination pagination, string term, DateTime dtStart, DateTime dtEnd, int provider_id)
         {
             var query = _repository.Query
@@ -157,6 +156,14 @@ namespace Marketplace.Infra.Repository.Marketplace
             }).Skip(pagination.size * pagination.page).Take(pagination.size)
               .AsNoTracking().ToListAsync();
 
+        }
+        
+        public async Task<Appointment> FindByAppointmentConference(int appointment_id)
+        {
+            return await _repository.Query
+                                   .Include(i => i.Provider)
+                                   .Include(i => i.Customer)
+                                   .FirstOrDefaultAsync(w => w.id == appointment_id);
         }
     }
 }

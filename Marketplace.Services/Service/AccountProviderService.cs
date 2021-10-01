@@ -377,6 +377,31 @@ namespace Marketplace.Services.Service
             catch (System.Exception ex) { _res.setError(ex); }
             return _res;
         }
+        public async Task<BaseRs<accountProviderRs>> fetchConference(int id)
+        {
+            var _res = new BaseRs<accountProviderRs>();
+            try
+            {
+                var resApp = await _appointmentService.FindByAppointmentConferenceInit(appointment_id: id);
+                if (resApp.error == null && resApp.content != null)
+                {
+                    // apenas agendamento do cliente.
+                    if (resApp.content.Customer.id == _authenticatedProvider.user.id)
+                    {
+                        _res.content = new accountProviderRs()
+                        {
+                            appointment = resApp.content
+                        };
+                    }
+                    else
+                        _res.error = new BaseError(new List<string>() { "Agendamento não encontrado." });
+                }
+                else
+                    _res.error = resApp.error;
+            }
+            catch (System.Exception ex) { _res.setError(ex); }
+            return _res;
+        }
 
         // reports
         public async Task<BaseRs<providerReportsRs>> fetchReports(BaseRq<providerReportsRq> Req)
