@@ -1,8 +1,9 @@
 ﻿namespace Marketplace.Domain.Models.Request.payment
 {
-    public class cancelRq
+    public class consultRq
     {
+        public string token { get; set; }
         public int code { get; set; }
-        public bool pacient { get; set; }
+
     }
 }

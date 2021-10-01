@@ -45,7 +45,7 @@ namespace Marketplace.Services.Service
             _cache = cache;
         }
 
-        public async Task<BaseRs<paymentRs>> Store(BaseRq<paymentRq> _request)
+        public async Task<BaseRs<paymentRs>> Checkout(BaseRq<paymentRq> _request)
         {
             var _res = new BaseRs<paymentRs>();
             try
@@ -194,6 +194,72 @@ namespace Marketplace.Services.Service
 
                         if (resUp.error != null)
                             _res.error = resUp.error;
+                    }
+                }
+            }
+            catch (Exception ex) { _res.setError(ex); }
+            return _res;
+        }
+
+        public async Task<BaseRs<paymentRs>> Cancel(cancelRq cancel)
+        {
+            var _res = new BaseRs<paymentRs>();
+            try
+            {
+                // appointment
+                var appointment = await _appointmentService.FindById(cancel.code);
+                if (appointment.content.payment_status == Enumerados.PaymentStatus.confirmed)
+                {
+                    // search payment
+                    var dto = new Domain.Models.dto.payment.PaymentDto()
+                    {
+                        payments = new List<Domain.Models.dto.payment.PaymentList>()
+                        {
+                            new Domain.Models.dto.payment.PaymentList()
+                            {
+                                transactionCode = appointment.content.transaction_code,
+                                totalprice = (double)appointment.content.price,
+                                Provider = new Domain.Models.dto.provider.providerDto()
+                                {
+                                    splitAccounts = appointment.content.Provider.SplitAccounts.ToList()
+                                }
+                            }
+                        }
+                    };
+                    await _payment.Cancel(dto);
+
+                    // atualizar status
+                    var _pay = dto.payments[0];
+                    if (_pay.cancel)
+                    {
+                        // logs
+                        appointment.content.Logs = new List<Domain.Entities.AppointmentLog>()
+                        {
+                            new Domain.Entities.AppointmentLog()
+                            {
+                                description = cancel.pacient ? "cancelado por cliente" : "cancelado por psico",
+                                jsonRq = dto.payments[0].LogRq,
+                                jsonRs = dto.payments[0].LogRs
+                            }
+                        };
+
+                        // atribuir
+                        appointment.content.payment_status = Enumerados.PaymentStatus.canceled;
+                        appointment.content.status = Enumerados.AppointmentStatus.canceled;
+                        appointment.content.Customer = null;
+                        appointment.content.Provider = null;
+
+                        // atualiza
+                        var resUp = await _appointmentService.UpdateStatus(appointment.content);
+                        if (resUp.error != null)
+                        {
+                            // tenta novamente
+                            if (resUp.error.message[0].IndexOf("cannot be tracked because another instance with the same key value for {'id'} is already being tracked") > -1)
+                                resUp = await _appointmentService.UpdateStatus(appointment.content);
+
+                            if (resUp.error != null)
+                                _res.error = resUp.error;
+                        }
                     }
                 }
             }

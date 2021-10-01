@@ -34,7 +34,7 @@ namespace Marketplace.Domain.Helpers
                                          .Distinct().ToList();
 
                 // verificar se tem a permissão.
-                if (_permissions.Any(a => a == Permissions))
+                if (_permissions.Any(a => Permissions.Split(',').Any(aa => aa == a)))
                     return; // tem pode continuar
             }
 
