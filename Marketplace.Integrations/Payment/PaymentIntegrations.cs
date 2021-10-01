@@ -31,14 +31,18 @@ namespace Marketplace.Integrations.Payment
             return Task.FromResult(dto);
         }
 
-        public Task Cancel()
+        public Task Cancel(PaymentDto dto)
         {
-            throw new System.NotImplementedException();
+            switch (dto.PaymentProvider)
+            {
+                case Domain.Helpers.Enumerados.PaymentProvider.nexxera:
+                    Nexxera.NexxeraClient.Cancel(dto); break;
+
+                default:
+                    throw new System.NotImplementedException();
+            }
+            return Task.FromResult(dto);
         }
 
-        public Task Refund()
-        {
-            throw new System.NotImplementedException();
-        }
     }
 }

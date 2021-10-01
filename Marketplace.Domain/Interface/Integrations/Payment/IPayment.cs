@@ -6,7 +6,7 @@ namespace Marketplace.Domain.Interface.Integrations.Payment
     {
         Task Buy(Models.dto.payment.PaymentDto _payment);
         Task Search(Models.dto.payment.PaymentDto _payment);
-        Task Cancel();
-        Task Refund();
+        Task Cancel(Models.dto.payment.PaymentDto _payment);
+        //Task Refund();
     }
 }

@@ -21,11 +21,15 @@ namespace Marketplace.Api.Controllers
         }
 
         [HttpPost, CustomAuthorizePermission(Permissions = permission.Account.ViewCustomer)]
-        public async Task<BaseRs<paymentRs>> Store([FromBody] BaseRq<paymentRq> _request)
-            => await _paymentService.Store(_request);
+        public async Task<BaseRs<paymentRs>> Checkout([FromBody] BaseRq<paymentRq> _request)
+            => await _paymentService.Checkout(_request);
 
         [HttpPost("consult")]
         public async Task<BaseRs<paymentRs>> Consult([FromBody] consultRq Req)
             => await _paymentService.Consult(Req);
+
+        [HttpPost("cancel"), CustomAuthorizePermission(Permissions = permission.Account.ViewCustomer + "," + permission.Account.ViewProvider)]
+        public async Task<BaseRs<paymentRs>> Cancel([FromBody] cancelRq Req)
+            => await _paymentService.Cancel(Req);
     }
 }

@@ -234,7 +234,55 @@ namespace Marketplace.Integrations.Payment.Nexxera
                 };
             });
         }
+        public static void Cancel(PaymentDto _payment)
+        {
+            _payment.payments.ForEach(_pay =>
+            {
+                // account merchant
+                var _account = _pay.Provider.splitAccounts.First(f => f.payment_provider == Enumerados.PaymentProvider.nexxera);
 
+                // split merchant
+                var _split = _account.json.Deserialize<MerchantRs>();
+
+                // token transaction
+                TokenDeAcesso = GerarTokenJWT(_split.production.accessKey, _split.production.apiSecretKey);
+
+                // request
+                var req = new CancelRq()
+                {
+                    CardPaymentChange = new CancelCardPaymentChange()
+                    {
+                        amount = (int)_pay.totalprice,
+                        paymentToken = _pay.transactionCode
+                    }
+                };
+
+                string rq = req.Serialize();
+                string rs = "";
+
+                try
+                {
+                    //send
+                    rs = Put(ApiUrl + "Orders/CardPayments/Reverse", rq);
+
+                    // convert
+                    var chRs = rs.Deserialize<CancelRs>();
+
+                    // erro generico
+                    if (chRs.errors.IsNotEmpty())
+                        throw new ArgumentException($"Erro ao cancelar pagamento, {string.Join("#", chRs.errors)}");
+
+                    // cancel
+                    _pay.cancel = true;
+                }
+                catch { throw; }
+                finally
+                {
+                    _pay.LogRq = rq;
+                    _pay.LogRs = rs;
+                };
+            });
+        }
         public static void Search(PaymentDto dto)
         {
             var _pay = dto.payments[0];
@@ -465,10 +513,7 @@ namespace Marketplace.Integrations.Payment.Nexxera
                 if (string.IsNullOrWhiteSpace(res))
                     throw new ArgumentException(ex.Message);
             }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            catch { throw; }
             return res;
         }
         private static string Get(string url, string scao)

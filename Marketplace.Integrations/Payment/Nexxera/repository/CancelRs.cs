@@ -2,8 +2,9 @@
 
 namespace Marketplace.Integrations.Payment.Nexxera.repository
 {
-    public class CancelRs : NXerrors
+    public class CheckOutRs : NXerrors
     {
+        public string checkoutUrl { get; set; }
 
     }
 }
