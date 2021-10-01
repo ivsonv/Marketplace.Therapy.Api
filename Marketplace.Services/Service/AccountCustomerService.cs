@@ -161,6 +161,9 @@ namespace Marketplace.Services.Service
                         {
                             appointment = resApp.content
                         };
+
+                        // registrar log
+
                     }
                     else
                         _res.error = new BaseError(new List<string>() { "Agendamento não encontrado." });

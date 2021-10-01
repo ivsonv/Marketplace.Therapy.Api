@@ -195,12 +195,14 @@ namespace Marketplace.Services.Service
                     }
                     #endregion
 
-                    _res.content.room_name = $"{_res.content.Provider.fantasy_name} {_res.content.Provider.company_name}";
-                    _res.content.room_id = $"clique-terapia-{appointment_id.ToString("000000")}";
+                    _res.content = new appointmentRs()
+                    {
+                        Provider = new Provider() { id = app.provider_id},
+                        Customer = new Customer() { id = app.customer_id },
 
-                    // registrar logs
-
-
+                        room_name = $"{app.Provider.fantasy_name} {app.Provider.company_name}",
+                        room_id = $"clique-terapia-{appointment_id.ToString("000000")}"
+                    };
                 }
             }
             catch (System.Exception ex) { _res.setError(ex); }

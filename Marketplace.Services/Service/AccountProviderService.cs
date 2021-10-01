@@ -386,7 +386,7 @@ namespace Marketplace.Services.Service
                 if (resApp.error == null && resApp.content != null)
                 {
                     // apenas agendamento do cliente.
-                    if (resApp.content.Customer.id == _authenticatedProvider.user.id)
+                    if (resApp.content.Provider.id == _authenticatedProvider.user.id)
                     {
                         _res.content = new accountProviderRs()
                         {
