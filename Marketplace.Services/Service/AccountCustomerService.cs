@@ -6,6 +6,7 @@ using Marketplace.Domain.Models.Request.customers;
 using Marketplace.Domain.Models.Response;
 using Marketplace.Domain.Models.Response.account.customer;
 using Marketplace.Domain.Models.Response.account.provider;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -96,8 +97,11 @@ namespace Marketplace.Services.Service
                     {
                         _res.content = new accountCustomerRs()
                         {
-                            appointment = resApp.content
+                            appointment = resApp.content,
                         };
+
+                        _res.content.appointment.room_name = $"{_res.content.appointment.Provider.fantasy_name} {_res.content.appointment.Provider.company_name}";
+                        _res.content.appointment.room_id = $"clique-terapia-{_res.content.appointment.id.ToString("000000")}";
                     }
                 }
                 else
@@ -140,6 +144,36 @@ namespace Marketplace.Services.Service
             //}
             //catch (System.Exception ex) { _res.setError(ex); }
             //return _res;
+        }
+
+        public async Task<BaseRs<accountCustomerRs>> fetchConference(int id)
+        {
+            var _res = new BaseRs<accountCustomerRs>();
+            try
+            {
+                var resApp = await _appointmentService.FindByAppointmentConferenceInit(appointment_id: id);
+                if (resApp.error == null && resApp.content != null)
+                {
+                    // apenas agendamento do cliente.
+                    if (resApp.content.Customer.id == _authenticatedCustomer.user.id)
+                    {
+                        // retornar
+                        _res.content = new accountCustomerRs()
+                        {
+                            appointment = resApp.content
+                        };
+
+                        // registrar log
+
+                    }
+                    else
+                        _res.error = new BaseError(new List<string>() { "Agendamento não encontrado." });
+                }
+                else
+                    _res.error = resApp.error;
+            }
+            catch (System.Exception ex) { _res.setError(ex); }
+            return _res;
         }
     }
 }

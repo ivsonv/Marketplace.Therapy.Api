@@ -13,5 +13,6 @@ namespace Marketplace.Domain.Interface.Marketplace
         Task<List<Entities.Appointment>> Show(Pagination pagination, int provider_id);
         Task<Entities.Appointment> FindByAppointmentDetails(int appointment_id);
         Task<Entities.Appointment> FindByAppointmentInvoice(int appointment_id);
+        Task<Entities.Appointment> FindByAppointmentConference(int appointment_id);
     }
 }

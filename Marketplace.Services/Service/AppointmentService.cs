@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Marketplace.Domain.Entities;
+using Marketplace.Domain.Helpers;
 using Marketplace.Domain.Interface.Marketplace;
 using Marketplace.Domain.Models.Request;
 using Marketplace.Domain.Models.Request.appointment;
@@ -130,6 +131,7 @@ namespace Marketplace.Services.Service
                     _res.content.dsStatus = _res.content.status.ToString();
                     _res.content.start = _res.content.booking_date.ToString("dd/MM/yyyy");
                     _res.content.hour = _res.content.booking_date.TimeOfDay;
+                    _res.content.id = appointment_id;
                 }
             }
             catch (System.Exception ex) { _res.setError(ex); }
@@ -155,6 +157,52 @@ namespace Marketplace.Services.Service
                         _res.content.Provider.Receipts.First().signature = $"{_configuration["storage:image"]}/signature/{_res.content.Provider.Receipts.First().signature}";
                     else
                         _res.setError("psicólogo não tem assinatura cadastrada, acione suporte.");
+                }
+            }
+            catch (System.Exception ex) { _res.setError(ex); }
+            return _res;
+        }
+        public async Task<BaseRs<appointmentRs>> FindByAppointmentConferenceInit(int appointment_id)
+        {
+            var _res = new BaseRs<appointmentRs>();
+            try
+            {
+                var app = await _repository.FindByAppointmentConference(appointment_id: appointment_id);
+                if (app != null)
+                {
+                    #region ..: validations :..
+
+                    if (CustomExtensions.DateNow.Date != app.booking_date.Date)
+                    {
+                        _res.error = new BaseError(new List<string>() { "sessão fora do período." });
+                        return _res;
+                    }
+
+                    // antes do horário previsto
+                    var start = app.booking_date.AddMinutes(-5);
+                    if (CustomExtensions.DateNow.TimeOfDay < start.TimeOfDay)
+                    {
+                        _res.error = new BaseError(new List<string>() { "Só e permitido iniciar 5 minutos antes do horário agendado." });
+                        return _res;
+                    }
+
+                    // expirou
+                    var dtEnd = app.booking_date.AddMinutes(60);
+                    if (CustomExtensions.DateNow.TimeOfDay > dtEnd.TimeOfDay)
+                    {
+                        _res.error = new BaseError(new List<string>() { "Agendamento expirou." });
+                        return _res;
+                    }
+                    #endregion
+
+                    _res.content = new appointmentRs()
+                    {
+                        Provider = new Provider() { id = app.provider_id},
+                        Customer = new Customer() { id = app.customer_id },
+
+                        room_name = $"{app.Provider.fantasy_name} {app.Provider.company_name}",
+                        room_id = $"clique-terapia-{appointment_id.ToString("000000")}"
+                    };
                 }
             }
             catch (System.Exception ex) { _res.setError(ex); }
