@@ -57,6 +57,10 @@ namespace Marketplace.Infra.Repository.Marketplace
         {
             return await _repository.Query.FirstOrDefaultAsync(f => f.email == email);
         }
+        public async Task<Customer> FindByToken(string token)
+        {
+            return await _repository.Query.FirstOrDefaultAsync(f => f.recoverpassword != null && f.recoverpassword == token);
+        }
 
         public async Task<Customer> FindAuthByEmail(string email)
         {

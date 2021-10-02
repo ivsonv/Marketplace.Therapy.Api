@@ -61,7 +61,24 @@ namespace Marketplace.Services.Service
             if (!dto.body.IsEmpty())
             {
                 dto.body = dto.body.Replace("{{TITLE}", ":: Recuperar Senha ::");
-                dto.body = dto.body.Replace("{{LINKREDEFINICAO}}", $"{_configuration["environments:front"]}?recover={token}");
+                dto.body = dto.body.Replace("{{LINKREDEFINICAO}}", $"{_configuration["environments:front"]}/sou-psicologo/esqueci-minha-senha?token={token}");
+                Task.Run(() => _IEmail.send(dto));
+            }
+        }
+
+        public void sendResetPasswordProvider(Domain.Models.dto.provider.providerDto _provider, string token)
+        {
+            var dto = new Domain.Models.dto.email.emailDto()
+            {
+                title = "Recuperação de Senha",
+                body = this.GetTemplate(Enumerados.EmailType.recoverpassword),
+                email = _provider.email
+            };
+
+            if (!dto.body.IsEmpty())
+            {
+                dto.body = dto.body.Replace("{{TITLE}", ":: Recuperar Senha ::");
+                dto.body = dto.body.Replace("{{LINKREDEFINICAO}}", $"{_configuration["environments:front"]}/sou-paciente/esqueci-minha-senha?token={token}");
                 Task.Run(() => _IEmail.send(dto));
             }
         }

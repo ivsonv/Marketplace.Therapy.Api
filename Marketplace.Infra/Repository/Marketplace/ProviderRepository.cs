@@ -93,6 +93,11 @@ namespace Marketplace.Infra.Repository.Marketplace
             else
                 throw new ArgumentException("E-mail já cadastrado anteriormente, tente a opção 'esqueci minha senha'");
         }
+        public async Task UpdateRecover(Provider entity)
+        {
+            _repository.Update(entity);
+            await _repository.SaveChanges();
+        }
         public async Task Update(Provider entity)
         {
             this.formatData(entity);
@@ -236,6 +241,11 @@ namespace Marketplace.Infra.Repository.Marketplace
         public Task Delete(List<Provider> entity)
         {
             throw new System.NotImplementedException();
+        }
+
+        public async Task<Provider> FindByToken(string token)
+        {
+            return await _repository.Query.FirstOrDefaultAsync(f => f.recoverpassword != null && f.recoverpassword == token);
         }
     }
 }

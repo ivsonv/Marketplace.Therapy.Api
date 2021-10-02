@@ -94,38 +94,28 @@ namespace Marketplace.Services.Service
             var _res = new BaseRs<bool>();
             try
             {
-                if (auth.login.IsEmail())
+                if (auth.login.IsNotEmpty() && auth.login.IsEmail())
                 {
                     var _customer = await _customerRepository.FindByEmail(auth.login);
                     if (_customer != null)
                     {
-                        // tem solicitação anterior
-                        if (!_customer.recoverpassword.IsEmpty())
-                        {
-                            // solicitação ainda e valid ?
-                            if (_customer.recoverpassword.Split('_')[1].toDate() < CustomExtensions.DateNow)
-                            {
-                                //token invalido, gerar novo
-                                _customer.recoverpassword = $"{CustomExtensions.getGuid}_{CustomExtensions.DateNow.AddHours(1)}";
-                                await _customerRepository.Update(_customer);
-                            }
-                        }
-                        else
-                        {
-                            //Gerar novo
-                            _customer.recoverpassword = $"{CustomExtensions.getGuid}_{CustomExtensions.DateNow.AddHours(1)}";
-                            await _customerRepository.Update(_customer);
-                        }
+                        //Gerar novo
+                        _customer.recoverpassword = $"{CustomExtensions.getGuid}";
+                        await _customerRepository.Update(_customer);
 
+                        // send email
                         _emailService.sendResetPassword(new customerDto()
                         {
                             email = _customer.email,
                             name = _customer.name
-                        }, _customer.recoverpassword.Split('_')[0]);
-
-                        //
+                        }, _customer.recoverpassword);
                         _res.content = true;
                     }
+                }
+                else
+                {
+                    _res.setError("Solicitação enviada não e valida.");
+                    return _res;
                 }
             }
             catch (System.Exception ex) { _res.setError(ex); }
@@ -136,44 +126,24 @@ namespace Marketplace.Services.Service
             var _res = new BaseRs<bool>();
             try
             {
-                _res.error = _validator.Check(auth);
-                if (_res.error == null)
+                if (auth.token.IsEmpty())
                 {
-                    if (auth.token.IsEmpty())
-                    {
-                        _res.setError("Token do usuário e obrigatorio");
-                        return _res;
-                    }
+                    _res.setError("Solicitação enviada não e valida");
+                    return _res;
+                }
 
-                    var _customer = await _customerRepository.FindByEmail(auth.login);
-                    if (_customer != null && !_customer.recoverpassword.IsEmpty())
-                    {
-                        string tokenUser = _customer.recoverpassword.Split('_')[0];
-                        string valid_at = _customer.recoverpassword.Split('_')[1];
-
-                        if (tokenUser != auth.token)
-                        {
-                            _res.setError("Token do usuário não pode ser usado.");
-                            return _res;
-                        }
-
-                        if (valid_at.toDate() < CustomExtensions.DateNow)
-                        {
-                            _res.setError("Token fornecido não tem mais validade.");
-                            return _res;
-                        }
-
-                        _customer.password = auth.password.createHash();
-                        _customer.recoverpassword = null;
-                        await _customerRepository.Update(_customer);
-
-                        //
-                        _res.content = true;
-                    }
-                    else
-                    {
-                        _res.setError("Solicitação não pode ser processada.");
-                    }
+                var _customer = await _customerRepository.FindByToken(auth.token);
+                if (_customer != null)
+                {
+                    // alterar
+                    _customer.password = auth.password.createHash();
+                    _customer.recoverpassword = null;
+                    await _customerRepository.Update(_customer);
+                    _res.content = true;
+                }
+                else
+                {
+                    _res.setError("Solicitação não pode ser processada.");
                 }
             }
             catch (System.Exception ex) { _res.setError(ex); }
@@ -234,38 +204,30 @@ namespace Marketplace.Services.Service
             var _res = new BaseRs<bool>();
             try
             {
-                if (auth.login.IsEmail())
+                if (auth.login.IsNotEmpty() && auth.login.IsEmail())
                 {
                     var _provider = await _providerRepository.FindByEmail(auth.login);
                     if (_provider != null)
                     {
-                        // tem solicitação anterior
-                        //if (!_provider.recoverpassword.IsEmpty())
-                        //{
-                        //    // solicitação ainda e valid ?
-                        //    if (_provider.recoverpassword.Split('_')[1].toDate() < CustomExtensions.DateNow)
-                        //    {
-                        //        //token invalido, gerar novo
-                        //        _provider.recoverpassword = $"{CustomExtensions.getGuid}_{CustomExtensions.DateNow.AddHours(1)}";
-                        //        await _customerRepository.Update(_provider);
-                        //    }
-                        //}
-                        //else
-                        //{
-                        //    //Gerar novo
-                        //    _provider.recoverpassword = $"{CustomExtensions.getGuid}_{CustomExtensions.DateNow.AddHours(1)}";
-                        //    await _customerRepository.Update(_provider);
-                        //}
+                        //Gerar novo
+                        _provider.recoverpassword = $"{CustomExtensions.getGuid}";
+                        await _providerRepository.UpdateRecover(_provider);
 
-                        //_emailService.sendResetPassword(new customerDto()
-                        //{
-                        //    name = _provider.fantasy_name,
-                        //    email = _provider.email,
-                        //}, _provider.recoverpassword.Split('_')[0]);
+                        // send email
+                        _emailService.sendResetPassword(new customerDto()
+                        {
+                            email = _provider.email,
+                            name = $"{_provider.fantasy_name} {_provider.company_name}"
+                        }, _provider.recoverpassword);
 
                         //
                         _res.content = true;
                     }
+                }
+                else
+                {
+                    _res.setError("Solicitação enviada não e valida.");
+                    return _res;
                 }
             }
             catch (System.Exception ex) { _res.setError(ex); }
@@ -276,44 +238,27 @@ namespace Marketplace.Services.Service
             var _res = new BaseRs<bool>();
             try
             {
-                //_res.error = _validator.Check(auth);
                 if (_res.error == null)
                 {
                     if (auth.token.IsEmpty())
                     {
-                        _res.setError("Token do usuário e obrigatorio");
+                        _res.setError("Solicitação enviada não e valida");
                         return _res;
                     }
 
-                    //var _provider = await _providerRepository.FindByEmail(auth.login);
-                    //if (_provider != null && !_provider.recoverpassword.IsEmpty())
-                    //{
-                    //    string tokenUser = _provider.recoverpassword.Split('_')[0];
-                    //    string valid_at = _provider.recoverpassword.Split('_')[1];
-
-                    //    if (tokenUser != auth.token)
-                    //    {
-                    //        _res.setError("Token do usuário não pode ser usado.");
-                    //        return _res;
-                    //    }
-
-                    //    if (valid_at.toDate() < CustomExtensions.DateNow)
-                    //    {
-                    //        _res.setError("Token fornecido não tem mais validade.");
-                    //        return _res;
-                    //    }
-
-                    //    _provider.password = auth.password.createHash();
-                    //    _provider.recoverpassword = null;
-                    //    await _providerRepository.Update(_provider);
-
-                    //    //
-                    //    _res.content = true;
-                    //}
-                    //else
-                    //{
-                    //    _res.setError("Solicitação não pode ser processada.");
-                    //}
+                    var _provider = await _providerRepository.FindByToken(auth.token);
+                    if (_provider != null)
+                    {
+                        // alterar
+                        _provider.password = auth.password.createHash();
+                        _provider.recoverpassword = null;
+                        await _providerRepository.UpdateRecover(_provider);
+                        _res.content = true;
+                    }
+                    else
+                    {
+                        _res.setError("Solicitação não pode ser processada.");
+                    }
                 }
             }
             catch (System.Exception ex) { _res.setError(ex); }

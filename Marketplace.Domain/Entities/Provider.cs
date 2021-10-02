@@ -31,6 +31,7 @@ namespace Marketplace.Domain.Entities
         public ProviderGender gender { get; set; }
         public bool active { get; set; }
         public bool remove { get; set; }
+        public string recoverpassword { get; set; }
 
         public IEnumerable<ProviderAddress> Address { get; set; }
         public IEnumerable<ProviderBankAccount> BankAccounts { get; set; }

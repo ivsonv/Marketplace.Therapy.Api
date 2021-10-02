@@ -301,7 +301,7 @@ namespace Marketplace.Integrations.Payment.Nexxera
                 rs = Get(ApiUrl, $"orders/cardpayments/{_pay.transactionCode}");
 
                 if (!rs.IsNotEmpty())
-                    throw new ArgumentException($"Codigo de transação informado não existe");
+                    throw new ArgumentException($"Codigo de transação informado não existe.");
 
                 // convert
                 var payRs = rs.Deserialize<repository.ConsultRs>();
