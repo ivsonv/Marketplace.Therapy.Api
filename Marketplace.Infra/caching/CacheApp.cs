@@ -41,8 +41,9 @@ namespace Marketplace.Infra.caching
         {
             return await _cache.GetOrCreateAsync("providers", async entry =>
             {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(_minutes);
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(_minutes);
                 return await _context.Providers
+                               .Include(i => i.Schedules)
                                .Include(i => i.Address)
                                .Include(i => i.Topics)
                                .Select(s => new Provider()
@@ -50,6 +51,7 @@ namespace Marketplace.Infra.caching
                                    Languages = s.Languages.Any() ? s.Languages.Select(tt => new ProviderLanguages() { language_id = tt.language_id }) : null,
                                    Topics = s.Topics.Any() ? s.Topics.Select(tt => new ProviderTopics() { topic_id = tt.topic_id }) : null,
                                    Address = s.Address.Any() ? s.Address.Select(tt => new ProviderAddress() { uf = tt.uf }) : null,
+                                   completed = s.completed,
                                    fantasy_name = s.fantasy_name,
                                    company_name = s.company_name,
                                    description = s.description,

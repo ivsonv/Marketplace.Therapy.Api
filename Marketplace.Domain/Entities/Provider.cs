@@ -30,6 +30,7 @@ namespace Marketplace.Domain.Entities
         public ProviderStatus situation { get; set; }
         public ProviderGender gender { get; set; }
         public bool active { get; set; }
+        public bool completed { get; set; }
         public bool remove { get; set; }
         public string recoverpassword { get; set; }
 

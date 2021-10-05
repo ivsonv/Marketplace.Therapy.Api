@@ -200,6 +200,9 @@ namespace Marketplace.Services.Service
                     // dados
                     var entity = _mapper.Map<Domain.Entities.Provider>(_request.data);
                     await _providerRepository.Update(entity);
+
+                    // atualizar cache
+                    _cache.Clear("providers");
                 }
             }
             catch (System.Exception ex) { _res.setError(ex); }

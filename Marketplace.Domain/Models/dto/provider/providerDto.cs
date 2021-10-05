@@ -27,6 +27,7 @@ namespace Marketplace.Domain.Models.dto.provider
         public string ds_situation { get; set; }
         public decimal price { get; set; }
 
+        public bool completed { get; set; }
         public bool active { get; set; }
         public bool remove { get; set; }
         public Helpers.Enumerados.ProviderStatus? situation { get; set; } = null;

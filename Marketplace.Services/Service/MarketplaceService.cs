@@ -35,7 +35,9 @@ namespace Marketplace.Services.Service
                 _request.data = new providerMktRq();
             try
             {
-                var list = await _cache.GetProviders();
+                // active    = psico que controlar
+                // completed = cadastro completo
+                var list = (await _cache.GetProviders()).Where(w => w.completed && w.active && w.image.IsNotEmpty());
 
                 if (_request.data.name.IsNotEmpty())
                     list = list.Where(w => w.fantasy_name.IsCompare().Contains(_request.data.name.IsCompare()) ||
@@ -45,7 +47,6 @@ namespace Marketplace.Services.Service
                 // list
                 _request.pagination.size = 20; //force
                 _res.content = list
-                    .Where(w => w.image.IsNotEmpty())
                     .OrderBy(o => o.fantasy_name)
                     .Skip(_request.pagination.size * _request.pagination.page)
                     .Take(_request.pagination.size)
@@ -61,7 +62,7 @@ namespace Marketplace.Services.Service
                         crp = x.crp
                     }).ToList();
             }
-            catch (System.Exception ex) { _res.setError(ex); }
+            catch (Exception ex) { _res.setError(ex); }
             return _res;
         }
         public async Task<BaseRs<providerMktRs>> FindByProvider(string link)

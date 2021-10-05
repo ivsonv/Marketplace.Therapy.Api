@@ -1,3 +1,4 @@
+using Marketplace.Domain.Helpers;
 using Marketplace.Domain.Models.Request;
 using Marketplace.Domain.Models.Request.provider;
 using Marketplace.Domain.Models.Response;
@@ -21,15 +22,15 @@ namespace Marketplace.Api.Controllers
         public async Task<BaseRs<providerRs>> Show([FromQuery] BaseRq<providerRq> _request)
             => await _providerService.Show(_request);
 
-        [HttpPost]
-        public async Task<BaseRs<providerRs>> Store([FromBody] BaseRq<providerRq> _request)
-            => await _providerService.Store(_request);
+        //[HttpPost]
+        //public async Task<BaseRs<providerRs>> Store([FromBody] BaseRq<providerRq> _request)
+        //    => await _providerService.Store(_request);
 
-        [HttpPut]
+        [HttpPut, CustomAuthorizePermission]
         public async Task<BaseRs<providerRs>> Update([FromBody] BaseRq<providerRq> _request)
             => await _providerService.Update(_request);
 
-        [HttpGet("{id:int}")]
+        [HttpGet("{id:int}"), CustomAuthorizePermission]
         public async Task<BaseRs<providerRs>> FindById([FromRoute] int id)
             => await _providerService.FindById(id);
 

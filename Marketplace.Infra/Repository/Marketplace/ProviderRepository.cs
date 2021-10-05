@@ -153,6 +153,7 @@ namespace Marketplace.Infra.Repository.Marketplace
                 _current.image = entity.image;
                 _current.link = entity.link;
                 _current.price = entity.price;
+                _current.completed = entity.completed;
 
                 //endereço
                 if (entity.Address != null)
