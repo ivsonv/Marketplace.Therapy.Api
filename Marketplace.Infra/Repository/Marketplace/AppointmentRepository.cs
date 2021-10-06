@@ -5,6 +5,8 @@ using Marketplace.Domain.Interface.Integrations.caching;
 using Marketplace.Domain.Interface.Marketplace;
 using Marketplace.Domain.Interface.Shared;
 using Marketplace.Domain.Models;
+using Marketplace.Domain.Models.Request;
+using Marketplace.Domain.Models.Request.dashboard;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -157,13 +159,58 @@ namespace Marketplace.Infra.Repository.Marketplace
               .AsNoTracking().ToListAsync();
 
         }
-        
         public async Task<Appointment> FindByAppointmentConference(int appointment_id)
         {
             return await _repository.Query
                                    .Include(i => i.Provider)
                                    .Include(i => i.Customer)
                                    .FirstOrDefaultAsync(w => w.id == appointment_id);
+        }
+
+        public async Task<List<Appointment>> ShowDashboardReports(BaseRq<AppointmentRq> rq)
+        {
+            var query = _repository.Query.Where(w => w.type == Enumerados.AppointmentType.online_session);
+
+            #region ..: filter :..
+            if (rq.data != null)
+            {
+                if (rq.data.customer_id > 0)
+                    query = query.Where(w => w.customer_id == rq.data.customer_id);
+
+                if (rq.data.provider_id > 0)
+                    query = query.Where(w => w.provider_id == rq.data.provider_id);
+
+                if (rq.data.start.HasValue)
+                    query = query.Where(w => w.booking_date.Date >= rq.data.start.Value.Date);
+
+                if (rq.data.end.HasValue)
+                    query = query.Where(w => w.booking_date.Date <= rq.data.end.Value.Date);
+
+                if (rq.data.status.HasValue)
+                    query = query.Where(w => w.status == rq.data.status.Value);
+
+                if (rq.data.payment_status.HasValue)
+                    query = query.Where(w => w.payment_status == rq.data.payment_status.Value);
+
+                if (rq.data.transaction_code.IsNotEmpty())
+                    query = query.Where(w => w.transaction_code == rq.data.transaction_code);
+            }
+            #endregion
+
+            //
+            return await query
+                         .Skip(rq.pagination.size * rq.pagination.page)
+                         .Take(rq.pagination.size)
+                         .Select(x => new Appointment()
+                         {
+                             transaction_code = x.transaction_code,
+                             payment_status = x.payment_status,
+                             booking_date = x.booking_date,
+                             created_at = x.created_at,
+                             status = x.status,
+                             price = x.price,
+                             id = x.id
+                         }).AsNoTracking().ToListAsync();
         }
     }
 }

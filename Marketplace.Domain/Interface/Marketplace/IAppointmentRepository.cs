@@ -1,7 +1,9 @@
 ﻿using Marketplace.Domain.Interface.Shared;
 using Marketplace.Domain.Models;
+using Marketplace.Domain.Models.Request;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Marketplace.Domain.Interface.Marketplace
@@ -14,5 +16,6 @@ namespace Marketplace.Domain.Interface.Marketplace
         Task<Entities.Appointment> FindByAppointmentDetails(int appointment_id);
         Task<Entities.Appointment> FindByAppointmentInvoice(int appointment_id);
         Task<Entities.Appointment> FindByAppointmentConference(int appointment_id);
+        Task<List<Entities.Appointment>> ShowDashboardReports(BaseRq<Models.Request.dashboard.AppointmentRq> rq);
     }
 }

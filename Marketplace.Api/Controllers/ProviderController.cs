@@ -18,7 +18,7 @@ namespace Marketplace.Api.Controllers
             _providerService = providerService;
         }
 
-        [HttpGet]
+        [HttpGet, CustomAuthorizePermission]
         public async Task<BaseRs<providerRs>> Show([FromQuery] BaseRq<providerRq> _request)
             => await _providerService.Show(_request);
 

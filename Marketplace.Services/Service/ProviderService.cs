@@ -20,8 +20,8 @@ namespace Marketplace.Services.Service
         private readonly Validators.ProviderValidator _validator;
         private readonly IConfiguration _configuration;
         private readonly EmailService _emailService;
-        private readonly IMapper _mapper;
         private readonly ICustomCache _cache;
+        private readonly IMapper _mapper;
 
         public ProviderService(Validators.ProviderValidator validator,
                               IProviderRepository companyRepository,
