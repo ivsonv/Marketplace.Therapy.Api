@@ -29,10 +29,11 @@ namespace Marketplace.Services.Service
             {
                 dto.body = dto.body.Replace("%TITLE%", ":: Bem Vindo ::");
                 dto.body = dto.body.Replace("%NAME%", _customer.name);
-                Task.Run(() => _IEmail.send(dto));
+
+                Task p = Task.Run(() => _IEmail.send(dto));
+                Task.WaitAll(p);
             }
         }
-
         public void sendWelcome(Domain.Models.dto.provider.providerDto _provider)
         {
             var dto = new Domain.Models.dto.email.emailDto()
@@ -46,9 +47,12 @@ namespace Marketplace.Services.Service
             {
                 dto.body = dto.body.Replace("%TITLE%", ":: Bem Vindo ::");
                 dto.body = dto.body.Replace("%NAME%", _provider.fantasy_name);
-                Task.Run(() => _IEmail.send(dto));
+
+                Task p = Task.Run(() => _IEmail.send(dto));
+                Task.WaitAll(p);
             }
         }
+
         public void sendResetPassword(Domain.Models.dto.customer.customerDto _customer, string token)
         {
             var dto = new Domain.Models.dto.email.emailDto()
@@ -62,13 +66,12 @@ namespace Marketplace.Services.Service
             {
                 dto.body = dto.body.Replace("{{TITLE}", ":: Recuperar Senha ::");
                 dto.body = dto.body.Replace("{{LINKREDEFINICAO}}", $"{_configuration["environments:front"]}/sou-psicologo/esqueci-minha-senha?token={token}");
-                
-                // e-mail
-                _IEmail.send(dto);
-                //Task.Run(() => _IEmail.send(dto));
+
+                //_IEmail.send(dto);
+                Task p = Task.Run(() => _IEmail.send(dto));
+                Task.WaitAll(p);
             }
         }
-
         public void sendResetPasswordProvider(Domain.Models.dto.provider.providerDto _provider, string token)
         {
             var dto = new Domain.Models.dto.email.emailDto()
@@ -82,7 +85,9 @@ namespace Marketplace.Services.Service
             {
                 dto.body = dto.body.Replace("{{TITLE}", ":: Recuperar Senha ::");
                 dto.body = dto.body.Replace("{{LINKREDEFINICAO}}", $"{_configuration["environments:front"]}/sou-paciente/esqueci-minha-senha?token={token}");
-                Task.Run(() => _IEmail.send(dto));
+
+                Task p = Task.Run(() => _IEmail.send(dto));
+                Task.WaitAll(p);
             }
         }
 
