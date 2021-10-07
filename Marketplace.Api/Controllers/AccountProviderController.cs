@@ -21,13 +21,13 @@ namespace Marketplace.Api.Controllers
             _account = accountProviderService;
         }
 
-        [HttpPut, CustomAuthorizePermission(Permissions = permission.Account.ViewProvider)]
-        public async Task<BaseRs<accountProviderRs>> UpdateProvider([FromForm] accountProviderRq _reAcc)
-            => await _account.updateProvider(_reAcc);
-
         [HttpPost]
         public async Task<BaseRs<accountProviderRs>> StoreProvider([FromBody] accountProviderRq _reAcc)
             => await _account.storeProvider(_reAcc);
+
+        [HttpPut, CustomAuthorizePermission(Permissions = permission.Account.ViewProvider)]
+        public async Task<BaseRs<accountProviderRs>> UpdateProvider([FromForm] accountProviderRq _reAcc)
+            => await _account.updateProvider(_reAcc);
 
         #region ..: fetchs :..
 

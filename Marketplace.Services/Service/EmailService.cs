@@ -62,7 +62,10 @@ namespace Marketplace.Services.Service
             {
                 dto.body = dto.body.Replace("{{TITLE}", ":: Recuperar Senha ::");
                 dto.body = dto.body.Replace("{{LINKREDEFINICAO}}", $"{_configuration["environments:front"]}/sou-psicologo/esqueci-minha-senha?token={token}");
-                Task.Run(() => _IEmail.send(dto));
+                
+                // e-mail
+                _IEmail.send(dto);
+                //Task.Run(() => _IEmail.send(dto));
             }
         }
 
