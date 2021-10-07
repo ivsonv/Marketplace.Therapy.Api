@@ -4,7 +4,6 @@ namespace Marketplace.Domain.Models.dto.provider
     public class providerDto
     {
         public int? id { get; set; }
-
         public string nickname { get; set; } = null;
         public string fantasy_name { get; set; } = null;
         public string company_name { get; set; } = null;
@@ -38,5 +37,14 @@ namespace Marketplace.Domain.Models.dto.provider
         public List<Entities.ProviderLanguages> languages { get; set; } = null;
         public List<Entities.ProviderTopics> topics { get; set; } = null;
         public List<Entities.ProviderSplitAccount> splitAccounts { get; set; } = null;
+
+        public providerCompleted statusCompleted { get; set; }
+    }
+
+    public class providerCompleted
+    {
+        public decimal qtdItens { get; set; }
+        public int percent { get; set; }
+        public List<Item> warnings { get; set; }
     }
 }

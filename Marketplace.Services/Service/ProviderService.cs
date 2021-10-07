@@ -234,6 +234,60 @@ namespace Marketplace.Services.Service
                     if (_banks.Any(a => a.code == fe.bank_code))
                         fe.ds_bank = _banks.First(f => f.code == fe.bank_code).name;
                 });
+
+                // status
+                if (!dto.completed)
+                {
+                    dto.statusCompleted = new providerCompleted()
+                    {
+                        warnings = new List<Domain.Models.dto.Item>()
+                        {
+                            new Domain.Models.dto.Item() { label = "Cadastro em processo de liberação, por favor preencha com o máximo de informações." }
+                        }
+                    };
+
+                    if (dto.address.IsEmpty())
+                        dto.statusCompleted.warnings.Add(new Domain.Models.dto.Item() { label = "Informe o seu endereço", value = "Dados Pessoais >> Endereço" });
+
+                    if (dto.image.IsEmpty())
+                        dto.statusCompleted.warnings.Add(new Domain.Models.dto.Item() { label = "Informe uma Imagem para seu perfil", value = "Dados Profissionais >> Alterar Imagem" });
+
+                    if (dto.description.IsEmpty())
+                        dto.statusCompleted.warnings.Add(new Domain.Models.dto.Item() { label = "Informe um Resumo sobre você", value = "Dados Profissionais >> RESUMO SOBRE VOCÊ" });
+
+                    if (dto.crp.IsEmpty())
+                        dto.statusCompleted.warnings.Add(new Domain.Models.dto.Item() { label = "Informe o seu CRP", value = "Dados Pessoais >> CRP" });
+
+                    if (dto.signatureurl.IsEmpty())
+                        dto.statusCompleted.warnings.Add(new Domain.Models.dto.Item() { label = "Coloque uma assinatura para emitir recibos", value = "Dados Pagamento >> Faturamento >> Enviar Assinatura" });
+
+                    if (dto.bankAccounts.IsEmpty())
+                        dto.statusCompleted.warnings.Add(new Domain.Models.dto.Item() { label = "Informe os Dados Bancários para receber seus pagamentos.", value = "Dados Pagamento >> Dados Bancários" });
+
+                    // percentage.
+                    dto.statusCompleted.qtdItens = 6; // 6 - quantidade de ifs
+                    if (dto.statusCompleted.warnings.Count > 1)
+                    {
+                        decimal aa = dto.statusCompleted.warnings.Count();
+                        var ss = 100 - ((aa / dto.statusCompleted.qtdItens) * 100);
+
+                        // percent
+                        dto.statusCompleted.percent = (int)(decimal.Ceiling(ss));
+                    }
+                    else
+                        dto.statusCompleted.percent = 100;
+                }
+                else
+                {
+                    if (!dto.active)
+                        dto.statusCompleted = new providerCompleted()
+                        {
+                            warnings = new List<Domain.Models.dto.Item>()
+                            {
+                                new Domain.Models.dto.Item() { label = "Não disponivel para consultas.", value = "Dados Pessoais >> Estou Disponivel para consultas ?" }
+                            }
+                        };
+                }
                 _res.content.provider.Add(dto);
             }
             catch (System.Exception ex) { _res.setError(ex); }
