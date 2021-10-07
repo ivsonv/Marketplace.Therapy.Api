@@ -1,6 +1,7 @@
 ﻿using Marketplace.Domain.Helpers;
 using Marketplace.Domain.Interface.Marketplace;
 using Marketplace.Domain.Models.dto.customer;
+using Marketplace.Domain.Models.dto.provider;
 using Marketplace.Domain.Models.permissions;
 using Marketplace.Domain.Models.Request.auth.customer;
 using Marketplace.Domain.Models.Request.auth.provider;
@@ -214,10 +215,9 @@ namespace Marketplace.Services.Service
                         await _providerRepository.UpdateRecover(_provider);
 
                         // send email
-                        _emailService.sendResetPassword(new customerDto()
+                        _emailService.sendResetPasswordProvider(new providerDto()
                         {
                             email = _provider.email,
-                            name = $"{_provider.fantasy_name} {_provider.company_name}"
                         }, _provider.recoverpassword);
 
                         //

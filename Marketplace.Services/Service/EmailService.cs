@@ -1,4 +1,5 @@
 ﻿using Marketplace.Domain.Helpers;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using System.IO;
 using System.Threading.Tasks;
@@ -9,11 +10,15 @@ namespace Marketplace.Services.Service
     {
         private readonly Domain.Interface.Integrations.Email.IEmail _IEmail;
         private readonly IConfiguration _configuration;
+        private readonly IWebHostEnvironment _env;
+
         public EmailService(Domain.Interface.Integrations.Email.IEmail IEmail,
-                            IConfiguration configuration)
+                            IConfiguration configuration,
+                            IWebHostEnvironment env)
         {
             _configuration = configuration;
             _IEmail = IEmail;
+            _env = env;
         }
 
         public void sendWelcome(Domain.Models.dto.customer.customerDto _customer)
@@ -29,9 +34,7 @@ namespace Marketplace.Services.Service
             {
                 dto.body = dto.body.Replace("%TITLE%", ":: Bem Vindo ::");
                 dto.body = dto.body.Replace("%NAME%", _customer.name);
-
-                Task p = Task.Run(() => _IEmail.send(dto));
-                Task.WaitAll(p);
+                Task.Run(() => _IEmail.send(dto));
             }
         }
         public void sendWelcome(Domain.Models.dto.provider.providerDto _provider)
@@ -47,12 +50,9 @@ namespace Marketplace.Services.Service
             {
                 dto.body = dto.body.Replace("%TITLE%", ":: Bem Vindo ::");
                 dto.body = dto.body.Replace("%NAME%", _provider.fantasy_name);
-
-                Task p = Task.Run(() => _IEmail.send(dto));
-                Task.WaitAll(p);
+                Task.Run(() => _IEmail.send(dto));
             }
         }
-
         public void sendResetPassword(Domain.Models.dto.customer.customerDto _customer, string token)
         {
             var dto = new Domain.Models.dto.email.emailDto()
@@ -65,11 +65,8 @@ namespace Marketplace.Services.Service
             if (!dto.body.IsEmpty())
             {
                 dto.body = dto.body.Replace("{{TITLE}", ":: Recuperar Senha ::");
-                dto.body = dto.body.Replace("{{LINKREDEFINICAO}}", $"{_configuration["environments:front"]}/sou-psicologo/esqueci-minha-senha?token={token}");
-
-                //_IEmail.send(dto);
-                Task p = Task.Run(() => _IEmail.send(dto));
-                Task.WaitAll(p);
+                dto.body = dto.body.Replace("{{LINKREDEFINICAO}}", $"{_configuration["environments:front"]}/sou-paciente/esqueci-minha-senha?token={token}");
+                Task.Run(() => _IEmail.send(dto));
             }
         }
         public void sendResetPasswordProvider(Domain.Models.dto.provider.providerDto _provider, string token)
@@ -84,16 +81,14 @@ namespace Marketplace.Services.Service
             if (!dto.body.IsEmpty())
             {
                 dto.body = dto.body.Replace("{{TITLE}", ":: Recuperar Senha ::");
-                dto.body = dto.body.Replace("{{LINKREDEFINICAO}}", $"{_configuration["environments:front"]}/sou-paciente/esqueci-minha-senha?token={token}");
-
-                Task p = Task.Run(() => _IEmail.send(dto));
-                Task.WaitAll(p);
+                dto.body = dto.body.Replace("{{LINKREDEFINICAO}}", $"{_configuration["environments:front"]}/sou-psicologo/esqueci-minha-senha?token={token}");
+                Task.Run(() => _IEmail.send(dto));
             }
         }
 
         private string GetTemplate(Enumerados.EmailType _enumtp)
         {
-            string filePath = Path.Combine($"wwwroot/templates/{_enumtp}.html");
+            string filePath = $"{_env.ContentRootPath}/templates/{_enumtp}.html";
             lock (filePath)
             {
                 if (File.Exists(filePath))

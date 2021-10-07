@@ -5,8 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="wwwroot\templates\recoverpassword.html" />
-    <Content Remove="wwwroot\templates\welcome.html" />
+    <Content Remove="templates\recoverpassword.html" />
+    <Content Remove="templates\welcome.html" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,11 +31,6 @@
     <ProjectReference Include="..\Marketplace.Infra\Marketplace.Infra.csproj" />
     <ProjectReference Include="..\Marketplace.Integrations\Marketplace.Integrations.csproj" />
     <ProjectReference Include="..\Marketplace.Services\Marketplace.Services.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="wwwroot\templates\recoverpassword.html" />
-    <None Include="wwwroot\templates\welcome.html" />
   </ItemGroup>
 
   <!--<PropertyGroup>
