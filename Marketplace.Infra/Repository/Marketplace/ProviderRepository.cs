@@ -163,7 +163,7 @@ namespace Marketplace.Infra.Repository.Marketplace
 
                 if (entity.active && entity.completed)
                     if (entity.price < 60)
-                        throw new ArgumentException("Favor Informar o valor da sua consulta. Dados pagamento >> Faturamento >> Valor da Sessão (50 minutos)");
+                        throw new ArgumentException("Favor Informar o valor da sua consulta. (Dados pagamento >> Faturamento >> Valor da Sessão (50 minutos) - valor Minimo R$ 60,00)");
 
                 //endereço
                 if (entity.Address != null)
