@@ -29,6 +29,7 @@ jobs:
       run: |
         cd '${{ github.workspace }}/out'
         rm -f appsettings.Development.json
+        rm -f appsettings.staging.json
     
     - name: Zip Site
       run: | 
