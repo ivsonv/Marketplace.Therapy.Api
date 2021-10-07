@@ -128,7 +128,13 @@ namespace Marketplace.Infra.Repository.Marketplace
 
                 // preencher automatico
                 if (entity.link.IsEmpty())
+                {
                     entity.link = $"{entity.fantasy_name}-{entity.company_name}".IsCompare();
+                }
+                entity.link = entity.link.Replace("-", "");
+                entity.link = entity.link.Replace(".", "");
+                entity.link = entity.link.Replace("&", "");
+                entity.link = entity.link.Replace("/", "");
 
                 // mudou link meu site
                 if (_current.link.IsNotEmpty() && _current.link != entity.link)
@@ -154,6 +160,10 @@ namespace Marketplace.Infra.Repository.Marketplace
                 _current.link = entity.link;
                 _current.price = entity.price;
                 _current.completed = entity.completed;
+
+                if (entity.active && entity.completed)
+                    if (entity.price < 60)
+                        throw new ArgumentException("Favor Informar o valor da sua consulta. Dados pagamento >> Faturamento >> Valor da Sessão (50 minutos)");
 
                 //endereço
                 if (entity.Address != null)
