@@ -14,9 +14,6 @@ namespace Marketplace.Services.Validators
             RuleFor(x => x.uf)
                 .NotNull().NotEmpty().WithMessage("UF é campo obrigatrio.")
                 .MaximumLength(2).WithMessage("UF permitido apenas 2 caracteres.");
-            //RuleFor(x => x.country)
-            //    .NotNull().NotEmpty().WithMessage("{PropertyName} é campo obrigatrio.")
-            //    .MaximumLength(2).WithMessage("{PropertyName} permitido apenas 2 caracteres.");
         }
     }
 }
