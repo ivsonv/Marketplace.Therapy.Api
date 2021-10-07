@@ -5,8 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="templates\recoverpassword.html" />
-    <Content Remove="templates\welcome.html" />
+    <Content Include="templates\**" CopyToPublishDirectory="PreserveNewest"/>
   </ItemGroup>
 
   <ItemGroup>
