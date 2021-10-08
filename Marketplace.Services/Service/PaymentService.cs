@@ -72,9 +72,9 @@ namespace Marketplace.Services.Service
                 decimal comission = providerRs.content.provider[0].price.PercentValue(20);
 
                 // request
-                var app = new BaseRq<Domain.Models.Request.appointment.appointmentRq>()
+                var app = new BaseRq<appointmentRq>()
                 {
-                    data = new Domain.Models.Request.appointment.appointmentRq()
+                    data = new appointmentRq()
                     {
                         customer_id = customerRs.content.customer[0].id.Value,
                         provider_id = providerRs.content.provider[0].id.Value,
@@ -91,7 +91,6 @@ namespace Marketplace.Services.Service
                     }
                 };
                 await _appointmentService.Store(app);
-                //_cache.Clear("calendars");
 
                 // payment request
                 var dto = new Domain.Models.dto.payment.PaymentDto()

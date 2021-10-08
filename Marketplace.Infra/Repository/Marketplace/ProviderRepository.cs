@@ -129,9 +129,8 @@ namespace Marketplace.Infra.Repository.Marketplace
                 // preencher automatico
                 if (entity.link.IsEmpty())
                 {
-                    entity.link = $"{entity.fantasy_name}-{entity.company_name}".IsCompare();
+                    entity.link = $"{entity.fantasy_name}-{entity.company_name}".IsCompare().Replace(" ", "-");
                 }
-                entity.link = entity.link.Replace("-", "");
                 entity.link = entity.link.Replace(".", "");
                 entity.link = entity.link.Replace("&", "");
                 entity.link = entity.link.Replace("/", "");

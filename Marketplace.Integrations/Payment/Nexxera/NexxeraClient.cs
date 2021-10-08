@@ -153,6 +153,19 @@ namespace Marketplace.Integrations.Payment.Nexxera
                     installments = 1
                 };
 
+                #region ..: Template :..
+
+                req.template = new CheckOutTemplate()
+                {
+                    isFullScreen = false,
+                    useSummaryItemTemplate = false,
+                    backgroundBodyColor = "#fafafa",
+                    secundaryColor = "#82868b",
+                    primaryColor = "#9aa1b0",
+                    logoURL = "data:image/png;base64,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"
+                };
+                #endregion
+
                 #region ..: customer :..
 
                 req.customer = new CheckOutCustomer()
@@ -177,13 +190,13 @@ namespace Marketplace.Integrations.Payment.Nexxera
                     {
                         new CheckOutcreditCardinstallments()
                         {
-                            template = "1x de R$ " + decimal.Round(((decimal)_pay.totalprice / 1), 2).ToString(),
+                            template = "1x de R$ " + decimal.Round(((decimal)_pay.totalprice / 1), 2).ToString("N2"),
                             amount = ((int)_pay.totalprice).ToString(),
                             Number = 1,
                         },
                         new repository.CheckOutcreditCardinstallments()
                         {
-                            template = "2x de R$ " + decimal.Round(((decimal)_pay.totalprice / 2), 2).ToString(),
+                            template = "2x de R$ " + decimal.Round(((decimal)_pay.totalprice / 2), 2).ToString("N2"),
                             amount = ((int)_pay.totalprice).ToString(),
                             Number = 2,
                         }

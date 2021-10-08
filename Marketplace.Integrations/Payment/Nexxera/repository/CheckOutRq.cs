@@ -12,6 +12,18 @@ namespace Marketplace.Integrations.Payment.Nexxera.repository
         public string amount { get; set; }
         public CheckOutcreditCard creditCard { get; set; }
         public CheckOutdebitCard debitCard { get; set; }
+        public CheckOutTemplate template { get; set; }
+    }
+
+    public class CheckOutTemplate
+    {
+        public string primaryColor { get; set; }
+        public string secundaryColor { get; set; }
+        public string contrastColor { get; set; }
+        public string backgroundBodyColor { get; set; }
+        public string logoURL { get; set; }
+        public bool isFullScreen { get; set; }
+        public bool useSummaryItemTemplate { get; set; }
     }
 
     public class CheckOutCustomer
