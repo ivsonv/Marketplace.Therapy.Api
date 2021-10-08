@@ -134,7 +134,6 @@ namespace Marketplace.Services.Service
             catch (Exception ex) { _res.setError(ex); }
             return _res;
         }
-
         public async Task<BaseRs<paymentRs>> Consult(consultRq consult)
         {
             var _res = new BaseRs<paymentRs>();
@@ -199,7 +198,6 @@ namespace Marketplace.Services.Service
             catch (Exception ex) { _res.setError(ex); }
             return _res;
         }
-
         public async Task<BaseRs<paymentRs>> Cancel(cancelRq cancel)
         {
             var _res = new BaseRs<paymentRs>();
