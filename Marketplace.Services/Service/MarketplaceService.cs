@@ -136,7 +136,6 @@ namespace Marketplace.Services.Service
                 });
 
                 // horarios
-
                 if (schedule.content.IsNotEmpty())
                 {
                     if (dtStart == DateTime.MinValue)
@@ -145,6 +144,9 @@ namespace Marketplace.Services.Service
                     {
                         dtStart.AddHours(CustomExtensions.DateNow.Hour);
                     }
+
+                    // buscar agendamentos ativos do psicologo
+                    var appoints = (await _cache.GetAppointmentsActive()).Where(w => w.provider_id == provider.id).ToList();
 
                     // qtd dias
                     for (int i = 0; i < 4; i++)
@@ -180,7 +182,11 @@ namespace Marketplace.Services.Service
                                 if (_hour.hour >= week.start &&
                                     _hour.hour <= week.end)
                                 {
-                                    pp.hours.Add(_hour);
+                                    // verifica se já tem horário agendando
+                                    var dt = DateTime.Parse($"{pp.date.ToString("yyyy-MM-dd")}T{_hour.hour}");
+                                    var dtEnd = dt.AddMinutes(50); // 50 minutos
+                                    if (this.isHourOpen(appoints, dt, dtEnd))
+                                        pp.hours.Add(_hour);
                                 }
 
                                 // 2 segundo horário
@@ -193,7 +199,11 @@ namespace Marketplace.Services.Service
                                 if (_hour2.hour >= week.start &&
                                     _hour2.hour <= week.end)
                                 {
-                                    pp.hours.Add(_hour2);
+                                    // verifica se já tem horário agendando
+                                    var dt = DateTime.Parse($"{pp.date.ToString("yyyy-MM-dd")}T{_hour2.hour}");
+                                    var dtEnd = dt.AddMinutes(50); // 50 minutos
+                                    if (this.isHourOpen(appoints, dt, dtEnd))
+                                        pp.hours.Add(_hour2);
                                 }
                             }
                         }
@@ -210,6 +220,16 @@ namespace Marketplace.Services.Service
             }
             catch (Exception ex) { _res.setError(ex); }
             return _res;
+        }
+
+        private bool isHourOpen(List<Domain.Entities.Appointment> appoints, DateTime dtStart, DateTime dtEnd)
+        {
+            return !appoints.Where(w => (w.booking_date >= dtStart && w.booking_date <= dtEnd)
+                                     || ((w.booking_date.AddMinutes(50)) >= dtStart && (w.booking_date.AddMinutes(50)) <= dtEnd)).Any();
+
+            //return appoints.Where(ap => ((ap.booking_date < dtStart && ap.booking_date > dtStart)
+            //                          || (ap.booking_date < dtEnd && ap.booking_date > dtEnd))
+            //                          || (dtStart <= ap.booking_date && dtEnd >= ap.booking_date && dtStart != ap.booking_date)).Any();
         }
     }
 }

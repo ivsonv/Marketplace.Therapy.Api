@@ -129,25 +129,20 @@ namespace Marketplace.Infra.caching
             });
         }
 
-        public async Task<List<Appointment>> GetAppointments()
+        public async Task<List<Appointment>> GetAppointmentsActive()
         {
-            return null;
-
-            //return await _cache.GetOrCreateAsync("appointments", async entry =>
-            //{
-            //    entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes((_minutes * 20));
-            //    return await _context.Appointments
-            //                   .Select(s => new Appointment()
-            //                   {
-            //                       payment_status = s.payment_status,
-            //                       price_transfer = s.price_transfer,
-            //                       booking_date = s.booking_date,
-            //                       price_full = s.price_full,
-            //                       price = s.price,
-            //                       customer_id = s.customer_id,
-            //                       provider_id = s.provider_id,
-            //                   }).AsNoTracking().ToListAsync();
-            //});
+            return await _cache.GetOrCreateAsync("appointments", async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(_minutes * 20);
+                return await _context.Appointments
+                               .Where(w => w.payment_status == Enumerados.PaymentStatus.confirmed)
+                               .Where(w => w.booking_date > CustomExtensions.DateNow)
+                               .Select(s => new Appointment()
+                               {
+                                   booking_date = s.booking_date,
+                                   provider_id = s.provider_id,
+                               }).AsNoTracking().ToListAsync();
+            });
         }
         public async Task<List<Appointment>> GetCalendar()
         {

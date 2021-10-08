@@ -12,7 +12,7 @@ namespace Marketplace.Domain.Interface.Integrations.caching
         Task<List<Entities.Language>> GetLanguages();
         List<Entities.GroupPermission> GetPermissions();
         Task<List<Entities.Appointment>> GetCalendar();
-        Task<List<Entities.Appointment>> GetAppointments();
+        Task<List<Entities.Appointment>> GetAppointmentsActive();
         Task<List<Entities.Appointment>> GetCalendar(int mes);
     }
 }

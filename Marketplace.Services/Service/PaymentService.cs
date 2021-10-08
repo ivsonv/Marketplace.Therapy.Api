@@ -184,15 +184,7 @@ namespace Marketplace.Services.Service
 
                     // atualiza
                     var resUp = await _appointmentService.UpdateStatus(appointment.content);
-                    if (resUp.error != null)
-                    {
-                        // tenta novamente
-                        if (resUp.error.message[0].IndexOf("cannot be tracked because another instance with the same key value for {'id'} is already being tracked") > -1)
-                            resUp = await _appointmentService.UpdateStatus(appointment.content);
-
-                        if (resUp.error != null)
-                            _res.error = resUp.error;
-                    }
+                    _cache.Clear("appointments");
                 }
             }
             catch (Exception ex) { _res.setError(ex); }
