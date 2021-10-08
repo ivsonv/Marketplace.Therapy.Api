@@ -33,6 +33,11 @@ namespace Marketplace.Domain.Entities
         public bool active { get; set; }
 
         public int customer_id { get; set; }
+        public int provider_id { get; set; }
+        public int appointment_id { get; set; }
+
+        public Appointment Appointment { get; set; }
+        public Provider Provider { get; set; }
         public Customer Customer { get; set; }
     }
 }
