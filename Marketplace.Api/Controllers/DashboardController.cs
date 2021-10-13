@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Marketplace.Api.Controllers
 {
-    [Route("api/dashboard")]
+    [CustomAuthorizePermission, Route("api/dashboard")]
     public class DashboardController : DefaultController
     {
         private readonly DashboardService _dashboardService;
@@ -22,7 +22,11 @@ namespace Marketplace.Api.Controllers
         }
 
         [HttpGet("reports")]
-        public async Task<BaseRs<dynamic>> Show(BaseRq<Domain.Models.Request.dashboard.AppointmentRq> _request) 
+        public async Task<BaseRs<dynamic>> Show(BaseRq<Domain.Models.Request.dashboard.AppointmentRq> _request)
             => await _dashboardService.fetchReports(_request);
+
+        [HttpGet("appointment/{id}")]
+        public async Task<BaseRs<dynamic>> FindbyId([FromRoute] int id)
+            => await _dashboardService.fetchAppointmentId(id);
     }
 }

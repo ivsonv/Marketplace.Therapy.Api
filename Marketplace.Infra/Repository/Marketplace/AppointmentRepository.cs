@@ -212,5 +212,18 @@ namespace Marketplace.Infra.Repository.Marketplace
                              id = x.id
                          }).AsNoTracking().ToListAsync();
         }
+        public async Task<Appointment> FindByAppointmentDashboard(int id)
+        {
+            try
+            {
+                return await _repository.Query
+                       .Include(i => i.Provider)
+                       .Include(i => i.Customer)
+                       .Include(i => i.Logs)
+                       .FirstOrDefaultAsync(w => w.id == id);
+            }
+            catch { throw; }
+        }
+
     }
 }
