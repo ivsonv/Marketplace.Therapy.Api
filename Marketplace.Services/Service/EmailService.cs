@@ -25,7 +25,7 @@ namespace Marketplace.Services.Service
         {
             var dto = new Domain.Models.dto.email.emailDto()
             {
-                title = "Bem-vindo ao 99Motos",
+                title = "Bem-vindo Clique Terapia",
                 body = this.GetTemplate(Enumerados.EmailType.welcome),
                 email = _customer.email
             };

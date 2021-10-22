@@ -12,13 +12,9 @@ namespace Marketplace.Services.Service
     public class DashboardService
     {
         private readonly IAppointmentRepository _appointmentRepository;
-        private readonly ICustomCache _cache;
-
-        public DashboardService(IAppointmentRepository appointmentRepository,
-                                ICustomCache cache)
+        public DashboardService(IAppointmentRepository appointmentRepository)
         {
             _appointmentRepository = appointmentRepository;
-            _cache = cache;
         }
 
         public async Task<BaseRs<dynamic>> fetchReports(BaseRq<Domain.Models.Request.dashboard.AppointmentRq> _request)
