@@ -223,5 +223,18 @@ namespace Marketplace.Domain.Helpers
         {
             return (percent * total) / 100;
         }
+        public static string dsPayment(this Enumerados.PaymentStatus _status)
+        {
+            switch (_status)
+            {
+                case Enumerados.PaymentStatus.notAuthorized: return "Não Autorizado";
+                case Enumerados.PaymentStatus.confirmed: return "Confirmado";
+                case Enumerados.PaymentStatus.canceled: return "Cancelado";
+                case Enumerados.PaymentStatus.pending: return "Pendente";
+
+                default:
+                    return _status.ToString();
+            }
+        }
     }
 }

@@ -5,7 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="templates\**" CopyToPublishDirectory="PreserveNewest"/>
+    <Content Include="templates\**" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="templates\appointment.html" />
   </ItemGroup>
 
   <ItemGroup>

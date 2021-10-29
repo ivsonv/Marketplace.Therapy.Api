@@ -66,7 +66,8 @@
         public enum EmailType
         {
             welcome,
-            recoverpassword
+            recoverpassword,
+            appointment
         }
 
         public enum UploadFileType

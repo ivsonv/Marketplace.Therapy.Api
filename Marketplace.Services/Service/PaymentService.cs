@@ -21,6 +21,8 @@ namespace Marketplace.Services.Service
         private readonly AppointmentService _appointmentService;
         private readonly CustomerService _customerService;
         private readonly ProviderService _providerService;
+        private readonly EmailService _emailService;
+
         private readonly IConfiguration _configuration;
         private readonly ICustomCache _cache;
         private readonly IPayment _payment;
@@ -30,6 +32,7 @@ namespace Marketplace.Services.Service
                               AppointmentService appointmentService,
                               ProviderService providerService,
                               CustomerService customerService,
+                              EmailService emailService,
                               IConfiguration configuration,
                               ICustomCache cache,
                               IPayment payment,
@@ -40,6 +43,7 @@ namespace Marketplace.Services.Service
             _customerService = customerService;
             _configuration = configuration;
             _customerUser = customerUser;
+            _emailService = emailService;
             _payment = payment;
             _mapper = mapper;
             _cache = cache;
@@ -91,6 +95,20 @@ namespace Marketplace.Services.Service
                     }
                 };
                 await _appointmentService.Store(app);
+
+                // customer
+                string _name = providerRs.content.provider[0].nickname.IsNotEmpty()
+                    ? providerRs.content.provider[0].nickname
+                    : providerRs.content.provider[0].fantasy_name + " " + providerRs.content.provider[0].company_name;
+
+                _emailService.sendAppointment(new Domain.Models.dto.appointment.Email()
+                {
+                    description = $"Sua consulta com {_name} está PENDENTE no nomento.",
+                    name = $"{customerRs.content.customer[0].name}",
+                    email = customerRs.content.customer[0].email,
+                    title = "Registramos sua consulta.",
+                    nick = "Sua consulta está Pendente"
+                });
 
                 // payment request
                 var dto = new Domain.Models.dto.payment.PaymentDto()
@@ -185,6 +203,45 @@ namespace Marketplace.Services.Service
                     // atualiza
                     var resUp = await _appointmentService.UpdateStatus(appointment.content);
                     _cache.Clear("appointments");
+
+                    // Informar paciente
+                    string _name = appointment.content.Provider.nickname.IsNotEmpty()
+                        ? appointment.content.Provider.nickname
+                        : appointment.content.Provider.fantasy_name + " " + appointment.content.Provider.company_name;
+
+                    #region ..: EMAILS ALTERAÇÃO STATUS :..
+
+                    if (appointment.content.payment_status == Enumerados.PaymentStatus.confirmed)
+                    {
+                        // paciente
+                        _emailService.sendAppointment(new Domain.Models.dto.appointment.Email()
+                        {
+                            description = $"Sua consulta com {_name} está {appointment.content.payment_status.dsPayment()}. <br>" +
+                           $"Data: {appointment.content.booking_date.ToString("dd/MM/yyyy")} <br>" +
+                           $"Hora: {appointment.content.booking_date.ToString("HH:mm")}h <br> " +
+                           $"Fuso Horário de SÃO PAULO",
+
+                            nick = $"Sua consulta está {appointment.content.payment_status.dsPayment()}",
+                            name = $"{appointment.content.Customer.name}",
+                            email = appointment.content.Customer.email,
+                            title = "Consulta confirmada."
+                        });
+
+                        // Informar psico
+                        _emailService.sendAppointment(new Domain.Models.dto.appointment.Email()
+                        {
+                            description = $"{appointment.content.Customer.name} agendou uma consulta com você. <br><br>" +
+                            $"Data: {appointment.content.booking_date.ToString("dd/MM/yyyy")} <br>" +
+                            $"Hora: {appointment.content.booking_date.ToString("HH:mm")}h <br> " +
+                            $"Fuso Horário de SÃO PAULO",
+
+                            nick = $"Voce tem uma consulta Agendada {appointment.content.payment_status.dsPayment()}",
+                            name = $"{appointment.content.Provider.fantasy_name}",
+                            email = appointment.content.Provider.email,
+                            title = "Novo agendamento confirmado."
+                        });
+                    }
+                    #endregion
                 }
             }
             catch (Exception ex) { _res.setError(ex); }

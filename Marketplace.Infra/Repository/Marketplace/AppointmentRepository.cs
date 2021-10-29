@@ -83,6 +83,7 @@ namespace Marketplace.Infra.Repository.Marketplace
         {
             return await _repository.Query
                 .Include(i => i.Provider).ThenInclude(t => t.SplitAccounts)
+                .Include(i => i.Customer)
                 .FirstOrDefaultAsync(f => f.id == id);
         }
         public async Task Create(Appointment entity)
