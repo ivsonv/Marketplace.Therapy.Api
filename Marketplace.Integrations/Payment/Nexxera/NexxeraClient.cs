@@ -181,7 +181,7 @@ namespace Marketplace.Integrations.Payment.Nexxera
                 #region ..: opções de pagamento :..
 
                 // debito
-                req.debitCard = new CheckOutdebitCard() { amount = (int)_pay.totalprice };
+                //req.debitCard = new CheckOutdebitCard() { amount = (int)_pay.totalprice };
 
                 // credito
                 req.creditCard = new CheckOutcreditCard()
