@@ -58,6 +58,7 @@ namespace Marketplace.Domain.Entities
         public string account_digit { get; set; }
         public string account_number { get; set; }
         public string bank_code { get; set; }
+        public string operation { get; set; }
 
         [NotMapped]
         public string ds_bank { get; set; }

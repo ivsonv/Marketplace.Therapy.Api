@@ -175,8 +175,10 @@ namespace Marketplace.Services.Service
                     #endregion
 
                     #region ..: dados bancarios :..
+
                     if (!_request.data.bankAccounts.IsEmpty())
                     {
+                        _request.data.bankAccounts.ForEach(fe => { if (fe.bank_code.IsCompare() != "104") fe.operation = ""; });
                         if (_request.data.bankAccounts.Any(a => a.bank_code.IsEmpty()))
                         {
                             _request.data.bankAccounts = _request.data.bankAccounts.Where(w => !w.bank_code.IsEmpty()).ToList();
@@ -275,7 +277,7 @@ namespace Marketplace.Services.Service
                     if (dto.bankAccounts.IsEmpty())
                         dto.statusCompleted.warnings.Add(new Domain.Models.dto.Item() { label = "Informe os Dados Bancários para receber seus pagamentos.", value = "Dados Pagamento >> Dados Bancários" });
 
-                    if(_provide.Schedules.IsEmpty())
+                    if (_provide.Schedules.IsEmpty())
                         dto.statusCompleted.warnings.Add(new Domain.Models.dto.Item() { label = "Cadastro sem horários disponiveis, cadastre faixa de horários", value = "Meus Horarios >> Dados Bancários" });
 
                     // percentage.

@@ -63,6 +63,10 @@ namespace Marketplace.Integrations.Payment.Nexxera
         public static void CreateMerchant(providerDto provider)
         {
             IsValidarMerchant(provider);
+            
+            string _operation = (provider.bankAccounts.First().operation.IsNotEmpty()
+                ? provider.bankAccounts.First().operation
+                : provider.bankAccounts.First().operation).Trim();
 
             // body
             var _request = new repository.MerchantRq()
@@ -88,7 +92,7 @@ namespace Marketplace.Integrations.Payment.Nexxera
                 {
                     AccountType = ((int)provider.bankAccounts.First().account_bank_type).ToString(),
                     BranchDigit = provider.bankAccounts.First().agency_digit,
-                    Number = provider.bankAccounts.First().account_number,
+                    Number = $"{_operation}{provider.bankAccounts.First().account_number}",
                     Branch = provider.bankAccounts.First().agency_number,
                     Digit = provider.bankAccounts.First().account_digit,
                     BankId = provider.bankAccounts.First().bank_code,

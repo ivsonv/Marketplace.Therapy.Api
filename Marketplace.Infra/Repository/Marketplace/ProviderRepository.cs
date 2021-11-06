@@ -27,7 +27,11 @@ namespace Marketplace.Infra.Repository.Marketplace
         }
         public async Task<List<Provider>> Show(Pagination pagination, string search = "")
         {
-            string name = search.Split('|')[0].Replace("null", "").ToLower().Clear();
+            string name = (search.Split('|')[0].Replace("null", "")).IsCompare();
+            if (name.IsCpf()) name = name.clearMask();
+            if (name.IsCnpj()) name = name.clearMask();
+
+            string[] nameTerms = name.Split(' ');
             int? split = (search.Split('|')[1].IsCompare() != "-1") ? int.Parse(search.Split('|')[1]) : null;
             int? completed = (search.Split('|')[2].IsCompare() != "-1") ? int.Parse(search.Split('|')[2]) : null;
 
@@ -35,23 +39,20 @@ namespace Marketplace.Infra.Repository.Marketplace
 
             // filter name
             if (name.IsNotEmpty())
-                query = query.Where(w => w.fantasy_name.ToLower().Trim().Contains(name) ||
-                                         w.company_name.ToLower().Trim().Contains(name) ||
-                                         w.email.ToLower().Trim().Contains(name) ||
-                                         w.nickname != null && w.nickname.ToLower().Trim().Contains(name) ||
-                                         w.cnpj != null && w.cnpj.ToLower().Trim().Contains(name) ||
-                                         w.cpf != null && w.cpf.ToLower().Trim().Contains(name));
+                query = query.Where(w => nameTerms.Contains(w.fantasy_name.ToLower().Trim()) ||
+                                         nameTerms.Contains(w.company_name.ToLower().Trim()) ||
+                                         nameTerms.Contains(w.email.ToLower().Trim()) ||
+                                         nameTerms.Contains(w.nickname) ||
+                                         nameTerms.Contains(w.cnpj) ||
+                                         nameTerms.Contains(w.cpf));
             #region ..: filter :..
 
             #region ..: split :.. 
 
             if (split != null)
             {
-                if (split == 1)
-                    query = query.Where(w => w.SplitAccounts != null && w.SplitAccounts.Count() > 0);
-
-                if (split == 2)
-                    query = query.Where(w => w.SplitAccounts == null || w.SplitAccounts.Count() <= 0);
+                if (split == 1) query = query.Where(w => w.SplitAccounts != null && w.SplitAccounts.Count() > 0);
+                if (split == 2) query = query.Where(w => w.SplitAccounts == null || w.SplitAccounts.Count() <= 0);
             }
             #endregion
 
@@ -66,19 +67,10 @@ namespace Marketplace.Infra.Repository.Marketplace
 
             #endregion
 
-
-            if (split != null)
-            {
-                if (split == 1)
-                    query = query.Where(w => w.SplitAccounts != null && w.SplitAccounts.Count() > 0);
-
-                if (split == 2)
-                    query = query.Where(w => w.SplitAccounts == null || w.SplitAccounts.Count() <= 0);
-            }
-
             return await query.Select(s => new Provider()
             {
                 SplitAccounts = s.SplitAccounts.Any() ? s.SplitAccounts.Select(tt => new ProviderSplitAccount() { id = tt.id }) : null,
+                nickname = (s.nickname == null || s.nickname == "") ? $"{s.fantasy_name} {s.company_name}" : s.nickname,
                 fantasy_name = s.fantasy_name,
                 company_name = s.company_name,
                 completed = s.completed,
@@ -87,8 +79,8 @@ namespace Marketplace.Infra.Repository.Marketplace
                 cnpj = s.cnpj,
                 cpf = s.cpf,
                 id = s.id
-            }).Skip(pagination.size * pagination.page)
-              .Take(pagination.size).OrderBy(o => o.id)
+            }).Skip(pagination.size * pagination.page).Take(pagination.size)
+              .OrderByDescending(o => o.id)
               .ToListAsync();
         }
         public async Task<List<Provider>> Show(Pagination pagination)
