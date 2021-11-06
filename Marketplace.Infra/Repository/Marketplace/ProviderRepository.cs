@@ -28,7 +28,6 @@ namespace Marketplace.Infra.Repository.Marketplace
         public async Task<List<Provider>> Show(Pagination pagination, string search = "")
         {
             string name = (search.Split('|')[0].Replace("null", "")).IsCompare();
-            if (name.IsCpf()) name = name.clearMask();
             if (name.IsCnpj()) name = name.clearMask();
 
             string[] nameTerms = name.Split(' ');
