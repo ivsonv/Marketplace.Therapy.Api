@@ -28,9 +28,10 @@ namespace Marketplace.Infra.Repository.Marketplace
         public async Task<List<Provider>> Show(Pagination pagination, string search = "")
         {
             string name = search.Split('|')[0].Replace("null", "").ToLower().Clear();
-            int? situation = (search.Split('|')[1] != "-1") ? int.Parse(search.Split('|')[1]) : null;
+            int? split = (search.Split('|')[1].IsCompare() != "-1") ? int.Parse(search.Split('|')[1]) : null;
+            int? completed = (search.Split('|')[2].IsCompare() != "-1") ? int.Parse(search.Split('|')[2]) : null;
 
-            var query = _repository.Query.AsQueryable();
+            var query = _repository.Query.Include(i => i.SplitAccounts).AsQueryable();
 
             // filter name
             if (name.IsNotEmpty())
@@ -40,15 +41,48 @@ namespace Marketplace.Infra.Repository.Marketplace
                                          w.nickname != null && w.nickname.ToLower().Trim().Contains(name) ||
                                          w.cnpj != null && w.cnpj.ToLower().Trim().Contains(name) ||
                                          w.cpf != null && w.cpf.ToLower().Trim().Contains(name));
-            // filter situation
-            if (situation != null)
-                query = query.Where(w => (int)w.situation == situation);
+            #region ..: filter :..
+
+            #region ..: split :.. 
+
+            if (split != null)
+            {
+                if (split == 1)
+                    query = query.Where(w => w.SplitAccounts != null && w.SplitAccounts.Count() > 0);
+
+                if (split == 2)
+                    query = query.Where(w => w.SplitAccounts == null || w.SplitAccounts.Count() <= 0);
+            }
+            #endregion
+
+            #region ..: completed :.. 
+
+            if (completed != null)
+            {
+                if (completed == 1) query = query.Where(w => w.completed);
+                if (completed == 2) query = query.Where(w => !w.completed);
+            }
+            #endregion
+
+            #endregion
+
+
+            if (split != null)
+            {
+                if (split == 1)
+                    query = query.Where(w => w.SplitAccounts != null && w.SplitAccounts.Count() > 0);
+
+                if (split == 2)
+                    query = query.Where(w => w.SplitAccounts == null || w.SplitAccounts.Count() <= 0);
+            }
 
             return await query.Select(s => new Provider()
             {
+                SplitAccounts = s.SplitAccounts.Any() ? s.SplitAccounts.Select(tt => new ProviderSplitAccount() { id = tt.id }) : null,
                 fantasy_name = s.fantasy_name,
                 company_name = s.company_name,
-                situation = s.situation,
+                completed = s.completed,
+                active = s.active,
                 email = s.email,
                 cnpj = s.cnpj,
                 cpf = s.cpf,
@@ -71,6 +105,7 @@ namespace Marketplace.Infra.Repository.Marketplace
                                     .Include(i => i.Topics)
                                     .Include(i => i.SplitAccounts)
                                     .Include(i => i.Receipts)
+                                    .Include(i => i.Schedules)
                                     .FirstOrDefaultAsync(f => f.id == id);
         }
 
@@ -161,9 +196,10 @@ namespace Marketplace.Infra.Repository.Marketplace
                 _current.completed = entity.completed;
 
                 if (entity.active && entity.completed)
+                {
                     if (entity.price < 60)
-                        throw new ArgumentException("Favor Informar o valor da sua consulta. (Dados pagamento >> Faturamento >> Valor da Sessão (50 minutos) - valor Minimo R$ 60,00)");
-
+                        throw new ArgumentException("Valor Minimo para sua consulta R$ 60,00. (Dados pagamento >> Faturamento >> Valor da Sessão (50 minutos))");
+                }
                 //endereço
                 if (entity.Address != null)
                     _current.Address = entity.Address;

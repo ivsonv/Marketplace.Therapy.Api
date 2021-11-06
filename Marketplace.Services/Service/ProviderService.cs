@@ -8,6 +8,7 @@ using Marketplace.Domain.Models.Request.provider;
 using Marketplace.Domain.Models.Response;
 using Marketplace.Domain.Models.Response.provider;
 using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -46,10 +47,11 @@ namespace Marketplace.Services.Service
                 _res.content.provider = (await _providerRepository.Show(_request.pagination, _request.search))
                     .ConvertAll(s => new providerDto()
                     {
-                        ds_situation = this.getSituations().First(f => f.value == ((int)s.situation).ToString()).label,
+                        split = !s.SplitAccounts.IsEmpty(),
                         fantasy_name = s.fantasy_name,
                         company_name = s.company_name,
-                        situation = s.situation,
+                        completed = s.completed,
+                        active = s.active,
                         email = s.email,
                         cnpj = s.cnpj,
                         cpf = s.cpf,
@@ -197,6 +199,15 @@ namespace Marketplace.Services.Service
                     }
                     #endregion
 
+                    #region ..: validar splitAcoount :..
+
+                    if (_request.data.completed)
+                    {
+                        if (_request.data.splitAccounts.IsEmpty())
+                            throw new ArgumentException("Não e possível completar cadastro, Sem o split de pagamento (NEXXERRA)");
+                    }
+                    #endregion
+
                     // dados
                     var entity = _mapper.Map<Domain.Entities.Provider>(_request.data);
                     await _providerRepository.Update(entity);
@@ -264,6 +275,9 @@ namespace Marketplace.Services.Service
                     if (dto.bankAccounts.IsEmpty())
                         dto.statusCompleted.warnings.Add(new Domain.Models.dto.Item() { label = "Informe os Dados Bancários para receber seus pagamentos.", value = "Dados Pagamento >> Dados Bancários" });
 
+                    if(_provide.Schedules.IsEmpty())
+                        dto.statusCompleted.warnings.Add(new Domain.Models.dto.Item() { label = "Cadastro sem horários disponiveis, cadastre faixa de horários", value = "Meus Horarios >> Dados Bancários" });
+
                     // percentage.
                     dto.statusCompleted.qtdItens = 6; // 6 - quantidade de ifs
                     if (dto.statusCompleted.warnings.Count > 1)
@@ -273,6 +287,8 @@ namespace Marketplace.Services.Service
 
                         // percent
                         dto.statusCompleted.percent = (int)(decimal.Ceiling(ss));
+                        if (dto.statusCompleted.percent < 0)
+                            dto.statusCompleted.percent = 0;
                     }
                     else
                         dto.statusCompleted.percent = 100;
@@ -284,7 +300,7 @@ namespace Marketplace.Services.Service
                         {
                             warnings = new List<Domain.Models.dto.Item>()
                             {
-                                new Domain.Models.dto.Item() { label = "Não disponivel para consultas.", value = "Dados Pessoais >> Estou Disponivel para consultas ?" }
+                                new Domain.Models.dto.Item() { label = "Não disponivel para consultas (INATIVO).", value = "Dados Pessoais >> Estou Disponivel para consultas ?" }
                             }
                         };
                 }

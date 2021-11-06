@@ -25,6 +25,7 @@ namespace Marketplace.Domain.Models.dto.provider
         public int? interval_between_appointment { get; set; } = null;
         public string ds_situation { get; set; }
         public decimal price { get; set; }
+        public bool split { get; set; }
 
         public bool completed { get; set; }
         public bool active { get; set; }

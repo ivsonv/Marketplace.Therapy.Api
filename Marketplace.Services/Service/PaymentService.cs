@@ -283,7 +283,7 @@ namespace Marketplace.Services.Service
                         {
                             new Domain.Entities.AppointmentLog()
                             {
-                                description = cancel.pacient ? "cancelado por cliente" : "cancelado por psico",
+                                description = cancel.pacient ? "cancelado por cliente" : "cancelado por psi",
                                 jsonRq = dto.payments[0].LogRq,
                                 jsonRs = dto.payments[0].LogRs
                             }

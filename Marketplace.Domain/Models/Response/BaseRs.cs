@@ -38,11 +38,11 @@ namespace Marketplace.Domain.Models.Response
         public BaseError(Exception ex)
         {
             this.message.Add(ex.Message);
-            if (System.Diagnostics.Debugger.IsAttached)
-            {
-                this.description = ex.StackTrace;
-                this.description += ex.InnerException?.Message;
-            }
+            //if (System.Diagnostics.Debugger.IsAttached)
+            //{
+            //    this.description = ex.StackTrace;
+            //    this.description += ex.InnerException?.Message;
+            //}
         }
 
         public List<string> message { get; } = new List<string>();

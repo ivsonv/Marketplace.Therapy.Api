@@ -22,10 +22,6 @@ namespace Marketplace.Api.Controllers
         public async Task<BaseRs<providerRs>> Show([FromQuery] BaseRq<providerRq> _request)
             => await _providerService.Show(_request);
 
-        //[HttpPost]
-        //public async Task<BaseRs<providerRs>> Store([FromBody] BaseRq<providerRq> _request)
-        //    => await _providerService.Store(_request);
-
         [HttpPut, CustomAuthorizePermission]
         public async Task<BaseRs<providerRs>> Update([FromBody] BaseRq<providerRq> _request)
             => await _providerService.Update(_request);
