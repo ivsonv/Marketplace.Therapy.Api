@@ -17,7 +17,23 @@ namespace Marketplace.Domain.Models.permissions
             _retorno.AddRange(Bank.permissions);
             _retorno.AddRange(Account.permissions);
             _retorno.AddRange(providerSchedules.permissions);
+            _retorno.AddRange(Dashboard.permissions);
             return _retorno;
+        }
+
+        public static class Dashboard
+        {
+            public const string View = "dashboard.view";
+            public static List<dto.Item> permissions
+            {
+                get
+                {
+                    return new List<dto.Item>()
+                    {
+                        new dto.Item() {label = "Visualizar dashboard", value = View }
+                    };
+                }
+            }
         }
 
         public static class providerSchedules

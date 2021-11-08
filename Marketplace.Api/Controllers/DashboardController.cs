@@ -1,4 +1,5 @@
 using Marketplace.Domain.Helpers;
+using Marketplace.Domain.Models.permissions;
 using Marketplace.Domain.Models.Request;
 using Marketplace.Domain.Models.Request.marketplace;
 using Marketplace.Domain.Models.Response;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Marketplace.Api.Controllers
 {
-    [CustomAuthorizePermission, Route("api/dashboard")]
+    [Route("api/dashboard"), CustomAuthorizePermission(Permissions = permission.Dashboard.View)]
     public class DashboardController : DefaultController
     {
         private readonly DashboardService _dashboardService;
