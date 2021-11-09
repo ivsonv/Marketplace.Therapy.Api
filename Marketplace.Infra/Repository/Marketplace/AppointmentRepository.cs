@@ -200,6 +200,7 @@ namespace Marketplace.Infra.Repository.Marketplace
 
             //
             return await query
+                         .OrderByDescending(o => o.created_at)
                          .Skip(rq.pagination.size * rq.pagination.page)
                          .Take(rq.pagination.size)
                          .Select(x => new Appointment()

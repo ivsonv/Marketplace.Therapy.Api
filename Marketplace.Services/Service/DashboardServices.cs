@@ -33,8 +33,9 @@ namespace Marketplace.Services.Service
                     booking_date = x.booking_date.ToString("dd/MM/yyyy HH:mm"),
                     created_at = x.created_at.Value.ToString("dd/MM/yyyy HH:mm"),
                     transaction_code = x.transaction_code,
+                    dsstatus = x.status.ToString(),
                     status = x.status,
-                    price = x.price,
+                    price = $"${x.price.ToString("N")}",
                     id = x.id
                 });
             }

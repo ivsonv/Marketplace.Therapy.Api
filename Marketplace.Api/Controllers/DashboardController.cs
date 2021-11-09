@@ -23,7 +23,7 @@ namespace Marketplace.Api.Controllers
         }
 
         [HttpGet("reports")]
-        public async Task<BaseRs<dynamic>> Show(BaseRq<Domain.Models.Request.dashboard.AppointmentRq> _request)
+        public async Task<BaseRs<dynamic>> Show([FromQuery] BaseRq<Domain.Models.Request.dashboard.AppointmentRq> _request)
             => await _dashboardService.fetchReports(_request);
 
         [HttpGet("appointment/{id}")]
