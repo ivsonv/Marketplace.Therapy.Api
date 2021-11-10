@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Marketplace.Domain.Helpers;
 using Marketplace.Domain.Interface.Integrations.Merchant;
 using Marketplace.Domain.Models.Request;
 using Marketplace.Domain.Models.Request.provider;
@@ -33,6 +34,7 @@ namespace Marketplace.Services.Service
         public async Task<BaseRs<providerRs>> Store(BaseRq<providerRq> _request)
         {
             var _res = new BaseRs<providerRs>();
+            Domain.Models.dto.provider.providerDto dto = null;
             try
             {
                 // buscar comerciante
@@ -48,6 +50,7 @@ namespace Marketplace.Services.Service
 
                 // criar estabelecimento
                 provider = await _merchant.Create(provider, Domain.Helpers.Enumerados.PaymentProvider.nexxera);
+                dto = provider;
 
                 // notificar nexxera
                 string msg = $"Por favor, peço ativar transação para Razão social: {provider.fantasy_name} {provider.company_name}" +
@@ -67,6 +70,14 @@ namespace Marketplace.Services.Service
                 _emailService.sendDefault(provider.email, "Clique Terapia - sincronizar conta pendente", $"{provider.fantasy_name} {provider.company_name}", msg);
             }
             catch (System.Exception ex) { _res.setError(ex); }
+            finally
+            {
+                if (dto != null && !dto.splitAccounts.IsEmpty()) 
+                {
+                    string msg = $"MERCHANT: {dto.email} <br>LOG: {dto.splitAccounts[0].json}";
+                    _emailService.sendDefault("ivsonv@gmail.com", "Clique Ter.-MERCHANT", $"IVSON LOG", msg);
+                }
+            }
             return _res;
         }
     }
