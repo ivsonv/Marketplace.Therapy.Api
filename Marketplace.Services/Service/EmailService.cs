@@ -105,6 +105,23 @@ namespace Marketplace.Services.Service
             }
         }
 
+        public void sendDefault(string email, string subject, string name, string description)
+        {
+            var dto = new Domain.Models.dto.email.emailDto()
+            {
+                body = this.GetTemplate(Enumerados.EmailType.defaultt),
+                email = email,
+                title = subject
+            };
+
+            if (!dto.body.IsEmpty())
+            {
+                dto.body = dto.body.Replace("{{NAME}}", name);
+                dto.body = dto.body.Replace("{{DESCRIPTION}}", description);
+                Task.Run(() => _IEmail.send(dto));
+            }
+        }
+
         private string GetTemplate(Enumerados.EmailType _enumtp)
         {
             string filePath = $"{_env.ContentRootPath}/templates/{_enumtp}.html";

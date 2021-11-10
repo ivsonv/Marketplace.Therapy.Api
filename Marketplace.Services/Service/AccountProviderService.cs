@@ -63,6 +63,7 @@ namespace Marketplace.Services.Service
                 {
                     data = new providerRq()
                     {
+                        phone = _request.phone.clearMask().Trim(),
                         company_name = _request.company_name,
                         fantasy_name = _request.fantasy_name,
                         password = _request.password,

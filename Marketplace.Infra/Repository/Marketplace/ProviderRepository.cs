@@ -203,6 +203,10 @@ namespace Marketplace.Infra.Repository.Marketplace
                 if (entity.Receipts != null)
                     _current.Receipts = entity.Receipts;
 
+                // split
+                if (entity.SplitAccounts != null)
+                    _current.SplitAccounts = entity.SplitAccounts;
+
                 #region ..: Idiomas :..
 
                 var receives = entity.Languages.Select(s => s.language_id).ToList();

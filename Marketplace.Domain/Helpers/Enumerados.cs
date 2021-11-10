@@ -67,7 +67,9 @@
         {
             welcome,
             recoverpassword,
-            appointment
+            appointment,
+            nexxera,
+            defaultt
         }
 
         public enum UploadFileType

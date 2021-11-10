@@ -10,6 +10,8 @@
 
   <ItemGroup>
     <None Remove="templates\appointment.html" />
+    <None Remove="templates\defaultt.html" />
+    <None Remove="templates\nexxera.html" />
   </ItemGroup>
 
   <ItemGroup>
