@@ -34,7 +34,7 @@ jobs:
     - name: Zip Site
       run: | 
         cd '${{ github.workspace }}/out' && sudo apt-get update && sudo apt-get install zip -y
-        zip -r ${{ github.workspace }}/out/site.zip * && zip release.zip site.zip aws-windows-deployment-manifest.json
+        zip -r ${{ github.workspace }}/out/site.zip * .platform && zip release.zip site.zip aws-windows-deployment-manifest.json
     
     - name: Deploy to EB
       uses: einaregilsson/beanstalk-deploy@v13

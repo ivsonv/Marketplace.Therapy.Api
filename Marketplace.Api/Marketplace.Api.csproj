@@ -38,6 +38,10 @@
     <ProjectReference Include="..\Marketplace.Services\Marketplace.Services.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include=".platform\nginx\conf.d\custom.conf" />
+  </ItemGroup>
+
   <!--<PropertyGroup>
     <BaseOutputPath>..\Marketplace.Api\bin\</BaseOutputPath>
   </PropertyGroup>-->

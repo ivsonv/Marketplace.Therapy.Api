@@ -34,6 +34,9 @@ namespace Marketplace.Domain.Entities
         public bool remove { get; set; }
         public string recoverpassword { get; set; }
 
+        [NotMapped]
+        public bool emailWelcomeCompleted { get; set; }
+
         public IEnumerable<ProviderAddress> Address { get; set; }
         public IEnumerable<ProviderBankAccount> BankAccounts { get; set; }
         public IEnumerable<ProviderSplitAccount> SplitAccounts { get; set; }

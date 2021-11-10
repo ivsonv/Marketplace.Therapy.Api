@@ -216,6 +216,14 @@ namespace Marketplace.Services.Service
 
                     // atualizar cache
                     _cache.Clear("providers");
+
+                    // email de boas vindas, cadastro completo.
+                    if(entity.emailWelcomeCompleted)
+                    {
+                        string msg = $"Parabéns!!! Seu Cadastro está aprovado por nossa equipe. <br>" +
+                            $"Você já pode receber atendimentos em nossa plataforma online.";
+                        _emailService.sendDefault(entity.email, "Cadastro Aprovado - Clique terapia.", entity.fantasy_name, msg);
+                    }
                 }
             }
             catch (System.Exception ex) { _res.setError(ex); }
