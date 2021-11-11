@@ -218,7 +218,7 @@ namespace Marketplace.Services.Service
                     _cache.Clear("providers");
 
                     // email de boas vindas, cadastro completo.
-                    if(entity.emailWelcomeCompleted)
+                    if (entity.emailWelcomeCompleted)
                     {
                         string msg = $"Parabéns!!! Seu Cadastro está aprovado por nossa equipe. <br>" +
                             $"Você já pode receber atendimentos em nossa plataforma online.";
@@ -286,7 +286,7 @@ namespace Marketplace.Services.Service
                         dto.statusCompleted.warnings.Add(new Domain.Models.dto.Item() { label = "Informe os Dados Bancários para receber seus pagamentos.", value = "Dados Pagamento >> Dados Bancários" });
 
                     if (_provide.Schedules.IsEmpty())
-                        dto.statusCompleted.warnings.Add(new Domain.Models.dto.Item() { label = "Cadastro sem horários disponiveis, cadastre faixa de horários", value = "Meus Horarios >> Faixa de horários" });
+                        dto.statusCompleted.warnings.Add(new Domain.Models.dto.Item() { label = "Cadastro sem horários disponiveis, cadastre faixa de horários", value = "Meus Horarios >> Faixa de horários", code = "fh" });
 
                     // percentage.
                     dto.statusCompleted.qtdItens = 6; // 6 - quantidade de ifs
