@@ -6,10 +6,11 @@ namespace Marketplace.Services.Validators
     {
         public AddressValidator()
         {
-            RuleFor(x => x.address).NotNull().NotEmpty().WithMessage("Endereço é campo obrigatrio.");
-            RuleFor(x => x.city).NotNull().NotEmpty().WithMessage("Cidade é campo obrigatrio.");
-            RuleFor(x => x.neighborhood).NotNull().NotEmpty().WithMessage("Bairro é campo obrigatrio.");
-            RuleFor(x => x.number).NotNull().NotEmpty().WithMessage("{PropertyName} é campo obrigatrio.");
+            RuleFor(x => x.address).NotNull().NotEmpty().WithMessage("Logradouro é um campo obrigatório.");
+            RuleFor(x => x.complement).NotNull().NotEmpty().WithMessage("Complemento é um campo obrigatório.");
+            RuleFor(x => x.city).NotNull().NotEmpty().WithMessage("Cidade é campo obrigatório.");
+            RuleFor(x => x.neighborhood).NotNull().NotEmpty().WithMessage("Bairro é campo obrigatório.");
+            RuleFor(x => x.number).NotNull().NotEmpty().WithMessage("Numero é campo obrigatório.");
 
             RuleFor(x => x.uf)
                 .NotNull().NotEmpty().WithMessage("UF é campo obrigatrio.")
