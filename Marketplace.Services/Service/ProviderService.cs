@@ -286,7 +286,7 @@ namespace Marketplace.Services.Service
                         dto.statusCompleted.warnings.Add(new Domain.Models.dto.Item() { label = "Informe os Dados Bancários para receber seus pagamentos.", value = "Dados Pagamento >> Dados Bancários" });
 
                     if (_provide.Schedules.IsEmpty())
-                        dto.statusCompleted.warnings.Add(new Domain.Models.dto.Item() { label = "Cadastro sem horários disponiveis, cadastre faixa de horários", value = "Meus Horarios >> Dados Bancários" });
+                        dto.statusCompleted.warnings.Add(new Domain.Models.dto.Item() { label = "Cadastro sem horários disponiveis, cadastre faixa de horários", value = "Meus Horarios >> Faixa de horários" });
 
                     // percentage.
                     dto.statusCompleted.qtdItens = 6; // 6 - quantidade de ifs
