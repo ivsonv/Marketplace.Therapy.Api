@@ -259,31 +259,62 @@ namespace Marketplace.Services.Service
                 // status
                 if (!dto.completed)
                 {
-                    dto.statusCompleted = new providerCompleted()
-                    {
-                        warnings = new List<Domain.Models.dto.Item>()
-                        {
-                            new Domain.Models.dto.Item() { label = "Cadastro em processo de liberação, por favor preencha com o máximo de informações." }
-                        }
-                    };
-
-                    if (dto.address.IsEmpty())
-                        dto.statusCompleted.warnings.Add(new Domain.Models.dto.Item() { label = "Informe o seu endereço", value = "Dados Pessoais >> Endereço" });
-
-                    if (dto.image.IsEmpty())
-                        dto.statusCompleted.warnings.Add(new Domain.Models.dto.Item() { label = "Informe uma Imagem para seu perfil", value = "Dados Profissionais >> Alterar Imagem" });
-
-                    if (dto.description.IsEmpty())
-                        dto.statusCompleted.warnings.Add(new Domain.Models.dto.Item() { label = "Informe um Resumo sobre você", value = "Dados Profissionais >> RESUMO SOBRE VOCÊ" });
+                    dto.statusCompleted = new providerCompleted();
+                    dto.statusCompleted.warnings = new List<Domain.Models.dto.Item>();
 
                     if (dto.crp.IsEmpty())
-                        dto.statusCompleted.warnings.Add(new Domain.Models.dto.Item() { label = "Informe o seu CRP", value = "Dados Pessoais >> CRP" });
+                        dto.statusCompleted.warnings.Add(new Domain.Models.dto.Item()
+                        {
+                            label = "Informe o seu CRP",
+                            value = "Dados Pessoais >> CRP",
+                            step = 0,
+                            code = "crp"
+                        });
+
+                    if (dto.address.IsEmpty())
+                        dto.statusCompleted.warnings.Add(new Domain.Models.dto.Item()
+                        {
+                            label = "Informe o seu endereço",
+                            value = "Dados Pessoais >> Endereço",
+                            step = 0,
+                            code = "end"
+                        });
+
+                    if (dto.image.IsEmpty())
+                        dto.statusCompleted.warnings.Add(new Domain.Models.dto.Item()
+                        {
+                            label = "Informe uma Imagem para seu perfil",
+                            value = "Dados Profissionais >> Alterar Imagem",
+                            step = 1,
+                            code = "img"
+                        });
+
+                    if (dto.description.IsEmpty())
+                        dto.statusCompleted.warnings.Add(new Domain.Models.dto.Item()
+                        {
+                            label = "Informe um Resumo sobre você",
+                            value = "Dados Profissionais >> RESUMO SOBRE VOCÊ",
+                            step = 1,
+                            code = "desc"
+                        });
 
                     if (dto.signatureurl.IsEmpty())
-                        dto.statusCompleted.warnings.Add(new Domain.Models.dto.Item() { label = "Coloque uma assinatura para emitir recibos", value = "Dados Pagamento >> Faturamento >> Enviar Assinatura" });
+                        dto.statusCompleted.warnings.Add(new Domain.Models.dto.Item()
+                        {
+                            label = "Coloque uma assinatura para emitir recibos",
+                            value = "Dados Pagamento >> Faturamento >> Enviar Assinatura",
+                            step = 2,
+                            code = "ass"
+                        });
 
                     if (dto.bankAccounts.IsEmpty())
-                        dto.statusCompleted.warnings.Add(new Domain.Models.dto.Item() { label = "Informe os Dados Bancários para receber seus pagamentos.", value = "Dados Pagamento >> Dados Bancários" });
+                        dto.statusCompleted.warnings.Add(new Domain.Models.dto.Item() 
+                        { 
+                            label = "Informe os Dados Bancários para receber seus pagamentos.", 
+                            value = "Dados Pagamento >> Dados Bancários",
+                            step = 2,
+                            code = "bnk"
+                        });
 
                     if (_provide.Schedules.IsEmpty())
                         dto.statusCompleted.warnings.Add(new Domain.Models.dto.Item() { label = "Cadastro sem horários disponiveis, cadastre faixa de horários", value = "Meus Horarios >> Faixa de horários", code = "fh" });
