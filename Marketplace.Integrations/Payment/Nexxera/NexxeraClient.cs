@@ -198,12 +198,12 @@ namespace Marketplace.Integrations.Payment.Nexxera
                             amount = ((int)_pay.totalprice).ToString(),
                             Number = 1,
                         },
-                        new repository.CheckOutcreditCardinstallments()
-                        {
-                            template = "2x de R$ " + decimal.Round(((decimal)_pay.totalprice / 2), 2).ToString("N2"),
-                            amount = ((int)_pay.totalprice).ToString(),
-                            Number = 2,
-                        }
+                        //new repository.CheckOutcreditCardinstallments()
+                        //{
+                        //    template = "2x de R$ " + decimal.Round(((decimal)_pay.totalprice / 2), 2).ToString("N2"),
+                        //    amount = ((int)_pay.totalprice).ToString(),
+                        //    Number = 2,
+                        //}
                     }
                 };
                 #endregion
