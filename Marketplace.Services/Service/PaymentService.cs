@@ -183,6 +183,11 @@ namespace Marketplace.Services.Service
                 var _pay = dto.payments[0];
                 if (appointment.content.payment_status != _pay.paymentStatus)
                 {
+                    // Informar paciente
+                    string _name = appointment.content.Provider.nickname.IsNotEmpty()
+                        ? appointment.content.Provider.nickname
+                        : appointment.content.Provider.fantasy_name + " " + appointment.content.Provider.company_name;
+
                     // logs
                     appointment.content.Logs = new List<Domain.Entities.AppointmentLog>()
                     {
@@ -197,17 +202,12 @@ namespace Marketplace.Services.Service
                     // atribuir
                     appointment.content.payment_status = _pay.paymentStatus;
                     appointment.content.status = _pay.status;
-                    appointment.content.Customer = null;
-                    appointment.content.Provider = null;
+                    //appointment.content.Customer = null;
+                    //appointment.content.Provider = null;
 
                     // atualiza
                     var resUp = await _appointmentService.UpdateStatus(appointment.content);
                     _cache.Clear("appointments");
-
-                    // Informar paciente
-                    string _name = appointment.content.Provider.nickname.IsNotEmpty()
-                        ? appointment.content.Provider.nickname
-                        : appointment.content.Provider.fantasy_name + " " + appointment.content.Provider.company_name;
 
                     #region ..: EMAILS ALTERAÇÃO STATUS :..
 
