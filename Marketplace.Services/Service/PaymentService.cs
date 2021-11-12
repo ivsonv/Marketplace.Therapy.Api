@@ -158,7 +158,7 @@ namespace Marketplace.Services.Service
             try
             {
                 // appointment
-                var appointment = await _appointmentService.FindById(consult.code);
+                var appointment = await _appointmentService.FindByIdPayment(consult.code);
                 if (appointment.content.transaction_code != consult.token)
                     appointment.content.transaction_code = consult.token;
 

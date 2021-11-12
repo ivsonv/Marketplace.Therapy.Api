@@ -118,6 +118,18 @@ namespace Marketplace.Services.Service
             catch (System.Exception ex) { _res.setError(ex); }
             return _res;
         }
+
+        public async Task<BaseRs<appointmentRs>> FindByIdPayment(int appointment_id)
+        {
+            var _res = new BaseRs<appointmentRs>();
+            try
+            {
+                var app = await _repository.FindByPayment(appointment_id);
+                _res.content = _mapper.Map<appointmentRs>(app);
+            }
+            catch (System.Exception ex) { _res.setError(ex); }
+            return _res;
+        }
         public async Task<BaseRs<appointmentRs>> FindByAppointment(int appointment_id)
         {
             var _res = new BaseRs<appointmentRs>();

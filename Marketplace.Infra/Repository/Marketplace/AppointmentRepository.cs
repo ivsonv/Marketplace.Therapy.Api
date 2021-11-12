@@ -86,6 +86,14 @@ namespace Marketplace.Infra.Repository.Marketplace
                 .Include(i => i.Customer)
                 .FirstOrDefaultAsync(f => f.id == id);
         }
+        public async Task<Appointment> FindByPayment(int appointment_id)
+        {
+            return await _repository.Query
+                  .Include(i => i.Provider).ThenInclude(t => t.SplitAccounts)
+                  .Include(i => i.Customer)
+                  .FirstOrDefaultAsync(f => f.id == appointment_id);
+        }
+
         public async Task Create(Appointment entity)
         {
             _repository.Add(entity);
@@ -226,6 +234,5 @@ namespace Marketplace.Infra.Repository.Marketplace
             }
             catch { throw; }
         }
-
     }
 }
