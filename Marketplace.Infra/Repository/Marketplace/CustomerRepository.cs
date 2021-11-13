@@ -57,7 +57,7 @@ namespace Marketplace.Infra.Repository.Marketplace
                 .OrderByDescending(o => o.booking_date)
                 .Select(s => new Appointment()
                 {
-                    Provider = new Provider() { fantasy_name = s.Provider.fantasy_name },
+                    Provider = new Provider() { fantasy_name = s.Provider.fantasy_name, company_name = s.Provider.company_name },
                     transaction_code = s.transaction_code,
                     payment_status = s.payment_status,
                     booking_date = s.booking_date,

@@ -154,7 +154,7 @@ namespace Marketplace.Services.Service
                                 {
                                     provider = new
                                     {
-                                        name = x.Provider.fantasy_name,
+                                        name = $"{x.Provider.fantasy_name} {x.Provider.company_name}",
                                         id = x.Provider.id
                                     },
                                     payment = new

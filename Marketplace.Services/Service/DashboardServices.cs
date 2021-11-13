@@ -12,9 +12,12 @@ namespace Marketplace.Services.Service
     public class DashboardService
     {
         private readonly IAppointmentRepository _appointmentRepository;
-        public DashboardService(IAppointmentRepository appointmentRepository)
+        private readonly AppointmentService _appointmentService;
+        public DashboardService(IAppointmentRepository appointmentRepository,
+                                AppointmentService appointmentService)
         {
             _appointmentRepository = appointmentRepository;
+            _appointmentService = appointmentService;
         }
 
         public async Task<BaseRs<dynamic>> fetchReports(BaseRq<Domain.Models.Request.dashboard.AppointmentRq> _request)
@@ -67,15 +70,30 @@ namespace Marketplace.Services.Service
                         payment = new
                         {
                             transaction_code = _apt.transaction_code,
-                            ds = _apt.payment_status.ToString(),
-                            status = _apt.payment_status,
+                            status = _apt.payment_status.ToString(),
+                            type = _apt.type.ToString()
                         },
                         booking_date = _apt.booking_date.ToString("dd/MM/yyyy HH:mm"),
                         created_at = _apt.created_at.Value.ToString("dd/MM/yyyy HH:mm"),
-                        status = _apt.status,
-                        price = _apt.price,
+                        status = _apt.status.ToString(),
+                        price = "R$ " + _apt.price.ToString("N2"),
                         id = _apt.id
                     };
+            }
+            catch (System.Exception ex) { _res.setError(ex); }
+            return _res;
+        }
+
+        public async Task<BaseRs<dynamic>> fetchAppointmentInvoice(int id)
+        {
+            var _res = new BaseRs<dynamic>();
+            try
+            {
+                var resApp = await _appointmentService.FindByAppointmentInvoice(appointment_id: id);
+                if (resApp.error == null && resApp.content != null)
+                    _res.content = resApp.content;
+                else
+                    _res.error = resApp.error;
             }
             catch (System.Exception ex) { _res.setError(ex); }
             return _res;
