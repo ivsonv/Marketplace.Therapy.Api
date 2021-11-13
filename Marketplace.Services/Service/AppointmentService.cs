@@ -207,18 +207,42 @@ namespace Marketplace.Services.Service
                     }
                     #endregion
 
+                    var timeDiff = CustomExtensions.DateNow.TimeOfDay - app.booking_date.TimeOfDay;
+                    if (timeDiff.TotalMinutes > 60)
+                    {
+                        _res.error = new BaseError(new List<string>() { "Agendamento expirou." });
+                        return _res;
+                    }
+
                     _res.content = new appointmentRs()
                     {
-                        Provider = new Provider() { id = app.provider_id},
+                        Provider = new Provider() { id = app.provider_id },
                         Customer = new Customer() { id = app.customer_id },
-
                         room_name = $"{app.Provider.fantasy_name} {app.Provider.company_name}",
-                        room_id = $"clique-terapia-{appointment_id.ToString("000000")}"
+                        room_id = $"clique-terapia-{appointment_id.ToString("000000")}",
+                        room_traveled = (int)timeDiff.TotalMinutes < 0 ? 0 : (int)timeDiff.TotalMinutes
                     };
                 }
             }
             catch (System.Exception ex) { _res.setError(ex); }
             return _res;
         }
+        public async Task<BaseRs<appointmentRs>> FindByAppointmentConferenceFinish(int appointment_id)
+        {
+            var _res = new BaseRs<appointmentRs>();
+            try
+            {
+                var app = await _repository.FindByAppointmentConference(appointment_id: appointment_id);
+                _res.content = new appointmentRs()
+                {
+                    Customer = app.Customer,
+                    Provider = app.Provider
+                };
+            }
+            catch (System.Exception ex) { _res.setError(ex); }
+            return _res;
+        }
+        public async Task RegistrarLog(int appointment_id, string msg)
+            => await _repository.RegisterLog(appointment_id, msg);
     }
 }

@@ -238,7 +238,9 @@ namespace Marketplace.Services.Service
                 var _provide = await _providerRepository.FindById(id);
 
                 var dto = _mapper.Map<providerDto>(_provide);
-                dto.ds_situation = this.getSituations().First(f => f.value == ((int)dto.situation).ToString()).label;
+                if (this.getSituations().Any(f => f.value == ((int)dto.situation).ToString()))
+                    dto.ds_situation = this.getSituations().First(f => f.value == ((int)dto.situation).ToString()).label;
+
                 dto.imageurl = dto.image.toImageUrl($"{_configuration["storage:image"]}/profile");
                 dto.price = _provide.price;
 
@@ -308,9 +310,9 @@ namespace Marketplace.Services.Service
                         });
 
                     if (dto.bankAccounts.IsEmpty())
-                        dto.statusCompleted.warnings.Add(new Domain.Models.dto.Item() 
-                        { 
-                            label = "Informe os Dados Bancários para receber seus pagamentos.", 
+                        dto.statusCompleted.warnings.Add(new Domain.Models.dto.Item()
+                        {
+                            label = "Informe os Dados Bancários para receber seus pagamentos.",
                             value = "Dados Pagamento >> Dados Bancários",
                             step = 2,
                             code = "bnk"

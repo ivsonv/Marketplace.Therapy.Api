@@ -35,7 +35,7 @@ namespace Marketplace.Services.Service
             var _res = new BaseRs<customerRs>() { content = new customerRs() };
             try
             {
-                var lst = await _customerRepository.Show(_request.pagination);
+                var lst = await _customerRepository.Show(_request.pagination, _request.search);
                 _res.content.customer = _mapper.Map<List<customerDto>>(lst);
             }
             catch (System.Exception ex) { _res.setError(ex); }
@@ -67,7 +67,10 @@ namespace Marketplace.Services.Service
 
                     await _customerRepository.Create(entity);
 
-                    _emailService.sendWelcome(_request.data);
+                    string msg = "Bem-vindo ao mundo Clique Terapia <br><br>" +
+                        "Somos o maior site de consultas online com psicólogos do Brasil & " +
+                        "os mais recomendados por todos que amam esse segmento.";
+                    _emailService.sendDefault(entity.email, "Bem-vindo Clique Terapia", entity.name, msg);
                     _res = await this.FindById(entity.id);
 
                     // clear password
@@ -136,6 +139,33 @@ namespace Marketplace.Services.Service
             {
                 var entity = await _customerRepository.FindById(id);
                 _res.content.customer.Add(_mapper.Map<customerDto>(entity));
+            }
+            catch (System.Exception ex) { _res.setError(ex); }
+            return _res;
+        }
+
+        public async Task<BaseRs<dynamic>> ShowAppointments(int customer_id)
+        {
+            var _res = new BaseRs<dynamic>();
+            try
+            {
+                _res.content = (await _customerRepository.ShowAppointments(customer_id))
+                                .ConvertAll(x => new
+                                {
+                                    provider = new
+                                    {
+                                        name = x.Provider.fantasy_name,
+                                        id = x.Provider.id
+                                    },
+                                    payment = new
+                                    {
+                                        ds = x.payment_status.ToString()
+                                    },
+                                    booking_date = x.booking_date.ToString("dd/MM/yyyy HH:mm"),
+                                    created_at = x.created_at.Value.ToString("dd/MM/yyyy HH:mm"),
+                                    price = $"R$ {x.price.ToString("N2")}",
+                                    id = x.id
+                                });
             }
             catch (System.Exception ex) { _res.setError(ex); }
             return _res;

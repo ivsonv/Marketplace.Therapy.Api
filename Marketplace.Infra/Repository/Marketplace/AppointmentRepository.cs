@@ -18,11 +18,15 @@ namespace Marketplace.Infra.Repository.Marketplace
     public class AppointmentRepository : IAppointmentRepository
     {
         private readonly BaseRepository<Appointment> _repository;
+        private readonly BaseRepository<AppointmentLog> _repositoryLog;
         private readonly ICustomCache _cache;
 
-        public AppointmentRepository(BaseRepository<Appointment> repository,
+        public AppointmentRepository(
+            BaseRepository<AppointmentLog> repositoryLog,
+            BaseRepository<Appointment> repository,
                                ICustomCache cache)
         {
+            _repositoryLog = repositoryLog;
             _repository = repository;
             _cache = cache;
         }
@@ -175,7 +179,6 @@ namespace Marketplace.Infra.Repository.Marketplace
                                    .Include(i => i.Customer)
                                    .FirstOrDefaultAsync(w => w.id == appointment_id);
         }
-
         public async Task<List<Appointment>> ShowDashboardReports(BaseRq<AppointmentRq> rq)
         {
             var query = _repository.Query.Where(w => w.type == Enumerados.AppointmentType.online_session);
@@ -233,6 +236,16 @@ namespace Marketplace.Infra.Repository.Marketplace
                        .FirstOrDefaultAsync(w => w.id == id);
             }
             catch { throw; }
+        }
+
+        public async Task RegisterLog(int appointment_id, string description)
+        {
+            _repositoryLog.Add(new AppointmentLog()
+            {
+                appointment_id = appointment_id,
+                description = description
+            });
+            await _repositoryLog.SaveChanges();
         }
     }
 }

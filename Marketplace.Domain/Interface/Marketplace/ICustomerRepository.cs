@@ -1,4 +1,5 @@
 ﻿using Marketplace.Domain.Interface.Shared;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Marketplace.Domain.Interface.Marketplace
@@ -8,5 +9,6 @@ namespace Marketplace.Domain.Interface.Marketplace
         Task<Entities.Customer> FindByEmail(string email);
         Task<Entities.Customer> FindByToken(string token);
         Task<Entities.Customer> FindAuthByEmail(string email);
+        Task<List<Entities.Appointment>> ShowAppointments(int customer_id);
     }
 }

@@ -11,5 +11,6 @@ namespace Marketplace.Domain.Models.Response.appointment
         public string issued { get; set; }
         public string room_id { get; set; }
         public string room_name { get; set; }
+        public int room_traveled { get; set; }
     }
 }

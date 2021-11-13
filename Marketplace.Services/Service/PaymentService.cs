@@ -224,7 +224,7 @@ namespace Marketplace.Services.Service
                             nick = $"Sua consulta está {appointment.content.payment_status.dsPayment()}",
                             name = $"{appointment.content.Customer.name}",
                             email = appointment.content.Customer.email,
-                            title = "Consulta confirmada."
+                            title = "Sua consulta está confirmada."
                         });
 
                         // Informar psico
@@ -238,7 +238,7 @@ namespace Marketplace.Services.Service
                             nick = $"Voce tem uma consulta Agendada {appointment.content.payment_status.dsPayment()}",
                             name = $"{appointment.content.Provider.fantasy_name}",
                             email = appointment.content.Provider.email,
-                            title = "Novo agendamento confirmado."
+                            title = "Nova consulta está confirmada"
                         });
                     }
                     #endregion

@@ -19,5 +19,6 @@ namespace Marketplace.Domain.Interface.Marketplace
         Task<List<Entities.Appointment>> ShowDashboardReports(BaseRq<Models.Request.dashboard.AppointmentRq> rq);
         Task<Entities.Appointment> FindByAppointmentDashboard(int id);
         Task<Entities.Appointment> FindByPayment(int appointment_id);
+        Task RegisterLog(int appointment_id, string description);
     }
 }

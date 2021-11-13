@@ -17,14 +17,17 @@ namespace Marketplace.Services.Service
         private readonly CustomAuthenticatedUser _authenticatedCustomer;
         private readonly AppointmentService _appointmentService;
         private readonly CustomerService _customerService;
+        private readonly EmailService _emailService;
 
         public AccountCustomerService(AppointmentService appointmentService,
                                       CustomerService customerService,
+                                      EmailService emailService,
                                       CustomAuthenticatedUser user)
         {
             _appointmentService = appointmentService;
             _customerService = customerService;
             _authenticatedCustomer = user;
+            _emailService = emailService;
         }
 
         public async Task<BaseRs<accountCustomerRs>> storeCustomer(accountCustomerRq _request)
@@ -32,14 +35,21 @@ namespace Marketplace.Services.Service
             var _res = new BaseRs<accountCustomerRs>();
             try
             {
+                _request.cpf = _request.cpf.clearMask();
+                if (!_request.cpf.IsCpf())
+                {
+                    _res.setError("CPF Informado não e válido.");
+                    return _res;
+                }
+
                 var _rq = new BaseRq<customerRq>()
                 {
                     data = new customerRq()
                     {
                         name = _request.name.Clear().ToUpper(),
                         password = _request.password,
-                        email = _request.email, 
-                        cpf = _request.cpf.clearMask()
+                        email = _request.email,
+                        cpf = _request.cpf
                     }
                 };
 
@@ -164,13 +174,35 @@ namespace Marketplace.Services.Service
                         };
 
                         // registrar log
-
+                        await _appointmentService.RegistrarLog(id, "pct entrou na sala.");
                     }
                     else
                         _res.error = new BaseError(new List<string>() { "Agendamento não encontrado." });
                 }
                 else
                     _res.error = resApp.error;
+            }
+            catch (System.Exception ex) { _res.setError(ex); }
+            return _res;
+        }
+        public async Task<BaseRs<accountCustomerRs>> finishConference(int id)
+        {
+            var _res = new BaseRs<accountCustomerRs>();
+            try
+            {
+                var resApp = await _appointmentService.FindByAppointmentConferenceFinish(appointment_id: id);
+                if (resApp.error == null && resApp.content != null)
+                {
+                    // apenas agendamento do cliente.
+                    if (resApp.content.Customer.id == _authenticatedCustomer.user.id)
+                    {
+                        // registrar log
+                        await _appointmentService.RegistrarLog(id, "pct saiu da sala.");
+
+                        string msg = "Obrigado por confiar na clique terapia, <br> estamos muito feliz de você ter dado esse grande passo.";
+                        _emailService.sendDefault(resApp.content.Customer.email, "Sua Sessão foi encerrada", resApp.content.Customer.name, msg);
+                    }
+                }
             }
             catch (System.Exception ex) { _res.setError(ex); }
             return _res;

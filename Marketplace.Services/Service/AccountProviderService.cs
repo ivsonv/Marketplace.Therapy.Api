@@ -26,6 +26,7 @@ namespace Marketplace.Services.Service
         private readonly ProviderService _providerService;
         private readonly UploadService _uploadService;
         private readonly BankService _bankService;
+        private readonly EmailService _emailService;
 
         private readonly IAppointmentRepository _appointmentRepository;
         private readonly ICustomCache _cache;
@@ -37,6 +38,7 @@ namespace Marketplace.Services.Service
                                       CustomAuthenticatedUser user,
                                       UploadService uploadService,
                                       BankService bankService,
+                                      EmailService emailService,
                                       IAppointmentRepository appointmentRepository,
                                       ICustomCache cache,
                                       IMapper mapper)
@@ -47,6 +49,7 @@ namespace Marketplace.Services.Service
             _uploadService = uploadService;
             _authenticatedProvider = user;
             _bankService = bankService;
+            _emailService = emailService;
 
             _appointmentRepository = appointmentRepository;
             _mapper = mapper;
@@ -393,12 +396,38 @@ namespace Marketplace.Services.Service
                         {
                             appointment = resApp.content
                         };
+
+                        // registrar log
+                        await _appointmentService.RegistrarLog(id, "psi entrou na sala.");
                     }
                     else
                         _res.error = new BaseError(new List<string>() { "Agendamento não encontrado." });
                 }
                 else
                     _res.error = resApp.error;
+            }
+            catch (System.Exception ex) { _res.setError(ex); }
+            return _res;
+        }
+        public async Task<BaseRs<accountProviderRs>> finishConference(int id)
+        {
+            var _res = new BaseRs<accountProviderRs>();
+            try
+            {
+                var resApp = await _appointmentService.FindByAppointmentConferenceFinish(appointment_id: id);
+                if (resApp.error == null && resApp.content != null)
+                {
+                    // apenas agendamento do provider.
+                    if (resApp.content.Provider.id == _authenticatedProvider.user.id)
+                    {
+                        // registrar log
+                        await _appointmentService.RegistrarLog(id, "psi saiu da sala.");
+
+                        // e-mail
+                        string msg = "Acabamos de encerrar sua sessão, obrigado por confiar na clique terapia.";
+                        _emailService.sendDefault(resApp.content.Provider.email, "Sua Sessão foi encerrada", resApp.content.Provider.fantasy_name, msg);
+                    }
+                }
             }
             catch (System.Exception ex) { _res.setError(ex); }
             return _res;
