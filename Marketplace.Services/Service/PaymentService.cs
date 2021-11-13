@@ -138,7 +138,7 @@ namespace Marketplace.Services.Service
                     {
                         jsonRq = dto.payments[0].LogRq,
                         jsonRs = dto.payments[0].LogRs,
-                        description = "pi"
+                        description = "checkout"
                     }
                 };
                 await _appointmentService.Update(app);

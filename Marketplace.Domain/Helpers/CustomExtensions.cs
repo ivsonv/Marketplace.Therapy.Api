@@ -19,7 +19,11 @@ namespace Marketplace.Domain.Helpers
         public static bool IsNotEmpty<T>(this List<T> lst) => (lst != null && lst.Any());
         public static bool IsEmpty<T>(this IEnumerable<T> lst) => (lst == null || !lst.Any());
         public static bool IsEmpty(this string vl) => string.IsNullOrWhiteSpace(vl);
-        public static bool IsNotEmpty(this string vl) => !string.IsNullOrWhiteSpace(vl);
+        public static bool IsNotEmpty(this string vl)
+        {
+            if (vl == "null") vl = null;
+            return !string.IsNullOrWhiteSpace(vl);
+        }
         public static bool IsEmpty(this IFormFile vl) => vl == null || vl.Length <= 0;
         public static bool IsNumber(this string vl) => int.TryParse(vl, out int ss);
         public static int ToInt(this string vl) => int.Parse(vl);

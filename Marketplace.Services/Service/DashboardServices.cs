@@ -1,10 +1,12 @@
-﻿using Marketplace.Domain.Interface.Integrations.caching;
+﻿using Marketplace.Domain.Helpers;
+using Marketplace.Domain.Interface.Integrations.caching;
 using Marketplace.Domain.Interface.Marketplace;
 using Marketplace.Domain.Models.Request;
 using Marketplace.Domain.Models.Request.topics;
 using Marketplace.Domain.Models.Response;
 using Marketplace.Domain.Models.Response.topics;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Marketplace.Services.Service
@@ -57,14 +59,12 @@ namespace Marketplace.Services.Service
                     {
                         customer = new
                         {
-                            email = _apt.Customer.email,
                             name = _apt.Customer.name,
                             id = _apt.Customer.id,
                         },
                         provider = new
                         {
                             name = $"{_apt.Provider.fantasy_name} {_apt.Provider.company_name}",
-                            email = _apt.Provider.email,
                             id = _apt.Provider.id,
                         },
                         payment = new
@@ -73,6 +73,15 @@ namespace Marketplace.Services.Service
                             status = _apt.payment_status.ToString(),
                             type = _apt.type.ToString()
                         },
+                        logs = !_apt.Logs.IsEmpty()
+                        ? _apt.Logs.OrderByDescending(o => o.created_at)
+                                   .Select(s => new
+                                   {
+                                       created_at = s.created_at.Value.ToString("dd/MM/yyyy HH:mm:ss"),
+                                       description = s.description,
+                                   })
+                        : null
+                        ,
                         booking_date = _apt.booking_date.ToString("dd/MM/yyyy HH:mm"),
                         created_at = _apt.created_at.Value.ToString("dd/MM/yyyy HH:mm"),
                         status = _apt.status.ToString(),
