@@ -14,10 +14,6 @@ namespace Marketplace.Services.Validators
                   .NotNull().NotEmpty().WithMessage("PRIMEIRO NOME informado e inválido.")
                   .MinimumLength(3).WithMessage("NOME deve ter minimo de 3 caracteres.");
 
-            //RuleFor(x => x.data.company_name)
-            //      .NotNull().NotEmpty().WithMessage("{PropertyName} informado e inválido.")
-            //      .MinimumLength(3).WithMessage("{PropertyName} minimo 3 caracteres.");
-
             RuleForEach(x => x.data.address).SetValidator(new AddressValidator());
         }
     }

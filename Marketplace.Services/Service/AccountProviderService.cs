@@ -442,7 +442,7 @@ namespace Marketplace.Services.Service
                 if (Req.data.end != System.DateTime.MinValue && Req.data.start != System.DateTime.MinValue)
                     if (Req.data.end < Req.data.start)
                     {
-                        _res.error = new BaseError(new List<string>() { "Data Final não pode ser maior que a data de inicio." });
+                        _res.error = new BaseError(new List<string>() { "Data Final não pode ser menos que a data de inicio." });
                         return _res;
                     }
 

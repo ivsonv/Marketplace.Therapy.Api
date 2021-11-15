@@ -110,14 +110,13 @@ namespace Marketplace.Infra.Repository.Marketplace
         {
             this.formatData(entity);
 
-            var exist = await this.FindAuthByEmail(entity.email);
-            if (exist == null)
-            {
-                _repository.Add(entity);
-                await _repository.SaveChanges();
-            }
-            else
+            var existEmail = await this.FindAuthByEmail(entity.email);
+            if (existEmail != null)
                 throw new ArgumentException("E-mail já cadastrado anteriormente, tente a opção 'esqueci minha senha'");
+
+            // entity
+            _repository.Add(entity);
+            await _repository.SaveChanges();
         }
         public async Task UpdateRecover(Provider entity)
         {
@@ -139,14 +138,14 @@ namespace Marketplace.Infra.Repository.Marketplace
                 }
 
                 // mudou cpf
-                if (_current.cpf.IsNotEmpty() && _current.cpf != entity.cpf)
+                if (_current.cpf != entity.cpf)
                 {
                     if ((await this.FindByCpf(entity.cpf)) != null)
                         throw new ArgumentException("cpf já está em uso para outro usuário");
                 }
 
                 // mudou cnpj
-                if (_current.cnpj.IsNotEmpty() && _current.cnpj != entity.cnpj)
+                if (_current.cnpj != entity.cnpj)
                 {
                     if ((await this.FindByCnpj(entity.cnpj)) != null)
                         throw new ArgumentException("cnpj já está em uso para outro usuário");
@@ -154,9 +153,8 @@ namespace Marketplace.Infra.Repository.Marketplace
 
                 // preencher automatico
                 if (entity.link.IsEmpty())
-                {
                     entity.link = $"{entity.fantasy_name}-{entity.company_name}".IsCompare().Replace(" ", "-");
-                }
+
                 entity.link = entity.link.Replace(".", "");
                 entity.link = entity.link.Replace("&", "");
                 entity.link = entity.link.Replace("/", "");

@@ -49,7 +49,11 @@ namespace Marketplace.Services.Service
             var _res = new BaseRs<providerScheduleRs>();
             try
             {
-                await _providerScheduleRepository.Create(_request.data);
+                if (_request.data.end < _request.data.start)
+                    _res.setError("Horário final menor que o horário inicial.");
+
+                if (_res.error == null)
+                    await _providerScheduleRepository.Create(_request.data);
             }
             catch (System.Exception ex) { _res.setError(ex); }
             return _res;
@@ -60,6 +64,9 @@ namespace Marketplace.Services.Service
             var _res = new BaseRs<providerScheduleRs>();
             try
             {
+                if (_request.data.end < _request.data.start)
+                    _res.setError("Horário final menor que o horário inicial.");
+
                 await _providerScheduleRepository.Update(_request.data);
             }
             catch (System.Exception ex) { _res.setError(ex); }

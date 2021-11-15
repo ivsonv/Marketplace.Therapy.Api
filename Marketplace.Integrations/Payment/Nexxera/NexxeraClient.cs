@@ -63,15 +63,17 @@ namespace Marketplace.Integrations.Payment.Nexxera
         public static void CreateMerchant(providerDto provider)
         {
             IsValidarMerchant(provider);
-            
+
             string _operation = (provider.bankAccounts.First().operation.IsNotEmpty()
                 ? provider.bankAccounts.First().operation
                 : provider.bankAccounts.First().operation).Trim();
 
             // body
+            string corporate = $"PSYCHEIN-{provider.fantasy_name} {provider.company_name}";
+            if (corporate.Length > 50) corporate = corporate.Substring(0, 48);
             var _request = new repository.MerchantRq()
             {
-                CorporateName = $"PSYCHEIN-{provider.fantasy_name} {provider.company_name}",
+                CorporateName = corporate,
                 SocialNumber = !provider.cpf.IsEmpty() ? provider.cpf : provider.cnpj,
                 SocialNumberType = !provider.cpf.IsEmpty() ? "CPF" : "CNPJ",
                 Address = new repository.Address()

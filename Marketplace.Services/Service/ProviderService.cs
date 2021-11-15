@@ -162,7 +162,12 @@ namespace Marketplace.Services.Service
                     if (!_request.data.address.IsEmpty())
                     {
                         // address
-                        _request.data.address.ForEach(fe => { fe.zipcode = fe.zipcode.clearMask(); });
+                        _request.data.address.ForEach(fe =>
+                        {
+                            fe.zipcode = fe.zipcode.clearMask();
+                            if (fe.complement.IsNotEmpty() && fe.complement.Length > 100)
+                                throw new ArgumentException("Complemento do endereço máximo de 100 caracteres.");
+                        });
 
                         // não enviar para repositorio endereços incompletos
                         if (_request.data.address.Any(a => a.zipcode.IsEmpty()))

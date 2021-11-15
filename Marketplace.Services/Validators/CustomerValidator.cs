@@ -9,10 +9,10 @@ namespace Marketplace.Services.Validators
         public CustomerValidator()
         {
             RuleFor(x => x.data).NotNull().NotEmpty().WithMessage("object data not null.");
-            RuleFor(x => x.data.email).EmailAddress().WithMessage("{PropertyName} informado e Inválido.");
+            RuleFor(x => x.data.email).EmailAddress().WithMessage("E-mail informado e Inválido.");
             RuleFor(x => x.data.name)
-                  .NotNull().NotEmpty().WithMessage("{PropertyName} informado e inválido.")
-                  .MinimumLength(3).WithMessage("{PropertyName} minimo 3 caracteres.");
+                  .NotNull().NotEmpty().WithMessage("Nome informado e inválido.")
+                  .MinimumLength(3).WithMessage("Nome minimo 3 caracteres.");
 
             RuleForEach(x => x.data.address).SetValidator(new AddressValidator());
         }
