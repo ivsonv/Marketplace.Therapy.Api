@@ -271,7 +271,7 @@ namespace Marketplace.Integrations.Payment.Nexxera
                 {
                     CardPaymentChange = new CancelCardPaymentChange()
                     {
-                        amount = (int)_pay.totalprice,
+                        amount = ((int)_pay.totalprice).ToString(),
                         paymentToken = _pay.transactionCode
                     }
                 };
