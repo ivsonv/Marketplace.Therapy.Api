@@ -19,7 +19,7 @@ namespace Marketplace.Integrations.Payment.Nexxera.repository
         public string SocialNumberType { get; set; }
         public string SocialNumber { get; set; }
         public string PhoneNumber { get; set; }
-        public string emailAdminUser { get; set; }
+        public string emailAdmin { get; set; }
     }
 
     public class Contact
