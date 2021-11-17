@@ -69,8 +69,9 @@ namespace Marketplace.Integrations.Payment.Nexxera
                 : provider.bankAccounts.First().operation).Trim();
 
             // body
-            string corporate = $"PSYCHEIN-{provider.fantasy_name} {provider.company_name}";
-            if (corporate.Length > 50) corporate = corporate.Substring(0, 48);
+            string corporate = $"PSYCHEIN {provider.fantasy_name} {provider.company_name}";
+            if (corporate.Length > 50) corporate = corporate.Substring(0, 49);
+
             var _request = new repository.MerchantRq()
             {
                 CorporateName = corporate,

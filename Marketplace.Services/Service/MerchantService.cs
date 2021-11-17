@@ -56,7 +56,7 @@ namespace Marketplace.Services.Service
                 string msg = $"Por favor, peço ativar transação para Razão social: {provider.fantasy_name} {provider.company_name}" +
                     $"<br><br>CNPJ: {provider.cnpj}" +
                     $"<br><br>CPF: {provider.cpf}";
-                _emailService.sendDefault("implantacao@nexxera.com", "Clique Terapia - Criar MERCHANT", "Implantação", msg);
+                _emailService.sendDefault("atendimento@meunix.com.br", "Clique Terapia - Criar MERCHANT", "Implantação", msg);
 
                 // mapper
                 var mapper = _mapper.Map<providerRq>(provider);
