@@ -202,12 +202,6 @@ namespace Marketplace.Services.Service
                     // atribuir
                     appointment.content.payment_status = _pay.paymentStatus;
                     appointment.content.status = _pay.status;
-                    //appointment.content.Customer = null;
-                    //appointment.content.Provider = null;
-
-                    // atualiza
-                    var resUp = await _appointmentService.UpdateStatus(appointment.content);
-                    _cache.Clear("appointments");
 
                     #region ..: EMAILS ALTERAÇÃO STATUS :..
 
@@ -242,6 +236,14 @@ namespace Marketplace.Services.Service
                         });
                     }
                     #endregion
+
+                    //
+                    appointment.content.Customer = null;
+                    appointment.content.Provider = null;
+
+                    // atualiza
+                    var resUp = await _appointmentService.UpdateStatus(appointment.content);
+                    _cache.Clear();
                 }
             }
             catch (Exception ex) { _res.setError(ex); }
@@ -298,11 +300,6 @@ namespace Marketplace.Services.Service
                         // atribuir
                         appointment.content.payment_status = Enumerados.PaymentStatus.canceled;
                         appointment.content.status = Enumerados.AppointmentStatus.canceled;
-                        appointment.content.Customer = null;
-                        appointment.content.Provider = null;
-
-                        // atualiza
-                        var resUp = await _appointmentService.UpdateStatus(appointment.content);
 
                         try
                         {
@@ -373,6 +370,14 @@ namespace Marketplace.Services.Service
                             }
                         }
                         catch { }
+
+                        // customer
+                        appointment.content.Customer = null;
+                        appointment.content.Provider = null;
+
+                        // atualiza
+                        var resUp = await _appointmentService.UpdateStatus(appointment.content);
+
                     }
                 }
             }
