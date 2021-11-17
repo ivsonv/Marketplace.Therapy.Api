@@ -303,15 +303,62 @@ namespace Marketplace.Services.Service
 
                         // atualiza
                         var resUp = await _appointmentService.UpdateStatus(appointment.content);
-                        if (resUp.error != null)
-                        {
-                            // tenta novamente
-                            if (resUp.error.message[0].IndexOf("cannot be tracked because another instance with the same key value for {'id'} is already being tracked") > -1)
-                                resUp = await _appointmentService.UpdateStatus(appointment.content);
 
-                            if (resUp.error != null)
-                                _res.error = resUp.error;
+                        try
+                        {
+                            // e-mail cancelamento.
+                            if (!cancel.pacient)
+                            {
+                                // psi teve cancelar.
+                                // paciente
+                                _emailService.sendAppointment(new Domain.Models.dto.appointment.Email()
+                                {
+                                    description = $"Sua consulta com {appointment.content.Provider.fantasy_name} está cancelada. <br><br>" +
+                                    $"Infelizmente o psicólogo teve um problema e precisou cancelar, já solicitamos o estorno do seu pagamento.<br>" +
+                                    $"Data: {appointment.content.booking_date.ToString("dd/MM/yyyy")} <br>" +
+                                    $"Hora: {appointment.content.booking_date.ToString("HH:mm")}h <br> " +
+                                    $"Fuso Horário de SÃO PAULO",
+
+                                    nick = $"Sua consulta está cancelada",
+                                    name = $"{appointment.content.Customer.name}",
+                                    email = appointment.content.Customer.email,
+                                    title = "Sua consulta está cancelada."
+                                });
+                            }
+                            else
+                            {   // paciente cancelou
+                                _emailService.sendAppointment(new Domain.Models.dto.appointment.Email()
+                                {
+                                    description = $"Sua consulta com {appointment.content.Provider.fantasy_name} está cancelada. <br><br>" +
+                                    $"Já solicitamos o estorno do seu pagamento.<br>" +
+                                    $"Dados do seu agendamento: <br>" +
+                                    $"Data: {appointment.content.booking_date.ToString("dd/MM/yyyy")} <br>" +
+                                    $"Hora: {appointment.content.booking_date.ToString("HH:mm")}h <br> " +
+                                    $"Fuso Horário de SÃO PAULO",
+
+                                    nick = $"Sua consulta está cancelada",
+                                    name = $"{appointment.content.Customer.name}",
+                                    email = appointment.content.Customer.email,
+                                    title = "Sua consulta está cancelada."
+                                });
+
+                            }
+
+                            // Informar psico
+                            _emailService.sendAppointment(new Domain.Models.dto.appointment.Email()
+                            {
+                                description = $"{appointment.content.Customer.name} cancelou uma consulta com você. <br><br>" +
+                                $"Data: {appointment.content.booking_date.ToString("dd/MM/yyyy")} <br>" +
+                                $"Hora: {appointment.content.booking_date.ToString("HH:mm")}h <br> " +
+                                $"Fuso Horário de SÃO PAULO",
+
+                                nick = $"consulta cancelada",
+                                name = $"{appointment.content.Provider.fantasy_name}",
+                                email = appointment.content.Provider.email,
+                                title = $"consulta está cancelada #{appointment.content.id}"
+                            });
                         }
+                        catch { }
                     }
                 }
             }
