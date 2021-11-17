@@ -297,6 +297,18 @@ namespace Marketplace.Integrations.Payment.Nexxera
                     if (chRs.errors.IsNotEmpty())
                         throw new ArgumentException($"Erro ao cancelar pagamento, {string.Join("#", chRs.errors)}");
 
+                    if (chRs.payment != null && chRs.payment.reversals.IsNotEmpty())
+                    {
+                        if (chRs.payment.reversals.All(a => a.returnCode == "9999"))
+                        {
+                            string reason = string.Join(",", chRs.payment.reversals.Select(s => s.reason));
+                            throw new ArgumentException($"Cancelamento NEGADO - ({reason})");
+                        }
+
+                        if (chRs.payment.reversals.All(a => a.returnCode == "0900"))
+                            _pay.cancel = true;
+                    }
+
                     // cancel
                     _pay.cancel = true;
                 }

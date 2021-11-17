@@ -254,7 +254,13 @@ namespace Marketplace.Services.Service
             {
                 // appointment
                 var appointment = await _appointmentService.FindById(cancel.code);
-                if (appointment.content.payment_status == Enumerados.PaymentStatus.confirmed)
+                if (CustomExtensions.DateNow > appointment.content.booking_date)
+                    _res.setError("Data de agendamento já passou, não e possível cancelar.");
+
+                if (appointment.content.payment_status != Enumerados.PaymentStatus.confirmed)
+                    _res.setError("Apenas pedidos confirmados, que podem ser cancelados.");
+
+                if (_res.error == null)
                 {
                     // search payment
                     var dto = new Domain.Models.dto.payment.PaymentDto()

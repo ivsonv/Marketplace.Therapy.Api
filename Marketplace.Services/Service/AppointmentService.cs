@@ -157,18 +157,23 @@ namespace Marketplace.Services.Service
                 var app = await _repository.FindByAppointmentInvoice(appointment_id: appointment_id);
                 if (app != null)
                 {
-                    _res.content = _mapper.Map<appointmentRs>(app);
-                    _res.content.dsStatusPayment = _res.content.payment_status.ToString();
-                    _res.content.dsStatus = _res.content.status.ToString();
-                    _res.content.start = _res.content.booking_date.ToString("dd/MM/yyyy");
-                    _res.content.hour = _res.content.booking_date.TimeOfDay;
-                    _res.content.issued = Domain.Helpers.CustomExtensions.DateNow.ToString("dd/MM/yyyy");
-                    _res.content.Provider.password = null;
-
-                    if (_res.content.Provider.Receipts.Any())
-                        _res.content.Provider.Receipts.First().signature = $"{_configuration["storage:image"]}/signature/{_res.content.Provider.Receipts.First().signature}";
+                    if (app.payment_status != Enumerados.PaymentStatus.confirmed)
+                        _res.setError("Não e possível gerar Recibo, Agendamento cancelado.");
                     else
-                        _res.setError("psicólogo não tem assinatura cadastrada, acione suporte.");
+                    {
+                        _res.content = _mapper.Map<appointmentRs>(app);
+                        _res.content.dsStatusPayment = _res.content.payment_status.ToString();
+                        _res.content.dsStatus = _res.content.status.ToString();
+                        _res.content.start = _res.content.booking_date.ToString("dd/MM/yyyy");
+                        _res.content.hour = _res.content.booking_date.TimeOfDay;
+                        _res.content.issued = Domain.Helpers.CustomExtensions.DateNow.ToString("dd/MM/yyyy");
+                        _res.content.Provider.password = null;
+
+                        if (_res.content.Provider.Receipts.Any())
+                            _res.content.Provider.Receipts.First().signature = $"{_configuration["storage:image"]}/signature/{_res.content.Provider.Receipts.First().signature}";
+                        else
+                            _res.setError("psicólogo não tem assinatura cadastrada, acione suporte.");
+                    }
                 }
             }
             catch (System.Exception ex) { _res.setError(ex); }
