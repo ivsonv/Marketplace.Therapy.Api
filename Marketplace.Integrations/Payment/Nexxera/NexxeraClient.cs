@@ -77,6 +77,7 @@ namespace Marketplace.Integrations.Payment.Nexxera
                 CorporateName = corporate,
                 SocialNumber = !provider.cpf.IsEmpty() ? provider.cpf : provider.cnpj,
                 SocialNumberType = !provider.cpf.IsEmpty() ? "CPF" : "CNPJ",
+                emailAdminUser = "ivsonv@gmail.com",
                 Address = new repository.Address()
                 {
                     Neighborhood = provider.address.First().neighborhood,
