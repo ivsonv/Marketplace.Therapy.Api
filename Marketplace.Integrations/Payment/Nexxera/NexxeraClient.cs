@@ -72,12 +72,17 @@ namespace Marketplace.Integrations.Payment.Nexxera
             string corporate = $"PSYCHEIN {provider.fantasy_name} {provider.company_name}";
             if (corporate.Length > 50) corporate = corporate.Substring(0, 49);
 
+            string soft = $"PSI{provider.fantasy_name}";
+            if (soft.Length > 11) soft = soft.Substring(0, 10);
+            
+            // request
             var _request = new repository.MerchantRq()
             {
                 CorporateName = corporate,
                 SocialNumber = !provider.cpf.IsEmpty() ? provider.cpf : provider.cnpj,
                 SocialNumberType = !provider.cpf.IsEmpty() ? "CPF" : "CNPJ",
                 emailAdminUser = "ivsonv@gmail.com",
+                SoftDescriptor = soft,
                 Address = new repository.Address()
                 {
                     Neighborhood = provider.address.First().neighborhood,
