@@ -278,11 +278,8 @@ namespace Marketplace.Integrations.Payment.Nexxera
                 // request
                 var req = new CancelRq()
                 {
-                    CardPaymentChange = new CancelCardPaymentChange()
-                    {
-                        amount = _pay.totalprice.ToString("N2").Replace(",", "").Replace(".", ""),
-                        paymentToken = _pay.transactionCode
-                    }
+                    amount = _pay.totalprice.ToString("N2").Replace(",", "").Replace(".", ""),
+                    paymentToken = _pay.transactionCode
                 };
 
                 string rq = req.Serialize();
@@ -505,6 +502,7 @@ namespace Marketplace.Integrations.Payment.Nexxera
             {
                 var request = (HttpWebRequest)HttpWebRequest.Create(url);
                 request.Headers.Add("Authorization", "Bearer " + TokenDeAcesso);
+                request.Headers.Add("RequestId", CustomExtensions.getGuid);
                 request.ContentType = "application/json";
                 request.UseDefaultCredentials = true;
                 request.Method = "PUT";
@@ -575,16 +573,5 @@ namespace Marketplace.Integrations.Payment.Nexxera
 
             return res;
         }
-
-        private static byte[] ToByteArray(object source)
-        {
-            var formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-            using (var stream = new MemoryStream())
-            {
-                formatter.Serialize(stream, source);
-                return stream.ToArray();
-            }
-        }
-
     }
 }
