@@ -85,7 +85,7 @@ namespace Marketplace.Integrations.Payment.Nexxera
                     Number = provider.address.First().number,
                     City = provider.address.First().city,
                     State = provider.address.First().uf,
-                    Country = "Brazil"
+                    Country = "Brasil"
                 },
                 // AccountType
                 //0 – CheckingAccount(Conta corrente)
