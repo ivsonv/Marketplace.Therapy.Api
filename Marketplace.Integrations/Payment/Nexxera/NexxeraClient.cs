@@ -5,10 +5,12 @@ using Marketplace.Integrations.Payment.Nexxera.repository;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 
 namespace Marketplace.Integrations.Payment.Nexxera
@@ -74,7 +76,7 @@ namespace Marketplace.Integrations.Payment.Nexxera
 
             string soft = $"PSI{provider.fantasy_name}";
             if (soft.Length > 11) soft = soft.Substring(0, 10);
-            
+
             // request
             var _request = new repository.MerchantRq()
             {
@@ -278,7 +280,7 @@ namespace Marketplace.Integrations.Payment.Nexxera
                 {
                     CardPaymentChange = new CancelCardPaymentChange()
                     {
-                        amount = ((int)_pay.totalprice).ToString(),
+                        amount = _pay.totalprice.ToString("N2").Replace(",", "").Replace(".", ""),
                         paymentToken = _pay.transactionCode
                     }
                 };
@@ -289,7 +291,7 @@ namespace Marketplace.Integrations.Payment.Nexxera
                 try
                 {
                     //send
-                    rs = Put(ApiUrl + "Orders/CardPayments/Reverse", rq);
+                    rs = Put(ApiUrl + "Orders/CardPayments/Reverse", req.Serialize());
 
                     // convert
                     var chRs = rs.Deserialize<CancelRs>();
@@ -490,32 +492,30 @@ namespace Marketplace.Integrations.Payment.Nexxera
                 }
 
                 if (string.IsNullOrWhiteSpace(res))
-                    throw ex;
+                    throw;
             }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            catch { throw; }
 
             return res;
         }
-        private static string Put(string url, string scao)
+        private static string Put(string url, string json)
         {
             string res = "";
             try
             {
-                HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(url);
+                var request = (HttpWebRequest)HttpWebRequest.Create(url);
                 request.Headers.Add("Authorization", "Bearer " + TokenDeAcesso);
                 request.ContentType = "application/json";
                 request.UseDefaultCredentials = true;
                 request.Method = "PUT";
 
-                byte[] arr = Encoding.ASCII.GetBytes(scao);
-                request.ContentLength = arr.Length;
+                var encoding = new System.Text.ASCIIEncoding();
+                var byteArray = encoding.GetBytes(json);
+                request.ContentLength = byteArray.Length;
 
                 using (Stream dataStream = request.GetRequestStream())
                 {
-                    dataStream.Write(arr, 0, arr.Length);
+                    dataStream.Write(byteArray, 0, byteArray.Length);
                     dataStream.Close();
 
                     using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
@@ -575,5 +575,16 @@ namespace Marketplace.Integrations.Payment.Nexxera
 
             return res;
         }
+
+        private static byte[] ToByteArray(object source)
+        {
+            var formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+            using (var stream = new MemoryStream())
+            {
+                formatter.Serialize(stream, source);
+                return stream.ToArray();
+            }
+        }
+
     }
 }
