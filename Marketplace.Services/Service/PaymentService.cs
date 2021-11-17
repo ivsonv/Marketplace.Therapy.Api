@@ -324,6 +324,21 @@ namespace Marketplace.Services.Service
                                     email = appointment.content.Customer.email,
                                     title = "Sua consulta está cancelada."
                                 });
+
+                                // Informar psico
+                                _emailService.sendAppointment(new Domain.Models.dto.appointment.Email()
+                                {
+                                    description = $"você cancelou uma consulta com {appointment.content.Customer.name}. <br><br>" +
+                                    $"Dados do agendamento: <br>" +
+                                    $"Data: {appointment.content.booking_date.ToString("dd/MM/yyyy")} <br>" +
+                                    $"Hora: {appointment.content.booking_date.ToString("HH:mm")}h <br> " +
+                                    $"Fuso Horário de SÃO PAULO",
+
+                                    nick = $"consulta cancelada",
+                                    name = $"{appointment.content.Provider.fantasy_name}",
+                                    email = appointment.content.Provider.email,
+                                    title = $"consulta está cancelada #{appointment.content.id}"
+                                });
                             }
                             else
                             {   // paciente cancelou
@@ -342,21 +357,20 @@ namespace Marketplace.Services.Service
                                     title = "Sua consulta está cancelada."
                                 });
 
+                                // Informar psico
+                                _emailService.sendAppointment(new Domain.Models.dto.appointment.Email()
+                                {
+                                    description = $"{appointment.content.Customer.name} cancelou uma consulta com você. <br><br>" +
+                                    $"Data: {appointment.content.booking_date.ToString("dd/MM/yyyy")} <br>" +
+                                    $"Hora: {appointment.content.booking_date.ToString("HH:mm")}h <br> " +
+                                    $"Fuso Horário de SÃO PAULO",
+
+                                    nick = $"consulta cancelada",
+                                    name = $"{appointment.content.Provider.fantasy_name}",
+                                    email = appointment.content.Provider.email,
+                                    title = $"consulta está cancelada #{appointment.content.id}"
+                                });
                             }
-
-                            // Informar psico
-                            _emailService.sendAppointment(new Domain.Models.dto.appointment.Email()
-                            {
-                                description = $"{appointment.content.Customer.name} cancelou uma consulta com você. <br><br>" +
-                                $"Data: {appointment.content.booking_date.ToString("dd/MM/yyyy")} <br>" +
-                                $"Hora: {appointment.content.booking_date.ToString("HH:mm")}h <br> " +
-                                $"Fuso Horário de SÃO PAULO",
-
-                                nick = $"consulta cancelada",
-                                name = $"{appointment.content.Provider.fantasy_name}",
-                                email = appointment.content.Provider.email,
-                                title = $"consulta está cancelada #{appointment.content.id}"
-                            });
                         }
                         catch { }
                     }
