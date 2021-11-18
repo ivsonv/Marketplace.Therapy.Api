@@ -247,5 +247,23 @@ namespace Marketplace.Infra.Repository.Marketplace
             });
             await _repositoryLog.SaveChanges();
         }
+
+        public async Task<List<Appointment>> ShowOverview()
+        {
+            DateTime dtRef = CustomExtensions.DateNow.AddMonths(-2);
+            DateTime dtInit = DateTime.Parse($"{dtRef.Year}-{dtRef.Month.ToString("00")}-01");
+
+            return await _repository.Query
+                          .Select(s => new Appointment()
+                          {
+                              price_commission = s.price_commission,
+                              payment_status = s.payment_status,
+                              created_at = s.created_at,
+                              price = s.price
+                          })
+                          .OrderByDescending(o => o.created_at)
+                          .Where(w => w.created_at >= dtInit)
+                          .AsNoTracking().ToListAsync();
+        }
     }
 }

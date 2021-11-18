@@ -20,5 +20,11 @@ namespace Marketplace.Domain.Interface.Marketplace
         Task<Entities.Appointment> FindByAppointmentDashboard(int id);
         Task<Entities.Appointment> FindByPayment(int appointment_id);
         Task RegisterLog(int appointment_id, string description);
+
+        /// <summary>
+        /// ultimos 3 meses resumo
+        /// </summary>
+        /// <returns></returns>
+        Task<List<Entities.Appointment>> ShowOverview();
     }
 }

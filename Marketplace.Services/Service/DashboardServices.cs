@@ -22,6 +22,32 @@ namespace Marketplace.Services.Service
             _appointmentService = appointmentService;
         }
 
+        public async Task<BaseRs<dynamic>> fetchOverview()
+        {
+            var lst = await _appointmentRepository.ShowOverview();
+
+            var _ret = new List<Domain.Models.dto.dashboard.overview>();
+            foreach (var item in lst.GroupBy(o => o.created_at.Value.Month))
+            {
+                _ret.Add(new Domain.Models.dto.dashboard.overview()
+                {
+                    mes = item.First().created_at.Value.ToString("MMM/yy").ToUpper(),
+                    price_sales = item.Where(w => w.payment_status == Enumerados.PaymentStatus.confirmed).Sum(s => s.price).ToString("N2"),
+                    price_sales_revenue = item.Where(w => w.payment_status == Enumerados.PaymentStatus.confirmed).Sum(s => s.price_commission).ToString("N2"),
+                    total_appointment_canceled = item.Where(w => w.payment_status == Enumerados.PaymentStatus.canceled).Count().ToString(),
+                    total_appointment = item.Where(w => w.payment_status == Enumerados.PaymentStatus.confirmed).Count().ToString(),
+                });
+            }
+            return new BaseRs<dynamic>() { content = _ret };
+
+            // total de cliente ultimo mes
+            // total de psi ativos e inativos
+            // total faturamento
+            // total cancelamento
+            // total comissão
+            // ultimos 3 meses
+        }
+
         public async Task<BaseRs<dynamic>> fetchReports(BaseRq<Domain.Models.Request.dashboard.AppointmentRq> _request)
         {
             var _res = new BaseRs<dynamic>();

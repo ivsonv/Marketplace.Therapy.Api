@@ -22,6 +22,10 @@ namespace Marketplace.Api.Controllers
             _dashboardService = dashboardService;
         }
 
+        [HttpGet("overview")]
+        public async Task<BaseRs<dynamic>> Overview()
+            => await _dashboardService.fetchOverview();
+
         [HttpGet("reports")]
         public async Task<BaseRs<dynamic>> Show([FromQuery] BaseRq<Domain.Models.Request.dashboard.AppointmentRq> _request)
             => await _dashboardService.fetchReports(_request);
