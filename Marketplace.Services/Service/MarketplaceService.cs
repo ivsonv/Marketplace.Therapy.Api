@@ -42,10 +42,11 @@ namespace Marketplace.Services.Service
                 if (_request.data.name.IsNotEmpty())
                     list = list.Where(w => w.fantasy_name.IsCompare().Contains(_request.data.name.IsCompare()) ||
                                            w.company_name.IsCompare().Contains(_request.data.name.IsCompare()) ||
-                                           w.nickname.IsCompare().Contains(_request.data.name.IsCompare())).ToList();
+                                           w.nickname.IsCompare().Contains(_request.data.name.IsCompare())
+                                           ).ToList();
 
                 // list
-                _request.pagination.size = 20; //force
+                _request.pagination.size = 10; //force
                 _res.content = list
                     .OrderBy(o => o.fantasy_name)
                     .Skip(_request.pagination.size * _request.pagination.page)
