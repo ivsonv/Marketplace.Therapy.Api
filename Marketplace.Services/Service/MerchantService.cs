@@ -65,9 +65,9 @@ namespace Marketplace.Services.Service
                 await _providerService.Update(new BaseRq<providerRq>() { data = mapper });
 
                 // notificar psico
-                msg = $"Iniciamos o processo de sincronizar sua conta para receber seus pagamentos. <br>" +
-                    $"Informaremos quando tudo tiver Pronto.";
-                _emailService.sendDefault(provider.email, "Clique Terapia - sincronizar conta pendente", $"{provider.fantasy_name} {provider.company_name}", msg);
+                msg = $"Iniciamos o processo de ativação da sua conta para receber seus pagamentos. <br>" +
+                    $"Informaremos quando tudo tiver pronto.";
+                _emailService.sendDefault(provider.email, "Clique Terapia - ativação de conta pendente", $"{provider.fantasy_name} {provider.company_name}", msg);
             }
             catch (System.Exception ex) { _res.setError(ex); }
             finally
