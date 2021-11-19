@@ -175,9 +175,9 @@ namespace Marketplace.Integrations.Payment.Nexxera
                     isFullScreen = false,
                     useSummaryItemTemplate = false,
                     backgroundBodyColor = "#fafafa",
-                    secundaryColor = "#82868b",
-                    primaryColor = "#9aa1b0",
-                    logoURL = "https://imagem.cliqueterapia.com.br/terms/logo.png"
+                    secundaryColor = "#662d91",
+                    primaryColor = "#662d91",
+                    logoURL = "https://imagem.cliqueterapia.com.br/terms/logo10.png"
                 };
                 #endregion
 
