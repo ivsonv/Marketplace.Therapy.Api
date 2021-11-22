@@ -51,7 +51,7 @@ namespace Marketplace.Infra.Repository.Marketplace
         {
             return await _repository.Query
                     .Include(i => i.Provider)
-                    .Where(w => w.status == Enumerados.AppointmentStatus.confirmed)
+                    .Where(w => w.status == Enumerados.AppointmentStatus.confirmed || w.status == Enumerados.AppointmentStatus.pending)
                     .Where(w => w.customer_id == customer_id)
                     .Select(s => new Appointment()
                     {

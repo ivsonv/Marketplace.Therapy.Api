@@ -224,7 +224,9 @@ namespace Marketplace.Integrations.Payment.Nexxera
                 // description
                 req.items = new List<string>()
                 {
-                    $"TERAPIA ONLINE COM {_pay.Provider.fantasy_name} {_pay.Provider.company_name}"
+                    $"TERAPIA ONLINE COM {_pay.Provider.fantasy_name} {_pay.Provider.company_name}",
+                    $"Data do Agendamento: {_pay.productSale.Data.ToString("dd/MM/yyyy")}",
+                    $"Horário: {_pay.productSale.Data.ToString("HH:mm")}h"
                 };
                 #endregion
 

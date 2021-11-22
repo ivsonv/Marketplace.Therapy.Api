@@ -1,4 +1,5 @@
 ﻿using Marketplace.Domain.Models.dto.provider;
+using System;
 using System.Collections.Generic;
 
 namespace Marketplace.Domain.Models.dto.payment
@@ -12,6 +13,7 @@ namespace Marketplace.Domain.Models.dto.payment
     public class PaymentList
     {
         public Helpers.Enumerados.PaymentMethod PaymentMethod { get; set; }
+
         public customer.customerDto Customer { get; set; }
         public providerDto Provider { get; set; }
         public ProductSale productSale { get; set; }
@@ -31,5 +33,6 @@ namespace Marketplace.Domain.Models.dto.payment
     {
         public int id { get; set; }
         public double price { get; set; }
+        public DateTime Data { get; set; }
     }
 }

@@ -123,10 +123,17 @@ namespace Marketplace.Services.Service
                 _paymentDto.webhook_url = _configuration["payment:webhook"];
                 _paymentDto.PaymentMethod = _request.data.payment_method;
 
-                // Sales
-                _paymentDto.productSale = new Domain.Models.dto.payment.ProductSale() { id = app.data.id, price = (double)app.data.price };
+                // produto
+                _paymentDto.productSale = new Domain.Models.dto.payment.ProductSale()
+                {
+                    price = (double)app.data.price,
+                    id = app.data.id,
+                    Data = booking
+                };
                 dto.payments.Add(_paymentDto); // add
-                await _payment.Buy(dto);  // buy
+
+                // Pagamento
+                await _payment.Buy(dto);
 
                 // codigo transação.
                 app.data.transaction_code = dto.payments[0].transactionCode;
