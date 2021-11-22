@@ -119,5 +119,10 @@ namespace Marketplace.Infra.Repository.Marketplace
         {
             throw new System.NotImplementedException();
         }
+
+        public async Task<Customer> FindByCpf(string cpf)
+        {
+            return await _repository.Query.FirstOrDefaultAsync(f => f.cpf == cpf);
+        }
     }
 }

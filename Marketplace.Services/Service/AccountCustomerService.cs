@@ -63,6 +63,45 @@ namespace Marketplace.Services.Service
             catch (System.Exception ex) { _res.setError(ex); }
             return _res;
         }
+        public async Task<BaseRs<accountCustomerRs>> updateCustomer(accountCustomerRq _request)
+        {
+            var _res = new BaseRs<accountCustomerRs>();
+            try
+            {
+                if (_request.cpf.IsEmpty())
+                {
+                    _res.setError("CPF e obrigatório.");
+                    return _res;
+                }
+
+                _request.cpf = _request.cpf.clearMask();
+                if (!_request.cpf.IsCpf())
+                {
+                    _res.setError("CPF Informado não e válido.");
+                    return _res;
+                }
+
+                var _rq = new BaseRq<customerRq>()
+                {
+                    data = new customerRq()
+                    {   
+                        name = _request.name.Clear().ToUpper(),
+                        id = _authenticatedCustomer.user.id,
+                        email = _request.email,
+                        cpf = _request.cpf
+                    }
+                };
+
+                // retorno customer
+                var _resUpdate = await _customerService.Update(_rq);
+                if (_resUpdate.error == null)
+                    _res.content = new accountCustomerRs() { customer = _resUpdate.content };
+                else
+                    _res.error = _resUpdate.error;
+            }
+            catch (System.Exception ex) { _res.setError(ex); }
+            return _res;
+        }
         public async Task<BaseRs<accountCustomerRs>> fetchAppointments(BaseRq<string> _request)
         {
             var _res = new BaseRs<accountCustomerRs>();
@@ -144,17 +183,19 @@ namespace Marketplace.Services.Service
             catch (System.Exception ex) { _res.setError(ex); }
             return _res;
         }
-        public async Task<BaseRs<accountProviderRs>> findByUser()
+        public async Task<BaseRs<accountCustomerRs>> findByUser()
         {
-            return null;
-            //var _res = new BaseRs<accountProviderRs>();
-            //try
-            //{
-            //    _res.content = new accountProviderRs();
-            //    _res.content.provider = (await _providerService.FindById(_authenticatedProvider.user.id)).content;
-            //}
-            //catch (System.Exception ex) { _res.setError(ex); }
-            //return _res;
+            var _res = new BaseRs<accountCustomerRs>();
+            try
+            {
+                _res.content = new accountCustomerRs();
+                _res.content.customer = (await _customerService.FindById(_authenticatedCustomer.user.id)).content;
+
+                if (_res.content.customer != null && !_res.content.customer.customer.IsEmpty())
+                    _res.content.customer.customer.ForEach(fe => { fe.password = null; });
+            }
+            catch (System.Exception ex) { _res.setError(ex); }
+            return _res;
         }
 
         public async Task<BaseRs<accountCustomerRs>> fetchConference(int id)

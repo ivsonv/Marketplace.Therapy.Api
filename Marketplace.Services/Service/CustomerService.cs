@@ -90,7 +90,7 @@ namespace Marketplace.Services.Service
                 _res.error = _validator.Check(_request);
                 if (_res.error == null)
                 {
-                    if (!_request.data.id.HasValue || _request.data.id.Value > 0)
+                    if (!_request.data.id.HasValue || _request.data.id.Value <= 0)
                     {
                         _res.setError("Id e obrigatório");
                         return _res;
@@ -107,10 +107,25 @@ namespace Marketplace.Services.Service
                         #region ..: check email already exists :..
 
                         _request.data.email = _request.data.email.IsCompare();
-                        var user = _customerRepository.FindByEmail(_request.data.email);
+                        var user = await _customerRepository.FindByEmail(_request.data.email);
                         if (user != null)
                         {
                             _res.setError("Não e possível atualizar cliente, e-mail já cadastrado.");
+                            return _res;
+                        }
+                        #endregion
+                    }
+
+                    if (entity.cpf != _request.data.cpf)
+                    {
+                        // cpf diferente do atual, validar se já existe
+                        #region ..: check cpf already existis :..
+
+                        _request.data.cpf = _request.data.cpf.IsCompare();
+                        var user = await _customerRepository.FindByCpf(_request.data.cpf);
+                        if (user != null)
+                        {
+                            _res.setError("Não e possível atualizar, cpf já cadastrado.");
                             return _res;
                         }
                         #endregion
