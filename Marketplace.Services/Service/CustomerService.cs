@@ -61,6 +61,17 @@ namespace Marketplace.Services.Service
                     }
                     #endregion
 
+                    #region ..: check cpf already exists :..
+
+                    _request.data.cpf = _request.data.cpf.clearMask();
+                    user = await _customerRepository.FindByCpf(_request.data.cpf);
+                    if (user != null)
+                    {
+                        _res.setError("CPF já cadastrado, tente a opção recuperar 'minha senha'");
+                        return _res;
+                    }
+                    #endregion
+
                     var entity = _mapper.Map<Domain.Entities.Customer>(_request.data);
                     entity.password = entity.password.createHash();
                     entity.active = true;
