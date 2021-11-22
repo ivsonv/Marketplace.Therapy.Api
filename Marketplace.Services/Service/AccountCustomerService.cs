@@ -151,6 +151,7 @@ namespace Marketplace.Services.Service
 
                         _res.content.appointment.room_name = $"{_res.content.appointment.Provider.fantasy_name} {_res.content.appointment.Provider.company_name}";
                         _res.content.appointment.room_id = $"clique-terapia-{_res.content.appointment.id.ToString("000000")}";
+                        _res.content.appointment.transaction_code = _res.content.appointment.transaction_code;
                         _res.content.appointment.dsStatus = _res.content.appointment.status.dsStatus();
                     }
                 }

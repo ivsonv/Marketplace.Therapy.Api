@@ -57,6 +57,7 @@ namespace Marketplace.Infra.Repository.Marketplace
                     {
                         Provider = new Provider() { fantasy_name = s.Provider.fantasy_name, company_name = s.Provider.company_name },
                         booking_date = s.booking_date,
+                        created_at = s.created_at,
                         status = s.status,
                         id = s.id
                     })
@@ -134,6 +135,7 @@ namespace Marketplace.Infra.Repository.Marketplace
                                     {
                                         Provider = new Provider() { fantasy_name = s.Provider.fantasy_name, company_name = s.Provider.company_name, id = s.provider_id },
                                         Customer = new Customer() { name = s.Customer.name, id = s.Customer.id },
+                                        transaction_code = s.transaction_code,
                                         payment_status = s.payment_status,
                                         booking_date = s.booking_date,
                                         status = s.status
