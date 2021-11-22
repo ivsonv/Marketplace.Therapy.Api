@@ -240,5 +240,17 @@ namespace Marketplace.Domain.Helpers
                     return _status.ToString();
             }
         }
+
+        public static string dsStatus(this Enumerados.AppointmentStatus _status)
+        {
+            switch (_status)
+            {
+                case Enumerados.AppointmentStatus.notAuthorized: return "Não Autorizado";
+                case Enumerados.AppointmentStatus.confirmed: return "Confirmado";
+                case Enumerados.AppointmentStatus.canceled: return "Cancelado";
+                case Enumerados.AppointmentStatus.pending: return "Pendente";
+                default: return _status.ToString();
+            }
+        }
     }
 }

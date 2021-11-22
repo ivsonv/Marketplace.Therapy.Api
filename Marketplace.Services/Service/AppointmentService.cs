@@ -140,9 +140,9 @@ namespace Marketplace.Services.Service
                 {
                     _res.content = _mapper.Map<appointmentRs>(app);
                     _res.content.dsStatusPayment = _res.content.payment_status.ToString();
-                    _res.content.dsStatus = _res.content.status.ToString();
                     _res.content.start = _res.content.booking_date.ToString("dd/MM/yyyy");
                     _res.content.hour = _res.content.booking_date.TimeOfDay;
+                    _res.content.dsStatus = _res.content.status.dsStatus();
                     _res.content.id = appointment_id;
                 }
             }

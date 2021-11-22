@@ -150,6 +150,7 @@ namespace Marketplace.Infra.Repository.Marketplace
         {
             var query = _repository.Query
                         .Include(i => i.Customer)
+                        .Where(w => w.status == Enumerados.AppointmentStatus.confirmed)
                         .Where(w => w.provider_id == provider_id);
 
             if (term.IsNotEmpty())
@@ -167,9 +168,11 @@ namespace Marketplace.Infra.Repository.Marketplace
                 Customer = new Customer() { name = s.Customer.name },
                 price_transfer = s.price_transfer,
                 booking_date = s.booking_date,
+                status = s.status,
                 id = s.id
-            }).Skip(pagination.size * pagination.page).Take(pagination.size)
-              .AsNoTracking().ToListAsync();
+            }).Skip(pagination.size * pagination.page)
+              .Take(pagination.size).AsNoTracking()
+              .ToListAsync();
 
         }
         public async Task<Appointment> FindByAppointmentConference(int appointment_id)

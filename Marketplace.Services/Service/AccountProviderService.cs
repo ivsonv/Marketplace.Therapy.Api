@@ -465,6 +465,7 @@ namespace Marketplace.Services.Service
                     {
                         start = c.booking_date.ToString("dd/MM/yyyy"),
                         hour = c.booking_date.ToString("HH:mm"),
+                        status = c.status.dsStatus(),
                         customer = c.Customer.name,
                         revenue = c.price_transfer,
                         id = c.id

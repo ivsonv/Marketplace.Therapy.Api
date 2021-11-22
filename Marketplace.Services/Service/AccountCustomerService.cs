@@ -86,7 +86,7 @@ namespace Marketplace.Services.Service
                         provider_name = $"{cc.Provider.fantasy_name} {cc.Provider.company_name}",
                         data = $"{cc.booking_date.ToString("dd/MM/yyyy")}",
                         hora = $"{cc.booking_date.ToString("HH:mm")}",
-                        dsStatus = cc.status.ToString(),
+                        dsStatus = cc.status.dsStatus(),
                         id = cc.id
                     });
                 }
@@ -112,6 +112,7 @@ namespace Marketplace.Services.Service
 
                         _res.content.appointment.room_name = $"{_res.content.appointment.Provider.fantasy_name} {_res.content.appointment.Provider.company_name}";
                         _res.content.appointment.room_id = $"clique-terapia-{_res.content.appointment.id.ToString("000000")}";
+                        _res.content.appointment.dsStatus = _res.content.appointment.status.dsStatus();
                     }
                 }
                 else
