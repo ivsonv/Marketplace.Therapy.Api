@@ -100,7 +100,12 @@ namespace Marketplace.Services.Service
                     _res.content = new List<appointmentRs>();
                     lst.ForEach(fe =>
                     {
-                        if (fe.created_at.Value.ToString("dd/MM/yyyy") == CustomExtensions.DateNow.ToString("dd/MM/yyyy"))
+                        if (fe.status == Enumerados.AppointmentStatus.pending)
+                        {
+                            if (fe.created_at.Value.ToString("dd/MM/yyyy") == CustomExtensions.DateNow.ToString("dd/MM/yyyy"))
+                                _res.content.Add(_mapper.Map<appointmentRs>(fe));
+                        }
+                        else
                             _res.content.Add(_mapper.Map<appointmentRs>(fe));
                     });
                 }
