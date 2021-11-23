@@ -19,7 +19,6 @@ namespace Marketplace.Services.Service
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
 
-
         public AppointmentService(IAppointmentRepository appointmentRepository,
                                   IConfiguration configuration,
                                   IMapper mapper)
@@ -103,7 +102,8 @@ namespace Marketplace.Services.Service
                         if (fe.status == Enumerados.AppointmentStatus.pending)
                         {
                             if (fe.created_at.Value.ToString("dd/MM/yyyy") == CustomExtensions.DateNow.ToString("dd/MM/yyyy"))
-                                _res.content.Add(_mapper.Map<appointmentRs>(fe));
+                                if (!lst.Any(a => a.status == Enumerados.AppointmentStatus.confirmed && a.created_at.Value.ToString("dd/MM/yyyy") == CustomExtensions.DateNow.ToString("dd/MM/yyyy")))
+                                    _res.content.Add(_mapper.Map<appointmentRs>(fe));
                         }
                         else
                             _res.content.Add(_mapper.Map<appointmentRs>(fe));
