@@ -26,7 +26,6 @@ namespace Marketplace.Services.Service
         private readonly IConfiguration _configuration;
         private readonly ICustomCache _cache;
         private readonly IPayment _payment;
-        private readonly IMapper _mapper;
 
         public PaymentService(CustomAuthenticatedUser customerUser,
                               AppointmentService appointmentService,
@@ -35,8 +34,7 @@ namespace Marketplace.Services.Service
                               EmailService emailService,
                               IConfiguration configuration,
                               ICustomCache cache,
-                              IPayment payment,
-                              IMapper mapper)
+                              IPayment payment)
         {
             _appointmentService = appointmentService;
             _providerService = providerService;
@@ -45,7 +43,6 @@ namespace Marketplace.Services.Service
             _customerUser = customerUser;
             _emailService = emailService;
             _payment = payment;
-            _mapper = mapper;
             _cache = cache;
         }
 
