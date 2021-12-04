@@ -80,9 +80,9 @@
 
         public enum PaymentMethod
         {
-            pix = 0,
+            creditcard = 0,
             boleto = 1,
-            creditcard = 2,
+            pix = 2,
             debitcard = 3,
             transfer = 4
         }

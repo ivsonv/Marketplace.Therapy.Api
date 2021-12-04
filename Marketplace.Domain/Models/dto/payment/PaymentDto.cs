@@ -26,6 +26,8 @@ namespace Marketplace.Domain.Models.dto.payment
         public string webhook_url { get; set; }
         public string transactionUrl { get; set; }
         public string transactionCode { get; set; }
+        public string authorization_code { get; set; }
+        public string authorization_sale { get; set; }
         public bool cancel { get; set; }
     }
 

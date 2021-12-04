@@ -401,6 +401,102 @@ namespace Marketplace.Integrations.Payment.Nexxera
             }
         }
 
+        public static void BuyCard(PaymentDto _payment)
+        {
+            _payment.payments.ForEach(_pay =>
+            {
+                // account merchant
+                var _account = _pay.Provider.splitAccounts.First(f => f.payment_provider == Enumerados.PaymentProvider.nexxera);
+
+                // split merchant
+                var _split = _account.json.Deserialize<MerchantRs>();
+
+                // token transaction
+                TokenDeAcesso = GerarTokenJWT(_split.production.accessKey, _split.production.apiSecretKey);
+
+                // request
+                var _req = new PaymentCardRq()
+                {
+                    //callbackUrl = $"{_pay.webhook_url}/payment?code={_pay.productSale.id}",
+                    returnUrl = $"{_pay.webhook_url}/payment?code={_pay.productSale.id}",
+                    merchantOrderId = _pay.productSale.id.ToString(),
+                    amount = _pay.totalprice.ToString("N2").Replace(",", "").Replace(".", ""),
+                    installments = 1,
+                    capture = true,
+                    transactionType = 1, // 1-credito, 2-débito
+                    customer = new PaymentCardCustomer()
+                    {
+                        identity = _pay.Customer.cpf.IsNotEmpty() ? _pay.Customer.cpf : _pay.Customer.cnpj,
+                        identityType = _pay.Customer.cpf.IsNotEmpty() ? "CPF" : "CNPJ",
+                        name = _pay.Customer.name.ToUpper(),
+                        email = _pay.Customer.email,
+                        tag = _pay.Customer.email
+                    }
+                };
+
+                if(!_pay.card.token.IsEmpty())
+                {
+                    _req.cardToken = new CardToken()
+                    {
+                        securityCode = _pay.card.cvv,
+                        token = _pay.card.token
+                    };
+                }
+                else
+                {
+                    _req.Card = new Card()
+                    {
+                        expirationDate = new CardExpirationDate() { year = _pay.card.expiration_year, month = _pay.card.expiration_month },
+                        holder = new CardHolder() { name = _pay.card.holder, socialNumber = _pay.card.holder_cpf },
+                        securityCode = _pay.card.cvv,
+                        number = _pay.card.number,
+                        saveCard = false
+                    };
+                }
+
+                string rq = _req.Serialize();
+                string rs = "";
+
+                try
+                {
+                    //send
+                    rs = post(ApiUrl, rq, "Orders/CardPayments/Authorize");
+
+                    // convert
+                    var chRs = rs.Deserialize<PaymentCardRs>();
+
+                    // erro generico
+                    if (chRs.errors.IsNotEmpty())
+                        throw new ArgumentException($"Erro ao processar pagamento, {string.Join("#", chRs.errors)}");
+
+                    if (chRs.payment.authorization.authorizationCode.IsEmpty())
+                        throw new ArgumentException($"{chRs.payment.authorization.returnMessage}");
+                    else
+                    {
+                        _pay.authorization_code = chRs.payment.authorization.authorizationCode;
+                        _pay.authorization_sale = chRs.payment.authorization.proofOfSale;
+                        _pay.transactionCode = chRs.payment.paymentToken;
+                        _pay.card.token = chRs.payment.cardToken;
+                        _pay.paymentStatus = Enumerados.PaymentStatus.confirmed;
+                        _pay.status = Enumerados.AppointmentStatus.confirmed;
+
+                        // mask
+                        _req.Card.number = chRs.payment.card.cardNumber;
+                        rq = _req.Serialize();
+                    }
+
+                    // Gravar Retorno
+                    rs = chRs.Serialize();
+                }
+                catch { throw; }
+                finally
+                {
+                    _pay.LogRq = rq;
+                    _pay.LogRs = rs;
+                };
+            });
+        }
+
         private static string GerarTokenJWT(string accesskey, string apikey)
         {
             byte[] key = Convert.FromBase64String(apikey);
@@ -471,6 +567,7 @@ namespace Marketplace.Integrations.Payment.Nexxera
             try
             {
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url + scao);
+                request.Headers.Add("RequestId", CustomExtensions.getGuid);
                 request.Headers.Add("Authorization", "Bearer " + TokenDeAcesso);
                 request.ContentType = "application/json";
                 request.UseDefaultCredentials = true;

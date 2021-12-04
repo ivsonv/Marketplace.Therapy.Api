@@ -10,7 +10,7 @@ namespace Marketplace.Integrations.Payment
             switch (_payment.PaymentProvider)
             {
                 case Domain.Helpers.Enumerados.PaymentProvider.nexxera:
-                    Nexxera.NexxeraClient.Buy(_payment); break;
+                    Nexxera.NexxeraClient.BuyCard(_payment); break;
 
                 default:
                     throw new System.NotImplementedException();

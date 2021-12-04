@@ -51,6 +51,18 @@ namespace Marketplace.Services.Service
             var _res = new BaseRs<paymentRs>();
             try
             {
+                _request.data.holder_cpf = _request.data.holder_cpf.clearMask();
+                _request.data.number = _request.data.number.clearMask();
+
+                if (!_request.data.holder_cpf.IsCpf())
+                    throw new ArgumentException("CPF do Titular do cartão e inválido");
+
+                if(!_request.data.expire.Contains("/"))
+                    throw new ArgumentException("Validade do cartão informada e inválida");
+
+                if (_request.data.expire.Split("/")[1].Length != 4)
+                    throw new ArgumentException("ANO da validade do cartão está incompleto. formato: mm/yyyy");
+
                 #region ..: records :..
 
                 var providerRs = (await _providerService.FindById(_request.data.provider_id));
@@ -120,6 +132,20 @@ namespace Marketplace.Services.Service
                 _paymentDto.webhook_url = _configuration["payment:webhook"];
                 _paymentDto.PaymentMethod = _request.data.payment_method;
 
+                // cartão
+                _paymentDto.card = new Domain.Models.dto.payment.CardDto()
+                {
+                    number = _request.data.number.clearMask(),
+                    holder_cpf = _request.data.holder_cpf.clearMask(),
+                    holder = _request.data.holder,
+                    cvv = _request.data.cvv,
+                    expiration_year = _request.data.expire.Split("/")[1],
+                    expiration_month = _request.data.expire.Split("/")[0],
+                    installment_price = _paymentDto.totalprice,
+                    total_price = _paymentDto.totalprice,
+                    installment = 1
+                };
+
                 // produto
                 _paymentDto.productSale = new Domain.Models.dto.payment.ProductSale()
                 {
@@ -133,7 +159,11 @@ namespace Marketplace.Services.Service
                 await _payment.Buy(dto);
 
                 // codigo transação.
+                app.data.authorization_sale = dto.payments[0].authorization_sale;
+                app.data.authorization = dto.payments[0].authorization_code;
                 app.data.transaction_code = dto.payments[0].transactionCode;
+                app.data.payment_status = dto.payments[0].paymentStatus;
+                app.data.status = dto.payments[0].status;
 
                 //logs
                 app.data.Logs = new List<Domain.Entities.AppointmentLog>()
