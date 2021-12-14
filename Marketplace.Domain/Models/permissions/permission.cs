@@ -18,7 +18,30 @@ namespace Marketplace.Domain.Models.permissions
             _retorno.AddRange(Account.permissions);
             _retorno.AddRange(providerSchedules.permissions);
             _retorno.AddRange(Dashboard.permissions);
+            _retorno.AddRange(Faq.permissions);
             return _retorno;
+        }
+
+        public static class Faq
+        {
+            public const string View = "faq.view";
+            public const string Create = "faq.create";
+            public const string Edit = "faq.edit";
+            public const string Delete = "faq.delete";
+
+            public static List<dto.Item> permissions
+            {
+                get
+                {
+                    return new List<dto.Item>()
+                    {
+                        new dto.Item() {label = "Visualizar FAQ", value = View },
+                        new dto.Item() {label = "Criar FAQ", value = Create },
+                        new dto.Item() {label = "Editar FAQ", value = Edit },
+                        new dto.Item() {label = "Excluir FAQ", value = Delete }
+                    };
+                }
+            }
         }
 
         public static class Dashboard

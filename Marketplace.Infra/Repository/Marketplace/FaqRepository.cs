@@ -78,7 +78,7 @@ namespace Marketplace.Infra.Repository.Marketplace
 
         public async Task<Faq> FindById(int id)
         {
-            return await _repository.Find(id);
+            return await _repository.Query.Include(i => i.Question).FirstOrDefaultAsync(f => f.id == id);
         }
 
         public Task Delete(List<Faq> entity)
