@@ -124,5 +124,9 @@ namespace Marketplace.Infra.Repository.Marketplace
         {
             return await _repository.Query.FirstOrDefaultAsync(f => f.cpf == cpf);
         }
+        public async Task<int> getQtdCliente()
+        {
+            return await _repository.Query.CountAsync();
+        }
     }
 }

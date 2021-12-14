@@ -290,5 +290,10 @@ namespace Marketplace.Infra.Repository.Marketplace
         {
             return await _repository.Query.FirstOrDefaultAsync(f => f.recoverpassword != null && f.recoverpassword == token);
         }
+
+        public async Task<int> getQtdProvider()
+        {
+            return await _repository.Query.CountAsync();
+        }
     }
 }

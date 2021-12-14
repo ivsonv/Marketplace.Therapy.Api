@@ -10,5 +10,6 @@ namespace Marketplace.Domain.Interface.Marketplace
         Task<Entities.Provider> FindAuthByEmail(string email);
         Task<Entities.Provider> FindByToken(string token);
         Task UpdateRecover(Entities.Provider entity);
+        Task<int> getQtdProvider();
     }
 }

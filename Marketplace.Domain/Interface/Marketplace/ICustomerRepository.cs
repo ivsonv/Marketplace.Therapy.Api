@@ -11,5 +11,6 @@ namespace Marketplace.Domain.Interface.Marketplace
         Task<Entities.Customer> FindByToken(string token);
         Task<Entities.Customer> FindAuthByEmail(string email);
         Task<List<Entities.Appointment>> ShowAppointments(int customer_id);
+        Task<int> getQtdCliente();
     }
 }

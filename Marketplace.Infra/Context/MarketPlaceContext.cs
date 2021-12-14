@@ -23,6 +23,8 @@ namespace Marketplace.Infra.Context
         public DbSet<Provider> Providers { get; set; }
         public DbSet<ProviderAddress> ProviderAddress { get; set; }
         public DbSet<ProviderBankAccount> ProviderBankAccounts { get; set; }
+        public DbSet<Faq> Faq { get; set; }
+        public DbSet<FaqQuestion> FaqQuestions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -32,6 +34,8 @@ namespace Marketplace.Infra.Context
             modelBuilder.Entity<User>(new UserMap().Configure);
             modelBuilder.Entity<UserGroupPermission>(new UserGroupPermissionMap().Configure);
             modelBuilder.Entity<Bank>(new BankMap().Configure);
+            modelBuilder.Entity<Faq>(new FaqMap().Configure);
+            modelBuilder.Entity<FaqQuestion>(new FaqQuestionMap().Configure);
 
             modelBuilder.Entity<Category>(new CategoryMap().Configure);
             modelBuilder.Entity<Customer>(new CustomerMap().Configure);

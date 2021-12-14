@@ -14,14 +14,32 @@ namespace Marketplace.Services.Service
     public class DashboardService
     {
         private readonly IAppointmentRepository _appointmentRepository;
+        private readonly ICustomerRepository _customerRepository;
+        private readonly IProviderRepository _providerRepository;
+
         private readonly AppointmentService _appointmentService;
         public DashboardService(IAppointmentRepository appointmentRepository,
+                                ICustomerRepository customerRepository,
+                                IProviderRepository providerRepository,
                                 AppointmentService appointmentService)
         {
+            _providerRepository = providerRepository;
+            _customerRepository = customerRepository;
             _appointmentRepository = appointmentRepository;
             _appointmentService = appointmentService;
         }
 
+        public async Task<BaseRs<dynamic>> fetchOverviewPsiAndCustomer()
+        {
+            return new BaseRs<dynamic>()
+            {
+                content = new
+                {
+                    customer = new { qtd = await _customerRepository.getQtdCliente() },
+                    provider = new { qtd = await _providerRepository.getQtdProvider() },
+                }
+            };
+        }
         public async Task<BaseRs<dynamic>> fetchOverview()
         {
             var lst = await _appointmentRepository.ShowOverview();
