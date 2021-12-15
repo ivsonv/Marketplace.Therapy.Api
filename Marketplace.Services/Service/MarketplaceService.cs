@@ -16,15 +16,18 @@ namespace Marketplace.Services.Service
     public class MarketplaceService
     {
         private readonly ProviderScheduleService _scheduleService;
+        private readonly FaqService _faqService;
         private readonly IConfiguration _configuration;
         private readonly ICustomCache _cache;
 
         public MarketplaceService(ProviderScheduleService scheduleService,
                                   IConfiguration configuration,
+                                  FaqService faqService,
                                   ICustomCache cache)
         {
             _scheduleService = scheduleService;
             _configuration = configuration;
+            _faqService = faqService;
             _cache = cache;
         }
 
@@ -218,6 +221,17 @@ namespace Marketplace.Services.Service
                     }
                     _res.content.displayDates = _res.content.dates.Max(m => m.hours.Count);
                 }
+            }
+            catch (Exception ex) { _res.setError(ex); }
+            return _res;
+        }
+
+        public async Task<BaseRs<List<Domain.Entities.Faq>>> ShowFaq()
+        {
+            var _res = new BaseRs<List<Domain.Entities.Faq>>();
+            try
+            {
+                _res.content = await _cache.GetFaq();
             }
             catch (Exception ex) { _res.setError(ex); }
             return _res;

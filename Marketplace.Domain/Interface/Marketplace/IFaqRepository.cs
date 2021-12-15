@@ -9,4 +9,7 @@ namespace Marketplace.Domain.Interface.Marketplace
     {
         Task<List<Entities.Faq>> ShowCache(Pagination pagination, string search = "");
     }
+
+    public interface IFaqQuestionRepository : ICrudRepository<Entities.FaqQuestion>
+    { }
 }

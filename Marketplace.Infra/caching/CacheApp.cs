@@ -185,5 +185,28 @@ namespace Marketplace.Infra.caching
                 id = s.id
             }).AsNoTracking().ToListAsync();
         }
+
+        public async Task<List<Faq>> GetFaq()
+        {
+            return await _cache.GetOrCreateAsync("faq", async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1);
+                return await _context.Faq
+                               .Include(i => i.Question)
+                               .Select(s => new Domain.Entities.Faq()
+                               {
+                                   title = s.title,
+                                   sub_title = s.sub_title,
+                                   id = s.id,
+                                   Question = s.Question.Select(ss =>
+                                   new FaqQuestion()
+                                   {
+                                       question = ss.question,
+                                       ans = ss.ans
+                                   }),
+
+                               }).AsNoTracking().ToListAsync();
+            });
+        }
     }
 }

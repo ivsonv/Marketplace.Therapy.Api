@@ -100,6 +100,7 @@ namespace Marketplace.Api
             services.AddScoped<IProviderScheduleRepository, ProviderScheduleRepository>();
             services.AddScoped<IAppointmentRepository, AppointmentRepository>();
             services.AddScoped<IFaqRepository, FaqRepository>();
+            services.AddScoped<IFaqQuestionRepository, FaqQuestionRepository>();
 
             // services
             services.AddScoped<CategoryService>();
@@ -123,6 +124,7 @@ namespace Marketplace.Api
             services.AddScoped<PaymentService>();
             services.AddScoped<DashboardService>();
             services.AddScoped<FaqService>();
+            services.AddScoped<FaqQuestionService>();
 
             // validator
             services.AddSingleton<Services.Validators.CustomerValidator>();

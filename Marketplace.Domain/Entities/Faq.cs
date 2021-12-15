@@ -6,7 +6,7 @@ namespace Marketplace.Domain.Entities
     {
         public string title { get; set; }
         public string sub_title { get; set; }
-        public List<FaqQuestion> Question { get; set; }
+        public IEnumerable<FaqQuestion> Question { get; set; }
     }
     public class FaqQuestion : BaseEntity
     {
