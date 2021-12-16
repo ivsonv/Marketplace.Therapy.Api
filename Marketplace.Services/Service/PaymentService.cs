@@ -61,9 +61,10 @@ namespace Marketplace.Services.Service
                     throw new ArgumentException("Validade do cartão informada e inválida");
 
                 if (_request.data.expire.Split("/")[1].Length != 4)
-                    throw new ArgumentException("ANO da validade do cartão está incompleto. formato: mm/yyyy");
+                    _request.data.expire.Split("/")[1] = $"20{_request.data.expire.Split("/")[1]}";
+                    // throw new ArgumentException("ANO da validade do cartão está incompleto. formato: mm/yyyy");
 
-                #region ..: records :..
+                    #region ..: records :..
 
                 var providerRs = (await _providerService.FindById(_request.data.provider_id));
                 if (providerRs.error != null)
