@@ -138,6 +138,7 @@ namespace Marketplace.Infra.Repository.Marketplace
                 }
 
                 // mudou cpf
+                if (_current.cpf == null) _current.cpf = "";
                 if (_current.cpf != entity.cpf)
                 {
                     if ((await this.FindByCpf(entity.cpf)) != null)
@@ -145,6 +146,7 @@ namespace Marketplace.Infra.Repository.Marketplace
                 }
 
                 // mudou cnpj
+                if (_current.cnpj == null) _current.cnpj = "";
                 if (_current.cnpj != entity.cnpj)
                 {
                     if ((await this.FindByCnpj(entity.cnpj)) != null)
