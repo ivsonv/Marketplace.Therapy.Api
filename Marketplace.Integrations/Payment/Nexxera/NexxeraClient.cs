@@ -107,13 +107,13 @@ namespace Marketplace.Integrations.Payment.Nexxera
                     Branch = provider.bankAccounts.First().agency_number.Trim(),
                     Digit = provider.bankAccounts.First().account_digit.Trim(),
                     BankId = provider.bankAccounts.First().bank_code.Trim(),
-                    Holder = new repository.Holder()
+                    Holder = new Holder()
                     {
                         Name = $"{provider.fantasy_name} {provider.company_name}",
                         SocialNumber = !provider.cpf.IsEmpty() ? provider.cpf : provider.cnpj
                     }
                 },
-                Contacts = new List<repository.Contact>()
+                Contacts = new List<Contact>()
                 {
                     new repository.Contact()
                     {
