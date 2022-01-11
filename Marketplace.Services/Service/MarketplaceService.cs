@@ -60,7 +60,7 @@ namespace Marketplace.Services.Service
                         image = x.image.toImageUrl($"{_configuration["storage:image"]}/profile"),
                         state = !x.Address.IsEmpty()
                         ? x.Address.First().uf : null,
-                        introduction = x.description,
+                        introduction = x.biography,
                         price = x.price,
                         link = x.link,
                         crp = x.crp
