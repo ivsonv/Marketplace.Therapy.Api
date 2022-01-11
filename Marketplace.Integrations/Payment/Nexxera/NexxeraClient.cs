@@ -102,11 +102,11 @@ namespace Marketplace.Integrations.Payment.Nexxera
                 BankAccount = new repository.BankAccount()
                 {
                     AccountType = ((int)provider.bankAccounts.First().account_bank_type).ToString(),
-                    BranchDigit = provider.bankAccounts.First().agency_digit,
-                    Number = $"{_operation}{provider.bankAccounts.First().account_number}",
-                    Branch = provider.bankAccounts.First().agency_number,
-                    Digit = provider.bankAccounts.First().account_digit,
-                    BankId = provider.bankAccounts.First().bank_code,
+                    BranchDigit = provider.bankAccounts.First().agency_digit.Trim(),
+                    Number = $"{_operation}{provider.bankAccounts.First().account_number.Trim()}",
+                    Branch = provider.bankAccounts.First().agency_number.Trim(),
+                    Digit = provider.bankAccounts.First().account_digit.Trim(),
+                    BankId = provider.bankAccounts.First().bank_code.Trim(),
                     Holder = new repository.Holder()
                     {
                         Name = $"{provider.fantasy_name} {provider.company_name}",
@@ -132,7 +132,7 @@ namespace Marketplace.Integrations.Payment.Nexxera
                     throw new ArgumentException($"Erro ao criar estabelecimento (${string.Join("#", _return.errors)})");
 
                 if (_return.production == null && _return.sandbox == null)
-                    throw new ArgumentException($"{_return.message} (status: {_return.status})");
+                    throw new ArgumentException($"{_return.message} (retorno: {RsJSON})");
 
                 // popular
                 provider.splitAccounts = new List<Domain.Entities.ProviderSplitAccount>()
@@ -142,7 +142,7 @@ namespace Marketplace.Integrations.Payment.Nexxera
                         json = RsJSON
                     }
                 };
-            }
+            2}
             catch { throw; }
         }
 
