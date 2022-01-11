@@ -142,7 +142,7 @@ namespace Marketplace.Integrations.Payment.Nexxera
                         json = RsJSON
                     }
                 };
-            2}
+            }
             catch { throw; }
         }
 
