@@ -305,6 +305,15 @@ namespace Marketplace.Services.Service
                             code = "desc"
                         });
 
+                    if (dto.biography.IsEmpty())
+                        dto.statusCompleted.warnings.Add(new Domain.Models.dto.Item()
+                        {
+                            label = "Informe uma Biografia",
+                            value = "Dados Profissionais >> BIOGRAFIA",
+                            step = 1,
+                            code = "desc"
+                        });
+
                     if (dto.signatureurl.IsEmpty())
                         dto.statusCompleted.warnings.Add(new Domain.Models.dto.Item()
                         {
@@ -327,14 +336,14 @@ namespace Marketplace.Services.Service
                         dto.statusCompleted.warnings.Add(new Domain.Models.dto.Item() { label = "Cadastro sem horários disponiveis, cadastre faixa de horários", value = "Meus Horarios >> Faixa de horários", code = "fh" });
 
                     // percentage.
-                    dto.statusCompleted.qtdItens = 6; // 6 - quantidade de ifs
-                    if (dto.statusCompleted.warnings.Count > 1)
+                    dto.statusCompleted.qtdItens = 7; // 7 - quantidade de ifs
+                    if (dto.statusCompleted.warnings.Count > 0)
                     {
                         decimal aa = dto.statusCompleted.warnings.Count();
                         var ss = 100 - ((aa / dto.statusCompleted.qtdItens) * 100);
 
                         // percent
-                        dto.statusCompleted.percent = (int)(decimal.Ceiling(ss));
+                        dto.statusCompleted.percent = (int)ss;
                         if (dto.statusCompleted.percent < 0)
                             dto.statusCompleted.percent = 0;
                     }
