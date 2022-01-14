@@ -118,7 +118,7 @@ namespace Marketplace.Integrations.Payment.Nexxera
                     new repository.Contact()
                     {
                         Name = $"{provider.fantasy_name} {provider.company_name}",
-                        PhoneNumber = provider.phone,
+                        PhoneNumber = provider.phone.clearMask(),
                         Email = provider.email
                     }
                 }
