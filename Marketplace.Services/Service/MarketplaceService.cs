@@ -40,31 +40,41 @@ namespace Marketplace.Services.Service
             {
                 // active    = psico que controlar
                 // completed = cadastro completo
-                var list = (await _cache.GetProviders()).Where(w => w.completed && w.active && w.image.IsNotEmpty());
+                var psis = (await _cache.GetProviders()).Where(w => w.completed && w.active && w.image.IsNotEmpty()).ToList();
 
+                // excluir já exibidos
+                if (_request.data.provs.IsNotEmpty())
+                    psis = psis.Where(w => !_request.data.provs.Any(a => a == w.link)).ToList();
+
+                // filter name
                 if (_request.data.name.IsNotEmpty())
-                    list = list.Where(w => w.fantasy_name.IsCompare().Contains(_request.data.name.IsCompare()) ||
+                    psis = psis.Where(w => w.fantasy_name.IsCompare().Contains(_request.data.name.IsCompare()) ||
                                            w.company_name.IsCompare().Contains(_request.data.name.IsCompare()) ||
                                            w.nickname.IsCompare().Contains(_request.data.name.IsCompare())
                                            ).ToList();
 
                 // list
                 _request.pagination.size = 10; //force
-                _res.content = list
-                    .OrderBy(o => o.fantasy_name)
-                    .Skip(_request.pagination.size * _request.pagination.page)
-                    .Take(_request.pagination.size)
-                    .Select(x => new providerMktRs()
-                    {
-                        name = x.nickname.IsNotEmpty() ? x.nickname : $"{x.fantasy_name} {x.company_name}",
-                        image = x.image.toImageUrl($"{_configuration["storage:image"]}/profile"),
-                        state = !x.Address.IsEmpty()
-                        ? x.Address.First().uf : null,
-                        introduction = x.biography,
-                        price = x.price,
-                        link = x.link,
-                        crp = x.crp
-                    }).ToList();
+                _request.pagination.page = 0;
+
+                // embaralhar
+                psis.Shuffle();
+
+                // retorno
+                _res.content = psis
+                .Skip(_request.pagination.size * _request.pagination.page)
+                .Take(_request.pagination.size)
+                .Select(x => new providerMktRs()
+                {
+                    name = x.nickname.IsNotEmpty() ? x.nickname : $"{x.fantasy_name} {x.company_name}",
+                    image = x.image.toImageUrl($"{_configuration["storage:image"]}/profile"),
+                    state = !x.Address.IsEmpty()
+                    ? x.Address.First().uf : null,
+                    introduction = x.biography,
+                    price = x.price,
+                    link = x.link,
+                    crp = x.crp
+                }).ToList();
             }
             catch (Exception ex) { _res.setError(ex); }
             return _res;
