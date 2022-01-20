@@ -54,17 +54,22 @@ namespace Marketplace.Services.Service
                 _request.data.holder_cpf = _request.data.holder_cpf.clearMask();
                 _request.data.number = _request.data.number.clearMask();
 
-                if (!_request.data.holder_cpf.IsCpf())
-                    throw new ArgumentException("CPF do Titular do cartão e inválido");
+                if (!_request.data.holder_cpf.IsCpf()) 
+                {
+                    _res.setError("CPF do Titular do cartão e inválido");
+                    return _res;
+                }
 
-                if(!_request.data.expire.Contains("/"))
-                    throw new ArgumentException("Validade do cartão informada e inválida");
+                if (!_request.data.expire.Contains("/"))
+                {
+                    _res.setError("Validade do cartão informada e inválida.");
+                    return _res;
+                }
 
                 if (_request.data.expire.Split("/")[1].Length != 4)
                     _request.data.expire.Split("/")[1] = $"20{_request.data.expire.Split("/")[1]}";
-                    // throw new ArgumentException("ANO da validade do cartão está incompleto. formato: mm/yyyy");
 
-                    #region ..: records :..
+                #region ..: records :..
 
                 var providerRs = (await _providerService.FindById(_request.data.provider_id));
                 if (providerRs.error != null)
@@ -184,7 +189,12 @@ namespace Marketplace.Services.Service
                     url = dto.payments[0].transactionUrl
                 };
             }
-            catch (Exception ex) { _res.setError(ex); }
+            catch
+            {
+                _res.setError("Estamos com impossibilidade temporária de processar o pagamento, por gentileza tente mais tarde, Obrigado");
+
+                //_res.setError(ex);
+            }
             return _res;
         }
         public async Task<BaseRs<paymentRs>> Consult(consultRq consult)
