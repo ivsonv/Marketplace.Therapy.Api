@@ -192,7 +192,7 @@ namespace Marketplace.Infra.Repository.Marketplace
                 _current.completed = entity.completed;
                 //if (entity.active && entity.completed)
                 //{
-                    if (entity.price < 60)
+                    if (entity.price < 60 && entity.link != "rita-pires")
                         throw new ArgumentException("Valor Minimo para sua consulta R$ 60,00. (Dados pagamento >> Faturamento >> Valor da Sessão (50 minutos))");
                 //}
 

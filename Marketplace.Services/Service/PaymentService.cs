@@ -67,7 +67,11 @@ namespace Marketplace.Services.Service
                 }
 
                 if (_request.data.expire.Split("/")[1].Length != 4)
-                    _request.data.expire.Split("/")[1] = $"20{_request.data.expire.Split("/")[1]}";
+                {
+                    string month = _request.data.expire.Split("/")[0];
+                    string year = $"20{_request.data.expire.Split("/")[1]}";
+                    _request.data.expire = $"{month}/{year}";
+                }   
 
                 #region ..: records :..
 
@@ -189,11 +193,11 @@ namespace Marketplace.Services.Service
                     url = dto.payments[0].transactionUrl
                 };
             }
-            catch
+            catch(Exception ex)
             {
-                _res.setError("Estamos com impossibilidade temporária de processar o pagamento, por gentileza tente mais tarde, Obrigado");
+                //_res.setError("Estamos com impossibilidade temporária de processar o pagamento, por gentileza tente mais tarde, Obrigado");
 
-                //_res.setError(ex);
+                _res.setError(ex);
             }
             return _res;
         }
