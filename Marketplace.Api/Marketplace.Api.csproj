@@ -40,10 +40,8 @@
 
   <ItemGroup>
     <None Include=".platform\nginx\conf.d\custom.conf" />
+	  <Content Include=".platform\**">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
   </ItemGroup>
-
-  <!--<PropertyGroup>
-    <BaseOutputPath>..\Marketplace.Api\bin\</BaseOutputPath>
-  </PropertyGroup>-->
-
 </Project>
