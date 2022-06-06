@@ -43,6 +43,7 @@ namespace Marketplace.Services.Service
                 foreach(var item in _res.content)
                 {
                     item.imageurl = item.image.toImageUrl($"{_configuration["storage:image"]}/banner");
+                    item.ds_type = this.getSituations().First(f => f.value == ((int)item.type).ToString()).label;
                 }
             }
             catch (System.Exception ex) { _res.setError(ex); }
@@ -79,6 +80,7 @@ namespace Marketplace.Services.Service
                     }
 
                     entity.image = _request.data.image;
+                    entity.type = _request.data.type;
                     await _bannerRepository.Update(entity);
                     _res.content = entity;
                 }

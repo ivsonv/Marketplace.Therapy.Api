@@ -9,5 +9,8 @@ namespace Marketplace.Domain.Entities
         public string image { get; set; }
         public Helpers.Enumerados.BannerType type { get; set; }
 
+        [NotMapped]
+        public string ds_type { get; set; }
+
     }
 }
