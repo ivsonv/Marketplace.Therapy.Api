@@ -46,6 +46,7 @@ namespace Marketplace.Infra.caching
                                .Include(i => i.Schedules)
                                .Include(i => i.Address)
                                .Include(i => i.Topics)
+                               .OrderBy(o => o.order)
                                .Select(s => new Provider()
                                {
                                    Languages = s.Languages.Any() ? s.Languages.Select(tt => new ProviderLanguages() { language_id = tt.language_id }) : null,

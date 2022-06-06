@@ -58,7 +58,7 @@ namespace Marketplace.Services.Service
                 _request.pagination.page = 0;
 
                 // embaralhar
-                psis.Shuffle();
+                //psis.Shuffle();
 
                 // retorno
                 _res.content = psis
