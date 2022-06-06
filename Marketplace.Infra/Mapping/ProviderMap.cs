@@ -64,6 +64,11 @@ namespace Marketplace.Infra.Mapping
                    .WithOne(w => w.Provider)
                    .HasForeignKey(f => f.provider_id)
                    .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(h => h.Assessments)
+                   .WithOne(w => w.Provider)
+                   .HasForeignKey(f => f.provider_id)
+                   .OnDelete(DeleteBehavior.Cascade);
         }
     }
 

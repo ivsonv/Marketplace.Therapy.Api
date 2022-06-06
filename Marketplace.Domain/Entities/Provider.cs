@@ -47,6 +47,7 @@ namespace Marketplace.Domain.Entities
         public IEnumerable<ProviderLanguages> Languages { get; set; }
         public IEnumerable<Appointment> Appointments { get; set; }
         public IEnumerable<ProviderReceipt> Receipts { get; set; }
+        public IEnumerable<CustomerAssessment> Assessments { get; set; }
     }
 
     public class ProviderAddress : shared.BaseAddress

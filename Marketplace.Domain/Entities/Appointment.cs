@@ -44,6 +44,7 @@ namespace Marketplace.Domain.Entities
         public Provider Provider { get; set; }
         public Customer Customer { get; set; }
         public IList<AppointmentLog> Logs { get; set; }
+        public List<CustomerAssessment> Assessments { get; set; }
     }
 
     public class AppointmentLog : BaseEntity

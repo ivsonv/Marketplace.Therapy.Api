@@ -30,6 +30,13 @@
             ecommerce = 1,
             mobile = 2
         }
+
+        public enum BannerType
+        {
+            carrossel = 0,
+            assessment = 1
+        }
+
         public enum AppointmentType
         {
             online_session = 0,

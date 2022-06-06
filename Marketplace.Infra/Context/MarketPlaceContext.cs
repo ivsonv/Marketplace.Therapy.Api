@@ -25,6 +25,7 @@ namespace Marketplace.Infra.Context
         public DbSet<ProviderBankAccount> ProviderBankAccounts { get; set; }
         public DbSet<Faq> Faq { get; set; }
         public DbSet<FaqQuestion> FaqQuestions { get; set; }
+        public DbSet<Banner> Banners { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -36,6 +37,7 @@ namespace Marketplace.Infra.Context
             modelBuilder.Entity<Bank>(new BankMap().Configure);
             modelBuilder.Entity<Faq>(new FaqMap().Configure);
             modelBuilder.Entity<FaqQuestion>(new FaqQuestionMap().Configure);
+            modelBuilder.Entity<Banner>(new BannersMap().Configure);
 
             modelBuilder.Entity<Category>(new CategoryMap().Configure);
             modelBuilder.Entity<Customer>(new CustomerMap().Configure);

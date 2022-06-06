@@ -251,10 +251,6 @@ namespace Marketplace.Services.Service
         {
             return !appoints.Where(w => (w.booking_date >= dtStart && w.booking_date <= dtEnd)
                                      || ((w.booking_date.AddMinutes(50)) >= dtStart && (w.booking_date.AddMinutes(50)) <= dtEnd)).Any();
-
-            //return appoints.Where(ap => ((ap.booking_date < dtStart && ap.booking_date > dtStart)
-            //                          || (ap.booking_date < dtEnd && ap.booking_date > dtEnd))
-            //                          || (dtStart <= ap.booking_date && dtEnd >= ap.booking_date && dtStart != ap.booking_date)).Any();
         }
     }
 }

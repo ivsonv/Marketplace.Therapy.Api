@@ -3,15 +3,17 @@ using System;
 using Marketplace.Infra.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Marketplace.Infra.Migrations
 {
     [DbContext(typeof(MarketPlaceContext))]
-    partial class MarketPlaceContextModelSnapshot : ModelSnapshot
+    [Migration("20220606150603_add_assessment")]
+    partial class add_assessment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -143,30 +145,6 @@ namespace Marketplace.Infra.Migrations
                     b.HasKey("id");
 
                     b.ToTable("banks");
-                });
-
-            modelBuilder.Entity("Marketplace.Domain.Entities.Banner", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<DateTime?>("created_at")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("image")
-                        .HasColumnType("text");
-
-                    b.Property<int>("type")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime?>("updated_at")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.HasKey("id");
-
-                    b.ToTable("banners");
                 });
 
             modelBuilder.Entity("Marketplace.Domain.Entities.Category", b =>
