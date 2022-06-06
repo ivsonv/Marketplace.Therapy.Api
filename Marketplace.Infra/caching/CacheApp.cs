@@ -209,5 +209,14 @@ namespace Marketplace.Infra.caching
                                }).AsNoTracking().ToListAsync();
             });
         }
+
+        public async Task<List<Banner>> GetBanners()
+        {
+            return await _cache.GetOrCreateAsync("banners", async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30);
+                return await _context.Banners.AsNoTracking().ToListAsync();
+            });
+        }
     }
 }

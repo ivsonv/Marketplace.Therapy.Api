@@ -57,6 +57,8 @@ namespace Marketplace.Services.Service
             {
                 await _bannerRepository.Create(_request.data);
                 _res.content = _request.data;
+
+                _cache.Clear("banners");
             }
             catch (System.Exception ex) { _res.setError(ex); }
             return _res;
@@ -82,7 +84,9 @@ namespace Marketplace.Services.Service
                     entity.image = _request.data.image;
                     entity.type = _request.data.type;
                     await _bannerRepository.Update(entity);
+                    
                     _res.content = entity;
+                    _cache.Clear("banners");
                 }
                 catch (System.Exception ex) { _res.setError(ex); }
                 return _res;
@@ -113,6 +117,22 @@ namespace Marketplace.Services.Service
                 new Domain.Models.dto.Item() { label = "Carrossel", value = ((int)Enumerados.BannerType.carrossel).ToString() },
                 new Domain.Models.dto.Item() { label = "Avaliações", value = ((int)Enumerados.BannerType.assessment).ToString() },
             };
+        }
+
+        public async Task<BaseRs<List<Domain.Entities.Banner>>> All()
+        {
+            var _res = new BaseRs<List<Domain.Entities.Banner>>();
+            try
+            {
+                _res.content = await _cache.GetBanners();
+                foreach (var item in _res.content)
+                {
+                    item.imageurl = item.image.toImageUrl($"{_configuration["storage:image"]}/banner");
+                    item.ds_type = this.getSituations().First(f => f.value == ((int)item.type).ToString()).label;
+                }
+            }
+            catch (System.Exception ex) { _res.setError(ex); }
+            return _res;
         }
     }
 }

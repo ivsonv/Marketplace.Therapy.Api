@@ -15,5 +15,6 @@ namespace Marketplace.Domain.Interface.Integrations.caching
         Task<List<Entities.Appointment>> GetAppointmentsActive();
         Task<List<Entities.Appointment>> GetCalendar(int mes);
         Task<List<Entities.Faq>> GetFaq();
+        Task<List<Entities.Banner>> GetBanners();
     }
 }

@@ -1,7 +1,9 @@
 using Marketplace.Domain.Helpers;
+using Marketplace.Domain.Interface.Integrations.caching;
 using Marketplace.Domain.Models.Request;
 using Marketplace.Domain.Models.Request.marketplace;
 using Marketplace.Domain.Models.Response;
+using Marketplace.Domain.Models.Response.banners;
 using Marketplace.Domain.Models.Response.marketplace;
 using Marketplace.Domain.Models.Response.topics;
 using Marketplace.Services.Service;
@@ -17,10 +19,15 @@ namespace Marketplace.Api.Controllers
     {
         private readonly MarketplaceService _marketplaceService;
         private readonly TopicService _topicService;
+        private readonly BannerService _bannerService;
+
+
         public MarketplaceController(MarketplaceService marketplaceService,
+                                     BannerService bannerService,
                                      TopicService topicService)
         {
             _marketplaceService = marketplaceService;
+            _bannerService = bannerService;
             _topicService = topicService;
         }
 
@@ -34,6 +41,17 @@ namespace Marketplace.Api.Controllers
                     size = 9999,
                     page = 0
                 }
+            });
+        }
+
+        [HttpGet("banners")]
+        public async Task<List<bannersRs>> ShowBanners()
+        {
+            var banners = await _bannerService.All();
+            return banners.content.ConvertAll(x => new bannersRs()
+            {
+                image = x.imageurl,
+                type = (int)x.type
             });
         }
 
