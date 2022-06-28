@@ -58,6 +58,7 @@ namespace Marketplace.Infra.caching
                                    description = s.description,
                                    biography = s.biography,
                                    nickname = s.nickname,
+                                   youtube = s.youtube,
                                    active = s.active,
                                    price = s.price,
                                    image = s.image,

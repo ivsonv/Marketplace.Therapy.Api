@@ -15,6 +15,7 @@ namespace Marketplace.Domain.Models.Response.marketplace
         public string link { get; set; }
         public List<providerMktDate> dates { get; set; }
         public int displayDates { get; set; }
+        public string youtube { get; set; }
         public int id { get; set; }
 
         public IEnumerable<providerMktItem> experiences { get; set; } = null;

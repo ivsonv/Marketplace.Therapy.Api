@@ -71,6 +71,7 @@ namespace Marketplace.Services.Service
                     state = !x.Address.IsEmpty()
                     ? x.Address.First().uf : null,
                     introduction = x.biography,
+                    youtube = x.youtube,
                     price = x.price,
                     link = x.link,
                     crp = x.crp
@@ -93,10 +94,11 @@ namespace Marketplace.Services.Service
                         ? provider.Address.First().uf : null,
                     introduction = provider.description,
                     biography = provider.biography,
+                    youtube = provider.youtube,
                     price = provider.price,
                     link = provider.link,
                     crp = provider.crp,
-                    id = provider.id,
+                    id = provider.id
                 };
 
                 // topics
