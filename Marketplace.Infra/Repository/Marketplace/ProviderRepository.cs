@@ -184,6 +184,7 @@ namespace Marketplace.Infra.Repository.Marketplace
                 _current.image = entity.image;
                 _current.link = entity.link;
                 _current.price = entity.price;
+                _current.youtube = entity.youtube;
 
                 // incompleto para completo, enviar e-mail de boas vindas.
                 entity.emailWelcomeCompleted = (!_current.completed && entity.completed);

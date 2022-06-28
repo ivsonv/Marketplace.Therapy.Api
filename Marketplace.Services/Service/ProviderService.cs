@@ -126,6 +126,7 @@ namespace Marketplace.Services.Service
                 _request.data.email = _request.data.email.IsCompare();
                 _request.data.cnpj = _request.data.cnpj.clearMask();
                 _request.data.cpf = _request.data.cpf.clearMask();
+                _request.data.youtube = _request.data.youtube;
 
                 if (!_request.data.cpf.IsEmpty())
                     if (!_request.data.cpf.IsCpf())
