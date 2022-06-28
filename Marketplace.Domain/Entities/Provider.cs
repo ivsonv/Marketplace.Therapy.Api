@@ -33,6 +33,7 @@ namespace Marketplace.Domain.Entities
         public bool completed { get; set; }
         public bool remove { get; set; }
         public string recoverpassword { get; set; }
+        public string youtube { get; set; }
         public int order { get; set; }
 
         [NotMapped]

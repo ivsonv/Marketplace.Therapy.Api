@@ -3,15 +3,17 @@ using System;
 using Marketplace.Infra.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Marketplace.Infra.Migrations
 {
     [DbContext(typeof(MarketPlaceContext))]
-    partial class MarketPlaceContextModelSnapshot : ModelSnapshot
+    [Migration("20220628131739_add_youtube_link_provider")]
+    partial class add_youtube_link_provider
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
