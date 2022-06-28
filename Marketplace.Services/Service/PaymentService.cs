@@ -54,7 +54,7 @@ namespace Marketplace.Services.Service
                 _request.data.holder_cpf = _request.data.holder_cpf.clearMask();
                 _request.data.number = _request.data.number.clearMask();
 
-                if (!_request.data.holder_cpf.IsCpf()) 
+                if (!_request.data.holder_cpf.IsCpf())
                 {
                     _res.setError("CPF do Titular do cartão e inválido");
                     return _res;
@@ -71,7 +71,7 @@ namespace Marketplace.Services.Service
                     string month = _request.data.expire.Split("/")[0];
                     string year = $"20{_request.data.expire.Split("/")[1]}";
                     _request.data.expire = $"{month}/{year}";
-                }   
+                }
 
                 #region ..: records :..
 
@@ -119,15 +119,6 @@ namespace Marketplace.Services.Service
                 string _name = providerRs.content.provider[0].nickname.IsNotEmpty()
                     ? providerRs.content.provider[0].nickname
                     : providerRs.content.provider[0].fantasy_name + " " + providerRs.content.provider[0].company_name;
-
-                _emailService.sendAppointment(new Domain.Models.dto.appointment.Email()
-                {
-                    description = $"Sua consulta com {_name} está PENDENTE no nomento.",
-                    name = $"{customerRs.content.customer[0].name}",
-                    email = customerRs.content.customer[0].email,
-                    title = "Registramos sua consulta.",
-                    nick = "Sua consulta está Pendente"
-                });
 
                 // payment request
                 var dto = new Domain.Models.dto.payment.PaymentDto()
@@ -187,13 +178,67 @@ namespace Marketplace.Services.Service
                 };
                 await _appointmentService.Update(app);
 
+                // emails
+                #region ..: EMAILS ALTERAÇÃO STATUS :..
+
+                if (app.data.payment_status == Enumerados.PaymentStatus.confirmed)
+                {
+                    // paciente
+                    try
+                    {
+                        _emailService.sendAppointment(new Domain.Models.dto.appointment.Email()
+                        {
+                            description = $"Sua consulta com {_name} está {app.data.payment_status.dsPayment()}. <br>" +
+                            $"Data: {app.data.booking_date.ToString("dd/MM/yyyy")} <br>" +
+                            $"Hora: {app.data.booking_date.ToString("HH:mm")}h <br> " +
+                            $"Fuso Horário de SÃO PAULO",
+
+                            nick = $"Sua consulta está {app.data.payment_status.dsPayment()}",
+                            name = $"{app.data.Customer.name}",
+                            email = app.data.Customer.email,
+                            title = "Sua consulta está confirmada."
+                        });
+                    }
+                    catch { }
+
+                    // Informar psico
+                    try
+                    {
+                        _emailService.sendAppointment(new Domain.Models.dto.appointment.Email()
+                        {
+                            description = $"{app.data.Customer.name} agendou uma consulta com você. <br><br>" +
+                            $"Data: {app.data.booking_date.ToString("dd/MM/yyyy")} <br>" +
+                            $"Hora: {app.data.booking_date.ToString("HH:mm")}h <br> " +
+                            $"Fuso Horário de SÃO PAULO",
+
+                            nick = $"Voce tem uma consulta Agendada {app.data.payment_status.dsPayment()}",
+                            name = $"{app.data.Provider.fantasy_name}",
+                            email = app.data.Provider.email,
+                            title = "Nova consulta está confirmada"
+                        });
+                    }
+                    catch { }
+                }
+                else
+                {
+                    _emailService.sendAppointment(new Domain.Models.dto.appointment.Email()
+                    {
+                        description = $"Sua consulta com {_name} está PENDENTE no nomento.",
+                        name = $"{customerRs.content.customer[0].name}",
+                        email = customerRs.content.customer[0].email,
+                        title = "Registramos sua consulta.",
+                        nick = "Sua consulta está Pendente"
+                    });
+                }
+                #endregion
+
                 // retorno chamada
                 _res.content = new paymentRs()
                 {
                     url = dto.payments[0].transactionUrl
                 };
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 //_res.setError("Estamos com impossibilidade temporária de processar o pagamento, por gentileza tente mais tarde, Obrigado");
 
@@ -257,32 +302,40 @@ namespace Marketplace.Services.Service
                     if (appointment.content.payment_status == Enumerados.PaymentStatus.confirmed)
                     {
                         // paciente
-                        _emailService.sendAppointment(new Domain.Models.dto.appointment.Email()
+                        try
                         {
-                            description = $"Sua consulta com {_name} está {appointment.content.payment_status.dsPayment()}. <br>" +
-                           $"Data: {appointment.content.booking_date.ToString("dd/MM/yyyy")} <br>" +
-                           $"Hora: {appointment.content.booking_date.ToString("HH:mm")}h <br> " +
-                           $"Fuso Horário de SÃO PAULO",
+                            _emailService.sendAppointment(new Domain.Models.dto.appointment.Email()
+                            {
+                                description = $"Sua consulta com {_name} está {appointment.content.payment_status.dsPayment()}. <br>" +
+                                $"Data: {appointment.content.booking_date.ToString("dd/MM/yyyy")} <br>" +
+                                $"Hora: {appointment.content.booking_date.ToString("HH:mm")}h <br> " +
+                                $"Fuso Horário de SÃO PAULO",
 
-                            nick = $"Sua consulta está {appointment.content.payment_status.dsPayment()}",
-                            name = $"{appointment.content.Customer.name}",
-                            email = appointment.content.Customer.email,
-                            title = "Sua consulta está confirmada."
-                        });
+                                nick = $"Sua consulta está {appointment.content.payment_status.dsPayment()}",
+                                name = $"{appointment.content.Customer.name}",
+                                email = appointment.content.Customer.email,
+                                title = "Sua consulta está confirmada."
+                            });
+                        }
+                        catch { }
 
                         // Informar psico
-                        _emailService.sendAppointment(new Domain.Models.dto.appointment.Email()
+                        try
                         {
-                            description = $"{appointment.content.Customer.name} agendou uma consulta com você. <br><br>" +
-                            $"Data: {appointment.content.booking_date.ToString("dd/MM/yyyy")} <br>" +
-                            $"Hora: {appointment.content.booking_date.ToString("HH:mm")}h <br> " +
-                            $"Fuso Horário de SÃO PAULO",
+                            _emailService.sendAppointment(new Domain.Models.dto.appointment.Email()
+                            {
+                                description = $"{appointment.content.Customer.name} agendou uma consulta com você. <br><br>" +
+                                $"Data: {appointment.content.booking_date.ToString("dd/MM/yyyy")} <br>" +
+                                $"Hora: {appointment.content.booking_date.ToString("HH:mm")}h <br> " +
+                                $"Fuso Horário de SÃO PAULO",
 
-                            nick = $"Voce tem uma consulta Agendada {appointment.content.payment_status.dsPayment()}",
-                            name = $"{appointment.content.Provider.fantasy_name}",
-                            email = appointment.content.Provider.email,
-                            title = "Nova consulta está confirmada"
-                        });
+                                nick = $"Voce tem uma consulta Agendada {appointment.content.payment_status.dsPayment()}",
+                                name = $"{appointment.content.Provider.fantasy_name}",
+                                email = appointment.content.Provider.email,
+                                title = "Nova consulta está confirmada"
+                            });
+                        }
+                        catch { }
                     }
                     #endregion
 
