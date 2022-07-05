@@ -87,10 +87,17 @@ namespace Marketplace.Infra.Repository.Marketplace
         public async Task<Appointment> FindById(int id)
         {
             return await _repository.Query
-                .Include(i => i.Provider).ThenInclude(t => t.SplitAccounts)
+                .Include(i => i.Provider)
+                    .ThenInclude(t => t.SplitAccounts)
                 .Include(i => i.Customer)
                 .FirstOrDefaultAsync(f => f.id == id);
         }
+
+        public async Task<Appointment> Find(int id)
+        {
+            return await _repository.Find(id);
+        }
+
         public async Task<Appointment> FindByPayment(int appointment_id)
         {
             return await _repository.Query

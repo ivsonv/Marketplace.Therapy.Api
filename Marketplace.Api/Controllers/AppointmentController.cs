@@ -22,5 +22,9 @@ namespace Marketplace.Api.Controllers
         [HttpPost]
         public async Task<BaseRs<appointmentRs>> Store([FromBody] BaseRq<appointmentRq> _request)
             => await _appointmentService.Store(_request);
+
+        //[HttpPut]
+        //public async Task<BaseRs<appointmentRs>> Update([FromBody] BaseRq<appointmentRq> _request)
+        //    => await _appointmentService.Store(_request);
     }
 }

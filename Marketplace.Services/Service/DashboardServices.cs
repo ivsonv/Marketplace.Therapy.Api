@@ -18,15 +18,18 @@ namespace Marketplace.Services.Service
         private readonly IProviderRepository _providerRepository;
 
         private readonly AppointmentService _appointmentService;
+        private readonly EmailService _emailService;
         public DashboardService(IAppointmentRepository appointmentRepository,
                                 ICustomerRepository customerRepository,
                                 IProviderRepository providerRepository,
-                                AppointmentService appointmentService)
+                                AppointmentService appointmentService,
+                                EmailService emailService)
         {
             _providerRepository = providerRepository;
             _customerRepository = customerRepository;
             _appointmentRepository = appointmentRepository;
             _appointmentService = appointmentService;
+            _emailService = emailService;
         }
 
         public async Task<BaseRs<dynamic>> fetchOverviewPsiAndCustomer()
@@ -128,6 +131,8 @@ namespace Marketplace.Services.Service
                         ,
                         booking_date = _apt.booking_date.ToString("dd/MM/yyyy HH:mm"),
                         created_at = _apt.created_at.Value.ToString("dd/MM/yyyy HH:mm"),
+                        start = _apt.booking_date.ToString("yyyy-MM-dd"),
+                        time = _apt.booking_date.ToString("HH:mm:ss"),
                         status = _apt.status.ToString(),
                         price = "R$ " + _apt.price.ToString("N2"),
                         id = _apt.id
@@ -147,6 +152,66 @@ namespace Marketplace.Services.Service
                     _res.content = resApp.content;
                 else
                     _res.error = resApp.error;
+            }
+            catch (System.Exception ex) { _res.setError(ex); }
+            return _res;
+        }
+
+        public async Task<BaseRs<dynamic>> UpdateAppointment(BaseRq<Domain.Models.Request.dashboard.AppointmentRq> _request)
+        {
+            var _res = new BaseRs<dynamic>();
+            try
+            {
+                if (!_request.data.start.HasValue || _request.data.start <= CustomExtensions.DateNow)
+                    return new BaseRs<dynamic>() { error = new BaseError("Data Informada não e válida.") };
+
+                var entity = await _appointmentRepository.FindById(_request.data.id);
+                entity.booking_date = _request.data.start.Value;
+
+                await _appointmentRepository.Update(entity);
+                await _appointmentRepository.RegisterLog(entity.id, $"Remarcação, nova data {entity.booking_date.ToString("dd/MM/yyyy")}");
+
+                // disparar email
+                try
+                {
+                   string name = entity.Provider.nickname.IsNotEmpty()
+                    ? entity.Provider.nickname
+                    : entity.Provider.fantasy_name + " " + entity.Provider.company_name;
+
+                    _emailService.sendAppointment(new Domain.Models.dto.appointment.Email()
+                    {
+                        description = $"Sua consulta com {name} está {entity.payment_status.dsPayment()}. <br>" +
+                        $"Data: {entity.booking_date.ToString("dd/MM/yyyy")} <br>" +
+                        $"Hora: {entity.booking_date.ToString("HH:mm")}h <br> " +
+                        $"Fuso Horário de SÃO PAULO",
+
+                        nick = $"Consulta Remarcada está {entity.payment_status.dsPayment()} #{entity.id.ToString("000000")}",
+                        name = $"{entity.Customer.name}",
+                        email = entity.Customer.email,
+                        title = $"reagendamento de consulta confirmada #{entity.id.ToString("000000")}"
+                    });
+                    await _appointmentRepository.RegisterLog(entity.id, $"Remarcação, Email enviado ao pct.");
+                }
+                catch { }
+
+                // Informar psico
+                try
+                {
+                    _emailService.sendAppointment(new Domain.Models.dto.appointment.Email()
+                    {
+                        description = $"{entity.Customer.name} reagendou uma consulta com você. <br><br>" +
+                        $"Data: {entity.booking_date.ToString("dd/MM/yyyy")} <br>" +
+                        $"Hora: {entity.booking_date.ToString("HH:mm")}h <br> " +
+                        $"Fuso Horário de SÃO PAULO",
+
+                        nick = $"Voce tem uma consulta reagendada {entity.payment_status.dsPayment()}",
+                        name = $"{entity.Provider.fantasy_name}",
+                        email = entity.Provider.email,
+                        title = $"reagendamento de consulta confirmada #{entity.id.ToString("000000")}"
+                    });
+                    await _appointmentRepository.RegisterLog(entity.id, $"Remarcação, Email enviado ao psico.");
+                }
+                catch { }
             }
             catch (System.Exception ex) { _res.setError(ex); }
             return _res;

@@ -38,6 +38,10 @@ namespace Marketplace.Api.Controllers
         public async Task<BaseRs<dynamic>> FindbyId([FromRoute] int id)
             => await _dashboardService.fetchAppointmentId(id);
 
+        [HttpPut("appointment")]
+        public async Task<BaseRs<dynamic>> UpdateAppointment([FromBody] BaseRq<Domain.Models.Request.dashboard.AppointmentRq> _request)
+            => await _dashboardService.UpdateAppointment(_request);
+
         [HttpGet("appointment/{id}/invoice")]
         public async Task<BaseRs<dynamic>> FetchAppointmentInvoice([FromRoute] int id)
             => await _dashboardService.fetchAppointmentInvoice(id);

@@ -34,6 +34,10 @@ namespace Marketplace.Domain.Models.Response
         {
             this.message = msgs;
         }
+        public BaseError(string msgs)
+        {
+            this.message.Add(msgs);
+        }
 
         public BaseError(Exception ex)
         {

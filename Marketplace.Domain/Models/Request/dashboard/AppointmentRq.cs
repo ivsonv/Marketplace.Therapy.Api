@@ -11,5 +11,6 @@ namespace Marketplace.Domain.Models.Request.dashboard
         public int provider_id { get; set; }
         public int customer_id { get; set; }
         public string transaction_code { get; set; }
+        public int id { get; set; }
     }
 }
