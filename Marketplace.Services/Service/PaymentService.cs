@@ -12,6 +12,7 @@ using Marketplace.Domain.Interface.Integrations.caching;
 using AutoMapper;
 using Marketplace.Domain.Models.Request.appointment;
 using System.Linq;
+using Marketplace.Domain.Interface.Marketplace;
 
 namespace Marketplace.Services.Service
 {
@@ -23,6 +24,9 @@ namespace Marketplace.Services.Service
         private readonly ProviderService _providerService;
         private readonly EmailService _emailService;
 
+        private readonly ICustomerRepository _customerRepository;
+        private readonly IProviderRepository _providerRepository;
+
         private readonly IConfiguration _configuration;
         private readonly ICustomCache _cache;
         private readonly IPayment _payment;
@@ -32,6 +36,9 @@ namespace Marketplace.Services.Service
                               ProviderService providerService,
                               CustomerService customerService,
                               EmailService emailService,
+
+                              ICustomerRepository customerRepository,
+                              IProviderRepository providerRepository,
                               IConfiguration configuration,
                               ICustomCache cache,
                               IPayment payment)
@@ -44,6 +51,9 @@ namespace Marketplace.Services.Service
             _emailService = emailService;
             _payment = payment;
             _cache = cache;
+
+            _providerRepository = providerRepository;
+            _customerRepository = customerRepository;
         }
 
         public async Task<BaseRs<paymentRs>> Checkout(BaseRq<paymentRq> _request)
@@ -186,6 +196,7 @@ namespace Marketplace.Services.Service
                     // paciente
                     try
                     {
+                        app.data.Customer = await _customerRepository.FindById(app.data.customer_id);
                         _emailService.sendAppointment(new Domain.Models.dto.appointment.Email()
                         {
                             description = $"Sua consulta com {_name} está {app.data.payment_status.dsPayment()}. <br>" +
@@ -204,6 +215,7 @@ namespace Marketplace.Services.Service
                     // Informar psico
                     try
                     {
+                        app.data.Provider = await _providerRepository.FindById(app.data.provider_id);
                         _emailService.sendAppointment(new Domain.Models.dto.appointment.Email()
                         {
                             description = $"{app.data.Customer.name} agendou uma consulta com você. <br><br>" +
