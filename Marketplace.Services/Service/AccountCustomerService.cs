@@ -1,13 +1,10 @@
 ﻿using Marketplace.Domain.Helpers;
-using Marketplace.Domain.Interface.Integrations.caching;
 using Marketplace.Domain.Models.Request;
 using Marketplace.Domain.Models.Request.account.customer;
 using Marketplace.Domain.Models.Request.customers;
 using Marketplace.Domain.Models.Response;
 using Marketplace.Domain.Models.Response.account.customer;
-using Marketplace.Domain.Models.Response.account.provider;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Marketplace.Services.Service
@@ -18,13 +15,16 @@ namespace Marketplace.Services.Service
         private readonly AppointmentService _appointmentService;
         private readonly CustomerService _customerService;
         private readonly EmailService _emailService;
+        private readonly DashboardService _dashboardService;
 
         public AccountCustomerService(AppointmentService appointmentService,
                                       CustomerService customerService,
                                       EmailService emailService,
+                                      DashboardService dashboardService,
                                       CustomAuthenticatedUser user)
         {
             _appointmentService = appointmentService;
+            _dashboardService = dashboardService;
             _customerService = customerService;
             _authenticatedCustomer = user;
             _emailService = emailService;
@@ -84,7 +84,7 @@ namespace Marketplace.Services.Service
                 var _rq = new BaseRq<customerRq>()
                 {
                     data = new customerRq()
-                    {   
+                    {
                         name = _request.name.Clear().ToUpper(),
                         id = _authenticatedCustomer.user.id,
                         email = _request.email,
@@ -249,6 +249,12 @@ namespace Marketplace.Services.Service
             }
             catch (System.Exception ex) { _res.setError(ex); }
             return _res;
+        }
+
+        public async Task<BaseRs<dynamic>> ReecheduleAppointment(BaseRq<Domain.Models.Request.dashboard.AppointmentRq> _request)
+        {
+            _request.data.customer_id = _authenticatedCustomer.user.id;
+            return await _dashboardService.UpdateAppointment(_request);
         }
     }
 }

@@ -166,6 +166,13 @@ namespace Marketplace.Services.Service
                     return new BaseRs<dynamic>() { error = new BaseError("Data Informada não e válida.") };
 
                 var entity = await _appointmentRepository.FindById(_request.data.id);
+
+                if (_request.data.customer_id > 0)
+                    if (_request.data.customer_id != entity.customer_id)
+                    {
+                        return new BaseRs<dynamic>() { error = new BaseError("Agendamento não existe para você.") };
+                    }
+
                 entity.booking_date = _request.data.start.Value;
 
                 await _appointmentRepository.Update(entity);
@@ -174,9 +181,9 @@ namespace Marketplace.Services.Service
                 // disparar email
                 try
                 {
-                   string name = entity.Provider.nickname.IsNotEmpty()
-                    ? entity.Provider.nickname
-                    : entity.Provider.fantasy_name + " " + entity.Provider.company_name;
+                    string name = entity.Provider.nickname.IsNotEmpty()
+                     ? entity.Provider.nickname
+                     : entity.Provider.fantasy_name + " " + entity.Provider.company_name;
 
                     _emailService.sendAppointment(new Domain.Models.dto.appointment.Email()
                     {

@@ -140,7 +140,7 @@ namespace Marketplace.Infra.Repository.Marketplace
                                     .Where(w => w.id == appointment_id)
                                     .Select(s => new Appointment()
                                     {
-                                        Provider = new Provider() { fantasy_name = s.Provider.fantasy_name, company_name = s.Provider.company_name, id = s.provider_id },
+                                        Provider = new Provider() { fantasy_name = s.Provider.fantasy_name, company_name = s.Provider.company_name, id = s.provider_id, link = s.Provider.link },
                                         Customer = new Customer() { name = s.Customer.name, id = s.Customer.id },
                                         transaction_code = s.transaction_code,
                                         payment_status = s.payment_status,

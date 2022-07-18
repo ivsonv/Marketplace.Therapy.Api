@@ -50,5 +50,10 @@ namespace Marketplace.Api.Controllers
         [HttpGet("appointment/{id}/conference/finish"), CustomAuthorizePermission(Permissions = permission.Account.ViewCustomer)]
         public async Task<BaseRs<accountCustomerRs>> FinishConference([FromRoute] int id)
             => await _account.finishConference(id);
+
+
+        [HttpPut("appointment/reeschedule")]
+        public async Task<BaseRs<dynamic>> ReescheduleAppointment([FromBody] BaseRq<Domain.Models.Request.dashboard.AppointmentRq> _request)
+            => await _account.ReecheduleAppointment(_request);
     }
 }
