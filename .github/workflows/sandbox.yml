@@ -2,7 +2,7 @@ name: deploy production AWS
 
 on:
   push:
-    branches: [ master ]
+    branches: [ sandbox ]
 
 jobs:
   build:
